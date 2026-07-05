@@ -101,6 +101,13 @@
   .login-btn:hover { opacity: .9; }
   .login-hint { text-align: center; color: #55535d; font-size: 11.5px; margin-top: 16px; letter-spacing: .2px; }
 
+  .switch-link { text-align: center; margin-top: 16px; font-size: 12.5px; color: #7c7a85; }
+  .switch-link a { color: #d9d8ff; cursor: pointer; font-weight: 600; text-decoration: none; }
+  .switch-link a:hover { text-decoration: underline; }
+
+  #registerForm { width: 360px; display: none; max-height: 88vh; overflow-y: auto; }
+  #registerForm .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+
   /* =========================================================
      2) DASHBOARD QUẢN LÝ SINH VIÊN
   ========================================================= */
@@ -290,6 +297,49 @@
         <button type="button" class="login-btn" onclick="tryLogin()">Sign In</button>
       </form>
       <p class="login-hint">Tài khoản demo: <strong>admin</strong> / <strong>123456</strong></p>
+      <p class="switch-link">Chưa có tài khoản? <a onclick="showRegister()">Tạo tài khoản</a></p>
+    </div>
+
+    <div class="login-form" id="registerForm">
+      <h2>Tạo tài khoản</h2>
+      <p class="sub">Điền thông tin để tạo tài khoản sinh viên</p>
+      <div class="login-error" id="registerError"></div>
+      <form onsubmit="return false;">
+        <div class="form-group">
+          <label>Họ và tên</label>
+          <input type="text" id="regHoTen" placeholder="Nguyễn Văn An">
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Ngày sinh</label>
+            <input type="date" id="regDob">
+          </div>
+          <div class="form-group">
+            <label>Mã sinh viên</label>
+            <input type="text" id="regMaSV" placeholder="251020905374">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Lớp đang học</label>
+          <input type="text" id="regLop" placeholder="ICT1.05">
+        </div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="regUser" placeholder="Tên đăng nhập muốn đặt">
+        </div>
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="regPass" placeholder="••••••">
+          </div>
+          <div class="form-group">
+            <label>Nhập lại password</label>
+            <input type="password" id="regPass2" placeholder="••••••">
+          </div>
+        </div>
+        <button type="button" class="login-btn" onclick="registerAccount()">Tạo tài khoản</button>
+      </form>
+      <p class="switch-link">Đã có tài khoản? <a onclick="showLogin()">Đăng nhập</a></p>
     </div>
   </div>
 </div>
@@ -305,7 +355,7 @@
       <div class="avatar-me" id="me-avatar">A</div>
       <div>
         <div class="name" id="me-name">admin</div>
-        <div class="role">Quản trị viên</div>
+        <div class="role" id="me-role">Quản trị viên</div>
       </div>
     </div>
     <div class="top-actions">
@@ -397,14 +447,14 @@
   <div class="modal">
     <h2 id="form-title">Thêm sinh viên</h2>
     <div class="form-grid">
-      <div class="form-row"><label>Mã sinh viên</label><input id="f-code" placeholder="SV2024001" maxlength="12"></div>
+      <div class="form-row"><label>Mã sinh viên</label><input id="f-code" placeholder="251020905348" maxlength="12"></div>
       <div class="form-row"><label>Ngày sinh</label><input id="f-dob" type="date"></div>
     </div>
     <div class="form-grid">
       <div class="form-row"><label>Họ</label><input id="f-lname" placeholder="Nguyễn"></div>
       <div class="form-row"><label>Tên đệm &amp; tên</label><input id="f-fname" placeholder="Văn An"></div>
     </div>
-    <div class="form-row"><label>Email</label><input id="f-email" type="email" placeholder="sv@example.edu.vn"></div>
+    <div class="form-row"><label>Email</label><input id="f-email" type="email" placeholder="msv@st.phenikaa-uni.edu.vn"></div>
     <div class="form-grid">
       <div class="form-row"><label>Giới tính</label><select id="f-gender"><option>Nam</option><option>Nữ</option></select></div>
       <div class="form-row"><label>Điểm trung bình (0–10)</label><input id="f-score" type="number" min="0" max="10" step="0.01" placeholder="0.00"></div>
@@ -440,8 +490,10 @@
 /* =========================================================
    ĐĂNG NHẬP + ĐÈN NGỦ
 ========================================================= */
-const VALID_USER = "admin";
-const VALID_PASS = "123456";
+// Danh sách tài khoản (lưu trong bộ nhớ phiên làm việc)
+let accounts = [
+  { hoTen: "Quản trị viên", dob: "", maSV: "—", lop: "—", username: "admin", password: "123456" }
+];
 
 const lampString = document.getElementById('lampString');
 const loginScreen = document.getElementById('login-screen');
@@ -451,10 +503,12 @@ function tryLogin() {
   const u = document.getElementById('loginUser').value.trim();
   const p = document.getElementById('loginPass').value;
   const errBox = document.getElementById('loginError');
-  if (u === VALID_USER && p === VALID_PASS) {
+  const acc = accounts.find(a => a.username.toLowerCase() === u.toLowerCase() && a.password === p);
+  if (acc) {
     errBox.classList.remove('show');
-    document.getElementById('me-name').textContent = u;
-    document.getElementById('me-avatar').textContent = u.charAt(0).toUpperCase();
+    document.getElementById('me-name').textContent = acc.hoTen || acc.username;
+    document.getElementById('me-avatar').textContent = (acc.hoTen || acc.username).trim().charAt(0).toUpperCase();
+    document.getElementById('me-role').textContent = acc.username === 'admin' ? 'Quản trị viên' : `Sinh viên · Lớp ${acc.lop || '—'}`;
     loginScreen.classList.add('fade-out');
     const dash = document.getElementById('dashboard');
     dash.classList.add('visible');
@@ -462,6 +516,7 @@ function tryLogin() {
     setTimeout(() => { loginScreen.style.display = 'none'; }, 520);
     render();
   } else {
+    errBox.textContent = "⚠️ Sai tên đăng nhập hoặc mật khẩu";
     errBox.classList.add('show');
     const form = document.getElementById('loginForm');
     form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake');
@@ -469,6 +524,57 @@ function tryLogin() {
 }
 document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
 document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+/* Chuyển đổi giữa form Đăng nhập / Tạo tài khoản */
+function showRegister() {
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('registerForm').style.display = 'block';
+  document.getElementById('registerError').classList.remove('show');
+}
+function showLogin(prefillUser) {
+  document.getElementById('registerForm').style.display = 'none';
+  document.getElementById('loginForm').style.display = 'block';
+  if (prefillUser) {
+    document.getElementById('loginUser').value = prefillUser;
+    document.getElementById('loginPass').value = '';
+    setTimeout(() => document.getElementById('loginPass').focus(), 80);
+  }
+}
+
+/* Tạo tài khoản mới */
+function registerAccount() {
+  const hoTen = document.getElementById('regHoTen').value.trim();
+  const dob   = document.getElementById('regDob').value;
+  const maSV  = document.getElementById('regMaSV').value.trim();
+  const lop   = document.getElementById('regLop').value.trim();
+  const user  = document.getElementById('regUser').value.trim();
+  const pass  = document.getElementById('regPass').value;
+  const pass2 = document.getElementById('regPass2').value;
+  const errBox = document.getElementById('registerError');
+
+  const showErr = msg => {
+    errBox.textContent = "⚠️ " + msg;
+    errBox.classList.add('show');
+    const form = document.getElementById('registerForm');
+    form.classList.remove('shake'); void form.offsetWidth; form.classList.add('shake');
+  };
+
+  if (!hoTen || !dob || !maSV || !lop || !user || !pass || !pass2) {
+    showErr("Vui lòng điền đầy đủ tất cả các trường"); return;
+  }
+  if (pass.length < 6) { showErr("Mật khẩu phải có tối thiểu 6 ký tự"); return; }
+  if (pass !== pass2) { showErr("Mật khẩu nhập lại không khớp"); return; }
+  if (accounts.some(a => a.username.toLowerCase() === user.toLowerCase())) {
+    showErr("Tên đăng nhập đã tồn tại, hãy chọn tên khác"); return;
+  }
+
+  accounts.push({ hoTen, dob, maSV, lop, username: user, password: pass });
+  errBox.classList.remove('show');
+  toast("✅ Tạo tài khoản thành công! Hãy đăng nhập");
+
+  ["regHoTen","regDob","regMaSV","regLop","regUser","regPass","regPass2"].forEach(id => document.getElementById(id).value = "");
+  showLogin(user);
+}
 
 function logout() {
   const dash = document.getElementById('dashboard');
