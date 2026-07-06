@@ -288,7 +288,7 @@
       <form onsubmit="return false;">
         <div class="form-group">
           <label>Username</label>
-          <input type="text" id="loginUser" placeholder="admin" autocomplete="username">
+          <input type="text" id="loginUser" placeholder="admin123" autocomplete="username">
         </div>
         <div class="form-group">
           <label>Password</label>
@@ -296,7 +296,7 @@
         </div>
         <button type="button" class="login-btn" onclick="tryLogin()">Sign In</button>
       </form>
-      <p class="login-hint">Tài khoản demo: <strong>admin</strong> / <strong>123456</strong></p>
+      <p class="login-hint">Tài khoản demo: <strong>admin123</strong> / <strong>123456</strong></p>
       <p class="switch-link">Chưa có tài khoản? <a onclick="showRegister()">Tạo tài khoản</a></p>
     </div>
 
@@ -492,7 +492,7 @@
 ========================================================= */
 // Danh sách tài khoản (lưu trong bộ nhớ phiên làm việc)
 let accounts = [
-  { hoTen: "Quản trị viên", dob: "", maSV: "—", lop: "—", username: "admin", password: "123456" }
+  { hoTen: "Quản trị viên", dob: "", maSV: "—", lop: "—", username: "admin123", password: "123456" }
 ];
 
 const lampString = document.getElementById('lampString');
@@ -596,7 +596,7 @@ let students = [
   {id:1, code:"251020905004", lname:"Đỗ", fname:"Quang Bách", dob:"2007-11-04", gender:"Nam", email:"251020905004@st.phenikaa-uni.edu.vn", score:7.96, gpa:3.36, status:"Đang học"},
   {id:2, code:"251020904719", lname:"Vũ", fname:"Huy Hoàng", dob:"2007-03-24", gender:"Nam", email:"251020904719@st.phenikaa-uni.edu.vn", score:5.04, gpa:2.16, status:"Đang học"},
   {id:3, code:"251020905931", lname:"Bùi", fname:"Duy Hưng", dob:"2007-02-19", gender:"Nam", email:"251020905931@st.phenikaa-uni.edu.vn", score:6.74, gpa:2.41, status:"Đang học"},
-  {id:4, code:"251020905771", lname:"Vũ", fname:"Lê Kiên", dob:"2007-04-17", gender:"Nam", email:"251020905771@st.phenikaa-uni.edu.vn", score:8.56, gpa:3.52, status:"Đang học"},
+  {id:4, code:"251020905771", lname:"Vũ", fname:"Lê Kiên", dob:"2007-04-14", gender:"Nam", email:"251020905771@st.phenikaa-uni.edu.vn", score:8.56, gpa:3.52, status:"Đang học"},
   {id:5, code:"251020905362", lname:"Nguyễn", fname:"Tiến Bảo", dob:"2007-12-18", gender:"Nam", email:"251020905362@st.phenikaa-uni.edu.vn", score:6.72, gpa:2.66, status:"Đang học"},
   {id:6, code:"251020905686", lname:"Nguyễn", fname:"Trung Dương", dob:"2007-01-25", gender:"Nam", email:"251020905686@st.phenikaa-uni.edu.vn", score:8.77, gpa:3.63, status:"Đang học"},
   {id:7, code:"251020905215", lname:"Bùi", fname:"Khánh Đoàn", dob:"2007-05-05", gender:"Nam", email:"251020905215@st.phenikaa-uni.edu.vn", score:5.64, gpa:2.41, status:"Đang học"},
@@ -667,8 +667,7 @@ let students = [
   {id:72, code:"251020907149", lname:"Ngô", fname:"Tiến Đạt", dob:"2007-03-09", gender:"Nam", email:"251020907149@st.phenikaa-uni.edu.vn", score:5.99, gpa:2.22, status:"Đang học"},
   {id:73, code:"251020904897", lname:"Hoàng", fname:"Công Tuấn", dob:"2007-04-22", gender:"Nam", email:"251020904897@st.phenikaa-uni.edu.vn", score:7.86, gpa:3.00, status:"Đang học"},
   {id:74, code:"251020906695", lname:"Nguyễn", fname:"Thành Nam", dob:"2007-05-29", gender:"Nam", email:"251020906695@st.phenikaa-uni.edu.vn", score:9.31, gpa:3.45, status:"Nghỉ phép"},
-  {id:75, code:"251020304872", lname:"Nguyễn", fname:"Đức Hải", dob:"2007-07-27", gender:"Nam", email:"251020304872@st.phenikaa-uni.edu.vn", score:5.97, gpa:2.09, status:"Đang học"}
-,
+  {id:75, code:"251020304872", lname:"Nguyễn", fname:"Đức Hải", dob:"2007-07-27", gender:"Nam", email:"251020304872@st.phenikaa-uni.edu.vn", score:5.97, gpa:2.09, status:"Đang học"},
   {id:76, code:"251020905232", lname:"Đàm", fname:"Thanh Thảo", dob:"2007-06-05", gender:"Nữ", email:"251020905232@st.phenikaa-uni.edu.vn", score:6.59, gpa:2.36, status:"Thôi học"},
   {id:77, code:"251020905507", lname:"Cáp", fname:"Trọng Nguyên", dob:"2007-09-04", gender:"Nam", email:"251020905507@st.phenikaa-uni.edu.vn", score:6.44, gpa:2.31, status:"Đang học"},
   {id:78, code:"251020905689", lname:"Nguyễn", fname:"Hoàng Hải", dob:"2007-09-07", gender:"Nam", email:"251020905689@st.phenikaa-uni.edu.vn", score:4.70, gpa:1.84, status:"Đang học"},
