@@ -55,6 +55,16 @@ nav a:hover{
     background: #B3B3B3;
     color: #3318e0;
 }
+
+/* Footer styling: tên dier tôi cuối trang */
+footer {
+    background-color: #e3a1a2;
+    color: #030000;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    font-weight: bold;
+}
 nav a:active {
     background-color: #4a6fa5;
     color: #fff;
