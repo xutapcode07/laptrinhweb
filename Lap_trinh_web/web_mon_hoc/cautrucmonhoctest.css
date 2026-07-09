@@ -1,0 +1,61 @@
+h1{
+    color:blue;
+    text-align:center;
+}
+nav ul{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    list-style:none;
+    padding:0;
+    margin:20px 0;
+}
+nav a{
+    display:inline-block;
+    padding:8px 12px;
+    background-color:#fff;
+    border:1px solid #ccc;
+    border-radius:6px;
+    text-decoration:none;
+}
+img{
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+}
+h3{
+    text-align:center;
+}
+a{
+    text-align:center;
+    display:block;
+    margin-left:auto;
+    margin-right:auto;
+}
+section{
+    margin-bottom:30px;
+}
+
+/* Ẩn tất cả nội dung môn học, chỉ hiện môn đang được chọn */
+.subject-section{
+    display:none;
+}
+.subject-section.active{
+    display:block;
+}
+
+/* Làm nổi bật môn đang được chọn trên thanh menu */
+nav a.active{
+    background-color:#4a6fa5;
+    color:#fff;
+    border-color:#4a6fa5;
+}
+nav a:hover{
+    background: #B3B3B3;
+    color: #3318e0;
+}
+nav a:active {
+    background-color: #4a6fa5;
+    color: #fff;
+}
