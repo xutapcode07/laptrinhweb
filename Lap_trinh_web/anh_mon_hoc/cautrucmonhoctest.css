@@ -51,3 +51,11 @@ nav a.active{
     color:#fff;
     border-color:#4a6fa5;
 }
+nav a:hover{
+    background: #B3B3B3;
+    color: #3318e0;
+}
+nav a:active {
+    background-color: #4a6fa5;
+    color: #fff;
+}
