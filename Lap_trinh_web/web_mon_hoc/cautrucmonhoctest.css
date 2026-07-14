@@ -1,3 +1,7 @@
+body{
+    margin: 0;
+    padding: 0;
+}
 h1{
     color:blue;
     text-align:center;
@@ -23,6 +27,10 @@ img{
     display:block;
     margin-left:auto;
     margin-right:auto;
+    border: 10px solid #ccc;
+    padding: 3px;
+    height: 200;
+    width: 400px;
 }
 h3{
     text-align:center;
@@ -68,4 +76,24 @@ footer {
 nav a:active {
     background-color: #4a6fa5;
     color: #fff;
+}
+header{
+    background: #f6c2c2;
+    position: relative;
+    padding: 24px 20px 20px;
+    margin-bottom: 20px;
+}
+header .header-logo{
+    position: absolute;
+    top: 18px;
+    left: 20px;
+    width: 56px;
+    height: auto;
+    border-radius: 12px;
+    border: 2px solid rgba(255,255,255,0.8);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+header h1{
+    margin: 0;
+    text-align: center;
 }
