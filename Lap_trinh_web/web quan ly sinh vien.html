@@ -9,67 +9,30 @@
   body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
 
   /* =========================================================
-     1) MÀN HÌNH ĐĂNG NHẬP — ĐÈN NGỦ
+     1) MÀN HÌNH ĐĂNG NHẬP — THẺ FLOATING LABEL
   ========================================================= */
   #login-screen {
     position: fixed; inset: 0;
-    background-color: #151419;
+    background-image:
+      linear-gradient(160deg, rgba(15,21,26,.88), rgba(26,35,42,.90)),
+      url('https://images.unsplash.com/photo-1562408590-e32931084e23?fm=jpg&q=80&w=1920&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
     display: flex; justify-content: center; align-items: center;
-    overflow: hidden;
-    transition: background-color .4s ease, opacity .5s ease, visibility .5s;
+    transition: opacity .5s ease, visibility .5s;
     z-index: 500;
   }
-  #login-screen.lamp-on { background-color: #1a1921; }
   #login-screen.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 
-  .container { display: flex; align-items: center; gap: 60px; position: relative; }
-
-  .lamp-container { position: relative; display: flex; flex-direction: column; align-items: center; }
-
-  .lamp-shade {
-    width: 160px; height: 80px; background-color: #4a4950;
-    border-top-left-radius: 80px; border-top-right-radius: 80px;
-    position: relative; z-index: 2; transition: background-color .3s, box-shadow .3s;
-  }
-  #login-screen.lamp-on .lamp-shade {
-    background-color: #fff;
-    box-shadow: 0 0 60px 20px rgba(255,255,230,.25), 0 0 100px 40px rgba(255,255,200,.1);
-  }
-  .lamp-stick { width: 10px; height: 140px; background-color: #3a3940; position: relative; z-index: 2; transition: background-color .3s; }
-  #login-screen.lamp-on .lamp-stick { background-color: #e2e2e2; }
-
-  .lamp-string {
-    width: 2px; height: 50px; background-color: #555; position: absolute;
-    left: 105px; top: 80px; z-index: 4; cursor: pointer;
-    transition: transform .1s ease-in-out, background-color .3s;
-  }
-  #login-screen.lamp-on .lamp-string { background-color: #999; }
-  .lamp-string::after {
-    content: ''; position: absolute; bottom: -10px; left: -4px;
-    width: 10px; height: 10px; background-color: #6d543a; border-radius: 50%;
-    transition: background-color .3s;
-  }
-  #login-screen.lamp-on .lamp-string::after { background-color: #cda274; }
-  .lamp-string:active { transform: translateY(6px); }
-
-  .lamp-base { width: 100px; height: 12px; background-color: #3a3940; border-radius: 6px; z-index: 2; transition: background-color .3s; }
-  #login-screen.lamp-on .lamp-base { background-color: #e2e2e2; }
-
-  .light-glow {
-    position: absolute; top: 0; left: 80px; width: 400px; height: 300px;
-    background: radial-gradient(circle at left top, rgba(255,253,219,.12) 0%, rgba(255,255,255,0) 70%);
-    pointer-events: none; z-index: 1; opacity: 0; transition: opacity .4s ease;
-  }
-  #login-screen.lamp-on .light-glow { opacity: 1; }
-
   .login-form {
-    background: rgba(255,255,255,.06); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,.05); padding: 40px 30px; width: 320px; border-radius: 24px;
-    box-shadow: 0 20px 40px rgba(0,0,0,.4); z-index: 3;
-    opacity: 0; transform: translateY(20px); pointer-events: none;
-    transition: opacity .4s cubic-bezier(.4,0,.2,1), transform .4s cubic-bezier(.4,0,.2,1);
+    width: 360px;
+    background-color: #243038;
+    padding: 40px 30px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .3);
+    color: #ffffff;
+    text-align: center;
   }
-  #login-screen.lamp-on .login-form { opacity: 1; transform: translateY(0); pointer-events: all; }
   .login-form.shake { animation: shake .4s; }
   @keyframes shake {
     10%,90% { transform: translateX(-2px); }
@@ -78,34 +41,77 @@
     40%,60% { transform: translateX(8px); }
   }
 
-  .login-form h2 { color: #fff; text-align: center; margin-bottom: 6px; font-weight: 500; font-size: 24px; letter-spacing: .5px; }
-  .login-form .sub { color: #7c7a85; text-align: center; font-size: 12px; margin-bottom: 24px; }
+  .login-form h2 { color: #e0e6ed; text-align: center; margin-bottom: 6px; font-weight: 500; font-size: 24px; letter-spacing: .3px; }
+  .login-form .sub { color: #8c9ba5; text-align: center; font-size: 12px; margin-bottom: 30px; }
+
+  /* Ô nhập liệu kiểu floating label (giống test.css) */
   .form-group { margin-bottom: 20px; }
-  .form-group label { display: block; color: #7c7a85; font-size: 13px; margin-bottom: 8px; }
-  .form-group input {
-    width: 100%; padding: 14px 16px; background-color: #292830; border: 1px solid #33313b;
-    border-radius: 12px; color: #fff; font-size: 14px; outline: none; transition: border-color .15s;
+  #loginForm .form-group,
+  #registerForm .form-group.floating {
+    position: relative; margin-bottom: 30px; text-align: left;
   }
-  .form-group input:focus { border-color: #6d6cff; }
-  .form-group input::placeholder { color: #55535d; }
+  #loginForm .form-group input,
+  #registerForm .form-group.floating input {
+    width: 100%; padding: 8px 0; background: transparent; border: none;
+    border-bottom: 1px solid #4a5a66; outline: none; color: #ffffff; font-size: 15px;
+    transition: border-color .3s;
+  }
+  #loginForm .form-group label,
+  #registerForm .form-group.floating label {
+    position: absolute; top: 8px; left: 0; color: #8c9ba5; font-size: 14px;
+    pointer-events: none; transition: .3s ease all;
+  }
+  #loginForm .form-group input:focus ~ label,
+  #loginForm .form-group input:not(:placeholder-shown) ~ label,
+  #registerForm .form-group.floating input:focus ~ label,
+  #registerForm .form-group.floating input:not(:placeholder-shown) ~ label {
+    top: -16px; font-size: 12px; color: #a0aec0;
+  }
+  #loginForm .form-group input:focus,
+  #registerForm .form-group.floating input:focus { border-bottom-color: #81d4fa; }
+
+  /* Các trường không hỗ trợ tốt hiệu ứng float (date...) dùng label tĩnh */
+  .form-group:not(.floating) label { display: block; color: #8c9ba5; font-size: 13px; margin-bottom: 6px; text-align: left; }
+  .form-group:not(.floating) input {
+    width: 100%; padding: 8px 0; background: transparent; border: none;
+    border-bottom: 1px solid #4a5a66; outline: none; color: #ffffff; font-size: 14px;
+    transition: border-color .3s;
+  }
+  .form-group:not(.floating) input:focus { border-bottom-color: #81d4fa; }
+  #loginForm .form-group, #registerForm .form-group.floating { /* override generic rule above */ }
+
+  #loginForm .form-group input[type="password"],
+  #registerForm .form-group.floating input[type="password"] {
+    padding-right: 28px;
+  }
+  .toggle-eye {
+    position: absolute; right: 0; top: 4px; width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    color: #8c9ba5; cursor: pointer; background: none; border: none; padding: 0;
+    transition: color .2s;
+  }
+  .toggle-eye:hover { color: #b2ebf2; }
+  .toggle-eye svg { width: 18px; height: 18px; }
+
   .login-error {
     display: none; background: #3a1f22; color: #ff8a8a; font-size: 12.5px;
-    padding: 9px 12px; border-radius: 10px; margin-bottom: 14px; text-align: center;
+    padding: 9px 12px; border-radius: 8px; margin-bottom: 16px; text-align: center;
   }
   .login-error.show { display: block; }
   .login-btn {
-    width: 100%; padding: 14px; background-color: #f4f3ee; border: none; border-radius: 14px;
-    color: #1a1921; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 4px;
-    transition: opacity .15s;
+    width: 100%; padding: 12px; background-color: #b2ebf2; border: none; border-radius: 4px;
+    color: #1a232a; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 10px;
+    transition: background-color .2s, transform .1s;
   }
-  .login-btn:hover { opacity: .9; }
-  .login-hint { text-align: center; color: #55535d; font-size: 11.5px; margin-top: 16px; letter-spacing: .2px; }
+  .login-btn:hover { background-color: #80deea; }
+  .login-btn:active { transform: scale(.98); }
+  .login-hint { text-align: center; color: #6b7885; font-size: 11.5px; margin-top: 16px; letter-spacing: .2px; }
 
-  .switch-link { text-align: center; margin-top: 16px; font-size: 12.5px; color: #7c7a85; }
-  .switch-link a { color: #d9d8ff; cursor: pointer; font-weight: 600; text-decoration: none; }
+  .switch-link { text-align: center; margin-top: 25px; font-size: 13px; color: #8c9ba5; }
+  .switch-link a { color: #b2ebf2; cursor: pointer; font-weight: 600; text-decoration: none; margin-left: 4px; }
   .switch-link a:hover { text-decoration: underline; }
 
-  #registerForm { width: 360px; display: none; max-height: 88vh; overflow-y: auto; }
+  #registerForm { width: 400px; display: none; max-height: 88vh; overflow-y: auto; }
   #registerForm .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
 
   /* =========================================================
@@ -272,27 +278,21 @@
      MÀN HÌNH ĐĂNG NHẬP
 ========================================================= -->
 <div id="login-screen">
-  <div class="container">
-    <div class="lamp-container">
-      <div class="lamp-shade"></div>
-      <div class="lamp-stick"></div>
-      <div class="lamp-string" id="lampString" title="Click để giật dây bật đèn"></div>
-      <div class="lamp-base"></div>
-      <div class="light-glow"></div>
-    </div>
-
     <div class="login-form" id="loginForm">
       <h2>Welcome</h2>
       <p class="sub">Đăng nhập để quản lý danh sách sinh viên</p>
       <div class="login-error" id="loginError">⚠️ Sai tên đăng nhập hoặc mật khẩu</div>
       <form onsubmit="return false;">
         <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="loginUser" placeholder="admin123" autocomplete="username">
+          <input type="text" id="loginUser" required placeholder=" " autocomplete="username">
+          <label for="loginUser">Username</label>
         </div>
         <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="loginPass" placeholder="••••••" autocomplete="current-password">
+          <input type="password" id="loginPass" required placeholder=" " autocomplete="current-password">
+          <label for="loginPass">Password</label>
+          <span class="toggle-eye" onclick="togglePassword('loginPass', this)" title="Hiện/ẩn mật khẩu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12C4 7 8 4 12 4C16 4 20 7 22 12C20 17 16 20 12 20C8 20 4 17 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </span>
         </div>
         <button type="button" class="login-btn" onclick="tryLogin()">Sign In</button>
       </form>
@@ -305,43 +305,48 @@
       <p class="sub">Điền thông tin để tạo tài khoản sinh viên</p>
       <div class="login-error" id="registerError"></div>
       <form onsubmit="return false;">
-        <div class="form-group">
-          <label>Họ và tên</label>
-          <input type="text" id="regHoTen" placeholder="Nguyễn Văn An">
+        <div class="form-group floating">
+          <input type="text" id="regHoTen" required placeholder=" ">
+          <label for="regHoTen">Họ và tên</label>
         </div>
         <div class="form-grid-2">
           <div class="form-group">
-            <label>Ngày sinh</label>
+            <label for="regDob">Ngày sinh</label>
             <input type="date" id="regDob">
           </div>
-          <div class="form-group">
-            <label>Mã sinh viên</label>
-            <input type="text" id="regMaSV" placeholder="251020905374">
+          <div class="form-group floating">
+            <input type="text" id="regMaSV" required placeholder=" ">
+            <label for="regMaSV">Mã sinh viên</label>
           </div>
         </div>
-        <div class="form-group">
-          <label>Lớp đang học</label>
-          <input type="text" id="regLop" placeholder="ICT1.05">
+        <div class="form-group floating">
+          <input type="text" id="regLop" required placeholder=" ">
+          <label for="regLop">Lớp đang học</label>
         </div>
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="regUser" placeholder="Tên đăng nhập muốn đặt">
+        <div class="form-group floating">
+          <input type="text" id="regUser" required placeholder=" ">
+          <label for="regUser">Username</label>
         </div>
         <div class="form-grid-2">
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password" id="regPass" placeholder="••••••">
+          <div class="form-group floating">
+            <input type="password" id="regPass" required placeholder=" ">
+            <label for="regPass">Password</label>
+            <span class="toggle-eye" onclick="togglePassword('regPass', this)" title="Hiện/ẩn mật khẩu">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12C4 7 8 4 12 4C16 4 20 7 22 12C20 17 16 20 12 20C8 20 4 17 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
           </div>
-          <div class="form-group">
-            <label>Nhập lại password</label>
-            <input type="password" id="regPass2" placeholder="••••••">
+          <div class="form-group floating">
+            <input type="password" id="regPass2" required placeholder=" ">
+            <label for="regPass2">Nhập lại password</label>
+            <span class="toggle-eye" onclick="togglePassword('regPass2', this)" title="Hiện/ẩn mật khẩu">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12C4 7 8 4 12 4C16 4 20 7 22 12C20 17 16 20 12 20C8 20 4 17 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>
+            </span>
           </div>
         </div>
         <button type="button" class="login-btn" onclick="registerAccount()">Tạo tài khoản</button>
       </form>
       <p class="switch-link">Đã có tài khoản? <a onclick="showLogin()">Đăng nhập</a></p>
     </div>
-  </div>
 </div>
 
 <!-- =========================================================
@@ -495,9 +500,24 @@ let accounts = [
   { hoTen: "Quản trị viên", dob: "", maSV: "—", lop: "—", username: "admin123", password: "123456" }
 ];
 
-const lampString = document.getElementById('lampString');
 const loginScreen = document.getElementById('login-screen');
-lampString.addEventListener('click', () => loginScreen.classList.toggle('lamp-on'));
+
+/* Hiện/ẩn mật khẩu bằng icon con mắt */
+const EYE_OPEN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12C4 7 8 4 12 4C16 4 20 7 22 12C20 17 16 20 12 20C8 20 4 17 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_CLOSED = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12C4 7 8 4 12 4C16 4 20 7 22 12C20 17 16 20 12 20C8 20 4 17 2 12Z"/><circle cx="12" cy="12" r="3"/><line x1="3" y1="21" x2="21" y2="3"/></svg>';
+function togglePassword(id, btn) {
+  const input = document.getElementById(id);
+  const showing = input.type === 'text';
+  input.type = showing ? 'password' : 'text';
+  btn.innerHTML = showing ? EYE_OPEN : EYE_CLOSED;
+}
+function resetPasswordField(id) {
+  const input = document.getElementById(id);
+  input.value = '';
+  input.type = 'password';
+  const btn = input.parentElement.querySelector('.toggle-eye');
+  if (btn) btn.innerHTML = EYE_OPEN;
+}
 
 function tryLogin() {
   const u = document.getElementById('loginUser').value.trim();
@@ -536,7 +556,7 @@ function showLogin(prefillUser) {
   document.getElementById('loginForm').style.display = 'block';
   if (prefillUser) {
     document.getElementById('loginUser').value = prefillUser;
-    document.getElementById('loginPass').value = '';
+    resetPasswordField('loginPass');
     setTimeout(() => document.getElementById('loginPass').focus(), 80);
   }
 }
@@ -572,7 +592,9 @@ function registerAccount() {
   errBox.classList.remove('show');
   toast("✅ Tạo tài khoản thành công! Hãy đăng nhập");
 
-  ["regHoTen","regDob","regMaSV","regLop","regUser","regPass","regPass2"].forEach(id => document.getElementById(id).value = "");
+  ["regHoTen","regDob","regMaSV","regLop","regUser"].forEach(id => document.getElementById(id).value = "");
+  resetPasswordField('regPass');
+  resetPasswordField('regPass2');
   showLogin(user);
 }
 
@@ -583,8 +605,7 @@ function logout() {
     dash.classList.remove('visible');
     loginScreen.style.display = 'flex';
     requestAnimationFrame(() => loginScreen.classList.remove('fade-out'));
-    loginScreen.classList.remove('lamp-on');
-    document.getElementById('loginPass').value = '';
+    resetPasswordField('loginPass');
     document.getElementById('loginError').classList.remove('show');
   }, 350);
 }
@@ -673,7 +694,7 @@ let students = [
   {id:78, code:"251020905689", lname:"Nguyễn", fname:"Hoàng Hải", dob:"2007-09-07", gender:"Nam", email:"251020905689@st.phenikaa-uni.edu.vn", score:4.70, gpa:1.84, status:"Đang học"},
   {id:79, code:"251020904842", lname:"Nguyên", fname:"Tuấn Phương", dob:"2007-02-08", gender:"Nam", email:"251020904842@st.phenikaa-uni.edu.vn", score:4.98, gpa:1.95, status:"Đang học"},
   {id:80, code:"0374773794", lname:"Nguyễn", fname:"Bá Tùng Anh", dob:"2007-10-04", gender:"Nam", email:"0374773794@st.phenikaa-uni.edu.vn", score:9.52, gpa:3.89, status:"Đang học"},
-  {id:81, code:"2510209065861", lname:"Mai", fname:"Minh Nhật", dob:"2007-10-31", gender:"Nam", email:"2510209065861@st.phenikaa-uni.edu.vn", score:4.83, gpa:1.98, status:"Đang học"},
+  {id:81, code:"251020905861", lname:"Mai", fname:"Minh Nhật", dob:"2007-10-31", gender:"Nam", email:"251020905861@st.phenikaa-uni.edu.vn", score:4.83, gpa:1.98, status:"Đang học"},
   {id:82, code:"251020906731", lname:"Cấn", fname:"Cao Thắng", dob:"2007-01-08", gender:"Nam", email:"251020906731@st.phenikaa-uni.edu.vn", score:4.75, gpa:2.12, status:"Đang học"},
   {id:83, code:"251020904204", lname:"Vũ", fname:"Đình Minh Phương", dob:"2007-05-14", gender:"Nam", email:"251020904204@st.phenikaa-uni.edu.vn", score:5.26, gpa:1.87, status:"Đang học"}
 ];
