@@ -173,19 +173,33 @@
                 <input type="date" id="regDob" required class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
               </div>
               <div>
-                <label class="block text-xs text-slate-300 mb-1">Tên đăng nhập</label>
-                <input type="text" id="regUser" required placeholder="username" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <label class="block text-xs text-slate-300 mb-1">Giới tính</label>
+                <select id="regGender" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+                </select>
               </div>
             </div>
 
+            <div>
+              <label class="block text-xs text-slate-300 mb-1">Tên đăng nhập</label>
+              <input type="text" id="regUser" required placeholder="username" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+            </div>
+
             <div class="grid grid-cols-2 gap-2">
-              <div>
+              <div class="relative">
                 <label class="block text-xs text-slate-300 mb-1">Mật khẩu</label>
-                <input type="password" id="regPass" required placeholder="******" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <input type="password" id="regPass" required placeholder="******" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 pr-9 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <button type="button" onclick="togglePasswordVisibility('regPass', this)" class="absolute right-2.5 top-[26px] text-slate-400 hover:text-white">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                </button>
               </div>
-              <div>
+              <div class="relative">
                 <label class="block text-xs text-slate-300 mb-1">Nhập lại mật khẩu</label>
-                <input type="password" id="regPass2" required placeholder="******" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <input type="password" id="regPass2" required placeholder="******" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 pr-9 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <button type="button" onclick="togglePasswordVisibility('regPass2', this)" class="absolute right-2.5 top-[26px] text-slate-400 hover:text-white">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                </button>
               </div>
             </div>
 

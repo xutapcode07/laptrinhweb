@@ -336,6 +336,8 @@ function registerAccount() {
   const hoTen = document.getElementById('regHoTen').value.trim();
   const maSV  = document.getElementById('regMaSV').value.trim();
   const lop   = document.getElementById('regLop').value;
+  const gioiTinh = document.getElementById('regGender').value;
+  const dob = document.getElementById('regDob').value;
   const user  = document.getElementById('regUser').value.trim();
   const pass  = document.getElementById('regPass').value;
   const pass2 = document.getElementById('regPass2').value;
@@ -358,7 +360,7 @@ function registerAccount() {
   }
 
   // Add to accounts
-  accounts.push({ hoTen, maSV, lop, username: user, password: pass, role: "student" });
+  accounts.push({ hoTen, maSV, lop, gender: gioiTinh, username: user, password: pass, role: "student" });
   
   // Auto register into student table if not existing
   if (!students.some(s => s.code === maSV)) {
@@ -368,8 +370,8 @@ function registerAccount() {
       lname: hoTen.split(" ").slice(0,-1).join(" ") || "Nguyễn",
       fname: hoTen.split(" ").slice(-1)[0] || "An",
       classId: lop,
-      dob: "2007-01-01",
-      gender: "Nam",
+      dob: dob || "2007-01-01",
+      gender: gioiTinh,
       email: `${maSV}@st.phenikaa-uni.edu.vn`,
       score: 7.50,
       gpa: 3.00,
