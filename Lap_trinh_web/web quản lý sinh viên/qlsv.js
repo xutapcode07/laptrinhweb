@@ -101,10 +101,10 @@ function generateMockStudents() {
     {code:"251020906325", lname:"Ngô Sỹ", fname:"Kiên", dob:"2007-10-12", gender:"Nam", score:8.05, gpa:3.22, status:"Đang học"},
     {code:"251020905209", lname:"Ninh Đức", fname:"Khoa", dob:"2007-11-08", gender:"Nam", score:7.90, gpa:3.15, status:"Đang học"},
     {code:"251020906269", lname:"Nguyễn Anh", fname:"Khoa", dob:"2007-12-01", gender:"Nam", score:8.70, gpa:3.48, status:"Đang học"},
-    {code:"251020904602", lname:"Hoàng Ngọc", fname:"Linh", dob:"2007-03-05", gender:"Nữ", score:7.18, gpa:2.87, status:"Đang học"},
+    {code:"251020904602", lname:"Hoàng Ngọc", fname:"Linh", dob:"2007-03-05", gender:"Nữ", score:8.00, gpa:3.47, status:"Đang học"},
     {code:"251020905687", lname:"Hán Tiến", fname:"Long", dob:"2007-04-03", gender:"Nam", score:7.10, gpa:2.80, status:"Đang học"},
     {code:"251020904434", lname:"Vũ Huy", fname:"Long", dob:"2007-06-25", gender:"Nam", score:6.85, gpa:2.70, status:"Đang học"},
-    {code:"251020905692", lname:"Lê Phương", fname:"Ly", dob:"2007-06-04", gender:"Nữ", score:8.04, gpa:3.32, status:"Đang học"},
+    {code:"251020905692", lname:"Lê Phương", fname:"Ly", dob:"2007-06-04", gender:"Nữ", score:6.06, gpa:2.22, status:"Đang học"},
     {code:"251020906498", lname:"Tráng Ngọc", fname:"Minh", dob:"2007-08-14", gender:"Nam", score:8.35, gpa:3.35, status:"Đang học"},
     {code:"251020905891", lname:"Tống Đại", fname:"Nam", dob:"2007-01-09", gender:"Nam", score:7.65, gpa:3.08, status:"Đang học"},
     {code:"251020905676", lname:"Nguyễn Đình", fname:"Nam", dob:"2007-03-17", gender:"Nam", score:8.15, gpa:3.28, status:"Đang học"},
@@ -654,9 +654,9 @@ function getOrCreateSubjects(st) {
     st.subjects = [
       { name: "Lập trình Python & Ứng dụng", credit: 3, score: clampScore(st.score + 0.3) },
       { name: "Cấu trúc Dữ liệu & Giải thuật", credit: 4, score: clampScore(st.score - 0.2) },
-      { name: "Cơ sở Dữ liệu Quan hệ", credit: 3, score: clampScore(st.score) },
-      { name: "Mạng Máy Tính & Truyền Thông", credit: 3, score: clampScore(st.score + 0.1) },
-      { name: "Tiếng Anh Chuyên Ngành ICT", credit: 2, score: clampScore(st.score + 0.5) }
+      { name: "Cơ sở Dữ liệu", credit: 3, score: clampScore(st.score) },
+      { name: "Mạng Máy Tính", credit: 3, score: clampScore(st.score + 0.1) },
+      { name: "Tiếng Anh Chuyên Ngành", credit: 2, score: clampScore(st.score + 0.5) }
     ];
   }
   return st.subjects;
@@ -698,9 +698,9 @@ function fillDefaultSubjects() {
   const defaults = [
     { name: "Lập trình Python & Ứng dụng", credit: 3, score: 8.5 },
     { name: "Cấu trúc Dữ liệu & Giải thuật", credit: 4, score: 8.0 },
-    { name: "Cơ sở Dữ liệu Quan hệ", credit: 3, score: 8.2 },
-    { name: "Mạng Máy Tính & Truyền Thông", credit: 3, score: 8.3 },
-    { name: "Tiếng Anh Chuyên Ngành ICT", credit: 2, score: 8.8 }
+    { name: "Cơ sở Dữ liệu", credit: 3, score: 8.2 },
+    { name: "Mạng Máy Tính", credit: 3, score: 8.3 },
+    { name: "Tiếng Anh Chuyên Ngành", credit: 2, score: 8.8 }
   ];
   defaults.forEach(s => addSubjectRow(s.name, s.credit, s.score));
   toast("📋 Đã điền mẫu 5 môn học — bạn có thể chỉnh sửa tự do");
