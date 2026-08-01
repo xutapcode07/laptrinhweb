@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="vi" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hệ Thống Quản Lý Sinh Viên - Phân Quyền Theo Lớp</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Chart.js for analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="qlsv.css">
+
+  <!-- Application Script -->
+  <script src="qlsv.js" defer></script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300">
+
+  <!-- LOGIN & REGISTER MODAL SCREEN -->
+  <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center p-4 transition-opacity duration-300 overflow-hidden">
+
+    <!-- Animated IT-themed background: circuit grid + gradient mesh -->
+    <div class="absolute inset-0 login-tech-bg"></div>
+    <div class="absolute inset-0 login-circuit-overlay pointer-events-none"></div>
+    <div class="absolute inset-0 bg-slate-950/55 backdrop-blur-[2px] pointer-events-none"></div>
+
+    <!-- Floating code / binary glyphs -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden hidden sm:block select-none">
+      <span class="tech-float delay-1 text-2xl" style="top:8%; left:10%;">&lt;/&gt;</span>
+      <span class="tech-float delay-2 text-sm" style="top:18%; left:82%;">01001</span>
+      <span class="tech-float delay-3 text-xl" style="top:72%; left:6%;">{ }</span>
+      <span class="tech-float delay-4 text-lg" style="top:80%; left:85%;">SQL</span>
+      <span class="tech-float delay-5 text-sm" style="top:45%; left:92%;">10110</span>
+      <span class="tech-float delay-2 text-xl" style="top:50%; left:3%;">⌘</span>
+      <span class="tech-float delay-1 text-sm" style="top:12%; left:48%;">git commit</span>
+      <span class="tech-float delay-3 text-lg" style="top:88%; left:45%;">λ</span>
+    </div>
+
+    <!-- Login Card -->
+    <div class="relative z-10 w-full max-w-4xl grid grid-cols-1 lg:grid-cols-5 rounded-2xl overflow-hidden shadow-2xl border border-slate-700/60 animate-fade-in-up">
+
+      <!-- LEFT: Branding / IT showcase panel (desktop only) -->
+      <div class="hidden lg:flex lg:col-span-2 flex-col justify-between p-8 bg-gradient-to-br from-indigo-700 via-indigo-900 to-slate-950 relative overflow-hidden">
+        <div class="absolute inset-0 login-circuit-overlay opacity-40 pointer-events-none"></div>
+        <div class="absolute -bottom-20 -left-20 w-56 h-56 bg-blue-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="relative">
+          <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center text-2xl logo-pulse">
+            🎓
+          </div>
+          <h1 class="text-white text-xl font-extrabold mt-5 leading-tight">EduManage <span class="text-indigo-300">CNTT</span></h1>
+          <p class="text-indigo-200/80 text-xs mt-2 leading-relaxed">
+            Hệ thống quản lý sinh viên đa lớp học, xây dựng dành riêng cho ngành Công nghệ thông tin — nơi dữ liệu, điểm số và lớp học được số hóa trọn vẹn.
+          </p>
+        </div>
+
+        <div class="relative space-y-2.5 mt-8">
+          <div class="feature-chip flex items-center gap-2.5 text-xs text-indigo-100 bg-white/5 rounded-lg px-3 py-2 border border-white/10">
+            <span class="text-base">💻</span> Quản lý nhiều lớp ICT cùng lúc
+          </div>
+          <div class="feature-chip flex items-center gap-2.5 text-xs text-indigo-100 bg-white/5 rounded-lg px-3 py-2 border border-white/10">
+            <span class="text-base">📊</span> Thống kê điểm số &amp; GPA trực quan
+          </div>
+          <div class="feature-chip flex items-center gap-2.5 text-xs text-indigo-100 bg-white/5 rounded-lg px-3 py-2 border border-white/10">
+            <span class="text-base">🔐</span> Phân quyền rõ ràng: Admin &amp; Sinh viên
+          </div>
+        </div>
+
+        <p class="relative text-[10px] text-indigo-300/60 mt-8">© 2026 Khoa Công Nghệ Thông Tin</p>
+      </div>
+
+      <!-- RIGHT: Form panel -->
+      <div class="col-span-1 lg:col-span-3 bg-slate-800 p-6 sm:p-8 text-white relative overflow-hidden max-h-[92vh] overflow-y-auto custom-scrollbar">
+        <!-- Decorative Gradient Blob -->
+        <div class="absolute -top-16 -right-16 w-32 h-32 bg-indigo-500/30 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-16 -left-16 w-32 h-32 bg-blue-500/20 rounded-full blur-2xl pointer-events-none"></div>
+
+        <!-- FORM DANG NHAP -->
+        <div id="loginFormContainer" class="relative">
+          <div class="text-center mb-6 lg:hidden">
+            <div class="w-11 h-11 mx-auto rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-xl mb-2">🎓</div>
+          </div>
+          <div class="text-center mb-6">
+            <h2 class="text-2xl font-bold tracking-tight text-white">Đăng Nhập Hệ Thống</h2>
+            <p class="text-slate-400 text-xs mt-1">Hệ thống quản lý sinh viên đa lớp học</p>
+          </div>
+
+          <div id="loginError" class="hidden bg-red-500/20 border border-red-500/50 text-red-300 text-xs p-3 rounded-lg mb-4 text-center"></div>
+
+          <form onsubmit="event.preventDefault(); tryLogin();" class="space-y-4">
+            <div class="relative">
+              <input type="text" id="loginUser" required placeholder=" " autocomplete="username"
+                     class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition peer">
+              <label for="loginUser" class="absolute left-3.5 top-2.5 text-xs text-slate-400 pointer-events-none transition-all duration-200 origin-left peer-focus:-translate-y-4 peer-focus:scale-85 peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-85">
+                Tên đăng nhập (Username)
+              </label>
+            </div>
+
+            <div class="relative">
+              <input type="password" id="loginPass" required placeholder=" " autocomplete="current-password"
+                     class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition peer pr-10">
+              <label for="loginPass" class="absolute left-3.5 top-2.5 text-xs text-slate-400 pointer-events-none transition-all duration-200 origin-left peer-focus:-translate-y-4 peer-focus:scale-85 peer-focus:text-indigo-400 peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-85">
+                Mật khẩu (Password)
+              </label>
+              <button type="button" onclick="togglePasswordVisibility('loginPass', this)" class="absolute right-3 top-2.5 text-slate-400 hover:text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-between text-xs">
+              <label class="flex items-center gap-1.5 text-slate-400 cursor-pointer select-none">
+                <input type="checkbox" id="loginRemember" class="rounded border-slate-600 bg-slate-900 text-indigo-500 focus:ring-indigo-500 focus:ring-offset-0">
+                Ghi nhớ đăng nhập
+              </label>
+              <a href="#" onclick="event.preventDefault(); toast('ℹ️ Vui lòng liên hệ quản trị viên để đặt lại mật khẩu');" class="text-indigo-400 hover:underline">Quên mật khẩu?</a>
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-lg shadow-lg shadow-indigo-600/30 transition duration-200 active:scale-98">
+              Đăng Nhập
+            </button>
+          </form>
+
+          <div class="mt-6 text-center text-xs text-slate-400">
+            Chưa có tài khoản? <a href="#" onclick="switchForm('register')" class="text-indigo-400 hover:underline font-semibold">Tạo tài khoản sinh viên</a>
+          </div>
+        </div>
+
+        <!-- FORM DANG KY -->
+        <div id="registerFormContainer" class="hidden relative">
+          <div class="text-center mb-4">
+            <h2 class="text-2xl font-bold tracking-tight text-white">Tạo Tài Khoản</h2>
+            <p class="text-slate-400 text-xs mt-1">Đăng ký tài khoản dành cho Sinh viên</p>
+          </div>
+
+          <div id="registerError" class="hidden bg-red-500/20 border border-red-500/50 text-red-300 text-xs p-2.5 rounded-lg mb-3 text-center"></div>
+
+          <form onsubmit="event.preventDefault(); registerAccount();" class="space-y-3">
+            <div>
+              <label class="block text-xs text-slate-300 mb-1">Họ và tên</label>
+              <input type="text" id="regHoTen" required placeholder="VD: Nguyễn Văn An" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs text-slate-300 mb-1">Mã sinh viên</label>
+                <input type="text" id="regMaSV" required placeholder="25102090xxx" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-300 mb-1">Lớp học thuộc về</label>
+                <select id="regLop" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                  <option value="ICT1.01">ICT1.01</option>
+                  <option value="ICT1.02">ICT1.02</option>
+                  <option value="ICT1.03">ICT1.03</option>
+                  <option value="ICT1.04">ICT1.04</option>
+                  <option value="ICT1.05" selected>ICT1.05</option>
+                  <option value="ICT1.06">ICT1.06</option>
+                  <option value="ICT1.07">ICT1.07</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs text-slate-300 mb-1">Ngày sinh</label>
+                <input type="date" id="regDob" required class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-300 mb-1">Tên đăng nhập</label>
+                <input type="text" id="regUser" required placeholder="username" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="block text-xs text-slate-300 mb-1">Mật khẩu</label>
+                <input type="password" id="regPass" required placeholder="******" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-300 mb-1">Nhập lại mật khẩu</label>
+                <input type="password" id="regPass2" required placeholder="******" class="w-full bg-slate-900/80 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+              </div>
+            </div>
+
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-lg shadow-lg transition mt-2">
+              Đăng Ký Tài Khoản
+            </button>
+          </form>
+
+          <div class="mt-4 text-center text-xs text-slate-400">
+            Đã có tài khoản? <a href="#" onclick="switchForm('login')" class="text-indigo-400 hover:underline font-semibold">Đăng nhập ngay</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD APP -->
+  <div id="dashboard" class="hidden min-h-screen pb-12">
+    <!-- Top Header Navigation -->
+    <header class="no-print sticky top-0 z-40 bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-700/60 shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        
+        <!-- App Title & User Info -->
+        <div class="flex items-center gap-3">
+          <div id="userAvatar" class="w-10 h-10 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-base shadow-md shadow-indigo-500/20">
+            A
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 id="userNameDisplay" class="font-bold text-slate-900 dark:text-white text-sm sm:text-base leading-tight">Quản trị viên</h2>
+              <span id="roleBadge" class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                Admin
+              </span>
+            </div>
+            <p id="userRoleDetail" class="text-xs text-slate-500 dark:text-slate-400">Quyền hạn: Xem & Quản lý tất cả lớp học</p>
+          </div>
+        </div>
+
+        <!-- Class Selector & Quick Actions -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Class Selector for Admin (Disabled/Locked for Students) -->
+          <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-700/60 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-600">
+            <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5m0 0h4m-4 0V11m0 0h4m-4 0H9"/></svg>
+            <label for="classSelectHeader" class="text-xs font-semibold text-slate-600 dark:text-slate-300 hidden sm:inline">Lớp:</label>
+            <select id="classSelectHeader" onchange="onClassChange(this.value)" class="bg-transparent text-xs font-bold text-indigo-600 dark:text-indigo-400 focus:outline-none cursor-pointer">
+              <option value="ALL">🌐 Tất cả các lớp (Admin)</option>
+              <option value="ICT1.01">Lớp ICT1.01</option>
+              <option value="ICT1.02">Lớp ICT1.02</option>
+              <option value="ICT1.03">Lớp ICT1.03</option>
+              <option value="ICT1.04">Lớp ICT1.04</option>
+              <option value="ICT1.05">Lớp ICT1.05</option>
+              <option value="ICT1.06">Lớp ICT1.06</option>
+              <option value="ICT1.07">Lớp ICT1.07</option>
+            </select>
+          </div>
+
+          <!-- Utility Icons -->
+          <button onclick="toggleTheme()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition" title="Đổi giao diện sáng/tối">
+            <span id="themeIcon">🌙</span>
+          </button>
+          <button onclick="exportCSV()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition hidden sm:inline-flex" title="Xuất file CSV">
+            📥
+          </button>
+          <button onclick="window.print()" class="p-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition hidden sm:inline-flex" title="In danh sách">
+            🖨️
+          </button>
+          <button onclick="logout()" class="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition font-medium text-xs flex items-center gap-1" title="Đăng xuất">
+            🚪 <span class="hidden sm:inline">Thoát</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+      
+      <!-- Student Banner Notice (If Logged in as Student) -->
+      <div id="studentNoticeBanner" class="hidden mb-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 border border-indigo-500/20 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="p-3 bg-indigo-600 text-white rounded-xl shadow-md">
+            🎓
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 dark:text-white text-base">Chào mừng sinh viên: <span id="studentBannerName" class="text-indigo-600 dark:text-indigo-400">---</span></h3>
+            <p class="text-xs text-slate-600 dark:text-slate-300">
+              Bạn đang làm việc ở chế độ sinh viên. Bạn chỉ có thể xem dữ liệu riêng thuộc <strong id="studentBannerClass" class="text-indigo-500">Lớp ICT1.05</strong>.
+            </p>
+          </div>
+        </div>
+        <button onclick="viewMyTranscript()" class="whitespace-nowrap px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl shadow-md transition flex items-center gap-1.5">
+          📊 Xem Bảng Điểm Cá Nhân
+        </button>
+      </div>
+
+      <!-- Page Header Banner -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">Danh Sách Sinh Viên</h1>
+            <span id="currentClassPill" class="px-2.5 py-1 bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 font-extrabold text-xs rounded-full">
+              Lớp: Tất cả
+            </span>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Năm học: 2025 – 2026 &bull; Trường Công nghệ Thông tin
+          </p>
+        </div>
+
+        <!-- Admin Action Buttons -->
+        <div id="adminActionGroup" class="flex items-center gap-2">
+          <button onclick="openAddModal()" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md shadow-indigo-600/20 transition flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Thêm Sinh Viên Mới
+          </button>
+        </div>
+      </div>
+
+      <!-- STATS OVERVIEW CARDS -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4 mb-6">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 p-4 rounded-2xl shadow-sm">
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Tổng sinh viên</p>
+          <p id="statTotal" class="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-1">0</p>
+        </div>
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 p-4 rounded-2xl shadow-sm">
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Đang học</p>
+          <p id="statActive" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">0</p>
+        </div>
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 p-4 rounded-2xl shadow-sm">
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Nghỉ phép/Tạm hoãn</p>
+          <p id="statLeave" class="text-2xl sm:text-3xl font-extrabold text-amber-600 dark:text-amber-400 mt-1">0</p>
+        </div>
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 p-4 rounded-2xl shadow-sm">
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Nam / Nữ</p>
+          <p id="statGender" class="text-2xl sm:text-3xl font-extrabold text-blue-600 dark:text-blue-400 mt-1">0 / 0</p>
+        </div>
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 p-4 rounded-2xl shadow-sm col-span-2 md:col-span-1">
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">Điểm TB Lớp</p>
+          <p id="statAvgScore" class="text-2xl sm:text-3xl font-extrabold text-purple-600 dark:text-purple-400 mt-1">0.00</p>
+        </div>
+      </div>
+
+      <!-- ANALYTICS WIDGETS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <!-- Podium Widget -->
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-1.5">
+              🏆 TOP 3 GPA CAO NHẤT
+            </h3>
+            <div id="podiumContainer" class="flex items-end justify-center gap-3 pt-4 min-h-[140px]">
+              <!-- Dynamic Podium -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Grade Chart Breakdown -->
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 rounded-2xl p-5 shadow-sm md:col-span-2 flex flex-col justify-between">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
+            📊 THỐNG KÊ PHÂN BỐ HỌC LỰC
+          </h3>
+          <div class="h-40 relative">
+            <canvas id="gradeDistributionChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTER & SEARCH TOOLBAR -->
+      <div class="no-print bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 rounded-2xl p-4 mb-6 shadow-sm flex flex-wrap gap-3 items-center justify-between">
+        
+        <!-- Search Input -->
+        <div class="relative flex-1 min-w-[240px]">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" id="searchInput" oninput="renderTable()" placeholder="Tìm theo Tên, Mã SV, Email..." class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-4 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Class Filter (Visible in Toolbar if Admin and selecting ALL) -->
+          <select id="filterClassToolbar" onchange="onClassChange(this.value)" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-xl px-3 py-2 font-medium focus:outline-none shadow-sm">
+            <option value="ALL">Tất cả các lớp</option>
+            <option value="ICT1.01">ICT1.01</option>
+            <option value="ICT1.02">ICT1.02</option>
+            <option value="ICT1.03">ICT1.03</option>
+            <option value="ICT1.04">ICT1.04</option>
+            <option value="ICT1.05">ICT1.05</option>
+            <option value="ICT1.06">ICT1.06</option>
+            <option value="ICT1.07">ICT1.07</option>
+          </select>
+
+          <select id="filterGender" onchange="renderTable()" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-xl px-3 py-2 font-medium focus:outline-none shadow-sm">
+            <option value="">Giới tính</option>
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
+          </select>
+
+          <select id="filterStatus" onchange="renderTable()" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-xl px-3 py-2 font-medium focus:outline-none shadow-sm">
+            <option value="">Trạng thái</option>
+            <option value="Đang học">Đang học</option>
+            <option value="Nghỉ phép">Nghỉ phép</option>
+            <option value="Thôi học">Thôi học</option>
+          </select>
+
+          <select id="filterRank" onchange="renderTable()" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs rounded-xl px-3 py-2 font-medium focus:outline-none shadow-sm">
+            <option value="">Học lực</option>
+            <option value="Xuất sắc">Xuất sắc</option>
+            <option value="Giỏi">Giỏi</option>
+            <option value="Khá">Khá</option>
+            <option value="Trung bình">Trung bình</option>
+            <option value="Yếu">Yếu</option>
+          </select>
+
+          <button onclick="clearFilters()" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-600 hover:text-slate-900 dark:hover:text-white px-3 py-2 font-medium rounded-xl shadow-sm">
+            ✕ Xoá lọc
+          </button>
+        </div>
+      </div>
+
+      <!-- DATA TABLE -->
+      <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700/60 rounded-2xl shadow-sm overflow-hidden">
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="bg-slate-50/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 font-medium text-xs">
+                <th class="py-3.5 px-4 w-10 text-center whitespace-nowrap">#</th>
+                <th class="py-3.5 px-4 cursor-pointer hover:text-indigo-500 whitespace-nowrap" onclick="setSort('code')">Mã SV</th>
+                <th class="py-3.5 px-4 cursor-pointer hover:text-indigo-500 whitespace-nowrap min-w-[200px]" onclick="setSort('name')">Họ và tên</th>
+                <th class="py-3.5 px-4 whitespace-nowrap">Lớp</th>
+                <th class="py-3.5 px-4 hidden md:table-cell cursor-pointer hover:text-indigo-500 whitespace-nowrap" onclick="setSort('dob')">Ngày sinh</th>
+                <th class="py-3.5 px-4 whitespace-nowrap">Giới tính</th>
+                <th class="py-3.5 px-4 hidden lg:table-cell whitespace-nowrap">Email</th>
+                <th class="py-3.5 px-4 text-center cursor-pointer hover:text-indigo-500 whitespace-nowrap" onclick="setSort('score')">Điểm TB</th>
+                <th class="py-3.5 px-4 text-center cursor-pointer hover:text-indigo-500 whitespace-nowrap" onclick="setSort('gpa')">GPA</th>
+                <th class="py-3.5 px-4 text-center whitespace-nowrap">Học lực</th>
+                <th class="py-3.5 px-4 text-center whitespace-nowrap">Trạng thái</th>
+                <th class="py-3.5 px-4 text-center w-24 whitespace-nowrap">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+              <!-- Dynamic Rows -->
+            </tbody>
+          </table>
+        </div>
+        <div id="tableCounterInfo" class="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 border-t border-slate-200 dark:border-slate-700 text-xs text-slate-500 text-right">
+          Hiển thị 0 sinh viên
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: ADD / EDIT STUDENT -->
+  <div id="modalForm" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden transform transition-all">
+      <div class="bg-indigo-600 px-6 py-4 text-white flex items-center justify-between">
+        <h3 id="modalFormTitle" class="font-bold text-base">Thêm Sinh Viên Mới</h3>
+        <button onclick="closeModal('modalForm')" class="text-indigo-200 hover:text-white text-xl font-bold">✕</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); saveStudent();" class="p-6 space-y-4">
+        <input type="hidden" id="editStudentId">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Mã Sinh Viên</label>
+            <input type="text" id="fCode" required placeholder="25102090xxxx" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Lớp Học</label>
+            <select id="fClass" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500">
+              <option value="ICT1.01">ICT1.01</option>
+              <option value="ICT1.02">ICT1.02</option>
+              <option value="ICT1.03">ICT1.03</option>
+              <option value="ICT1.04">ICT1.04</option>
+              <option value="ICT1.05">ICT1.05</option>
+              <option value="ICT1.06">ICT1.06</option>
+              <option value="ICT1.07">ICT1.07</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Họ & Đệm</label>
+            <input type="text" id="fLname" required placeholder="Nguyễn Văn" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tên</label>
+            <input type="text" id="fFname" required placeholder="An" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Ngày sinh</label>
+            <input type="date" id="fDob" required class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Giới tính</label>
+            <select id="fGender" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500">
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Email Trường</label>
+          <input type="email" id="fEmail" required placeholder="msv@st.phenikaa-uni.edu.vn" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500">
+        </div>
+
+        <!-- BẢNG ĐIỂM CÁC MÔN HỌC -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300">Bảng điểm các môn học</label>
+            <div class="flex items-center gap-3">
+              <button type="button" onclick="fillDefaultSubjects()" class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline">📋 Dùng mẫu 5 môn ICT</button>
+              <button type="button" onclick="addSubjectRow()" class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline">+ Thêm môn học</button>
+            </div>
+          </div>
+
+          <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <div class="grid grid-cols-12 gap-1.5 bg-slate-100 dark:bg-slate-900 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase px-3 py-2">
+              <div class="col-span-6">Tên môn học</div>
+              <div class="col-span-2 text-center">Tín chỉ</div>
+              <div class="col-span-3 text-center">Điểm (10)</div>
+              <div class="col-span-1"></div>
+            </div>
+            <div id="subjectsContainer" class="divide-y divide-slate-100 dark:divide-slate-700/60 max-h-40 overflow-y-auto custom-scrollbar bg-white dark:bg-slate-800">
+              <!-- Các dòng môn học được JS chèn vào đây -->
+            </div>
+          </div>
+          <p id="subjectsEmptyHint" class="hidden text-[10px] text-amber-600 dark:text-amber-400 mt-1.5">⚠️ Chưa có môn học nào — hãy bấm "Thêm môn học" hoặc dùng mẫu có sẵn.</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Điểm TB (10) <span class="text-slate-400 font-normal normal-case">· tự động</span></label>
+            <input type="number" id="fScore" readonly tabindex="-1" step="0.01" min="0" max="10" placeholder="—" class="w-full bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-bold text-indigo-600 dark:text-indigo-400 cursor-not-allowed">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">GPA (4.0) <span class="text-slate-400 font-normal normal-case">· tự động</span></label>
+            <input type="number" id="fGpa" readonly tabindex="-1" step="0.01" min="0" max="4" placeholder="—" class="w-full bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-bold text-purple-600 dark:text-purple-400 cursor-not-allowed">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Trạng thái</label>
+            <select id="fStatus" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500">
+              <option value="Đang học">Đang học</option>
+              <option value="Nghỉ phép">Nghỉ phép</option>
+              <option value="Thôi học">Thôi học</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="pt-4 flex items-center justify-end gap-2 border-t border-slate-200 dark:border-slate-700">
+          <button type="button" onclick="closeModal('modalForm')" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 text-slate-800 dark:text-slate-200 text-xs font-semibold rounded-lg">Hủy</button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg shadow-md">Lưu sinh viên</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: TRANSCRIPT & DETAIL VIEW -->
+  <div id="modalTranscript" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden">
+      <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4 text-white flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-base flex items-center gap-2">
+            📜 Bảng Điểm Chi Tiết
+          </h3>
+          <p id="tStudentSubTitle" class="text-xs text-indigo-100">MSSV: --- | Lớp: ---</p>
+        </div>
+        <button onclick="closeModal('modalTranscript')" class="text-indigo-200 hover:text-white text-xl font-bold">✕</button>
+      </div>
+
+      <div class="p-6 space-y-5 max-h-[80vh] overflow-y-auto custom-scrollbar">
+        <!-- Student Header Info -->
+        <div class="bg-slate-50 dark:bg-slate-900/60 p-4 rounded-xl flex items-center gap-4">
+          <div id="tAvatar" class="w-12 h-12 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-lg">
+            A
+          </div>
+          <div class="flex-1">
+            <h4 id="tStudentName" class="font-extrabold text-slate-900 dark:text-white text-base">---</h4>
+            <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 dark:text-slate-400 mt-1">
+              <span>Mã SV: <strong id="tCode" class="text-indigo-600 dark:text-indigo-400">---</strong></span>
+              <span>Lớp: <strong id="tClass" class="text-slate-800 dark:text-slate-200">---</strong></span>
+              <span>Xếp loại: <strong id="tRank" class="text-emerald-600 dark:text-emerald-400">---</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subjects Breakdown Table -->
+        <div>
+          <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Kết quả các môn học trong học kỳ</h5>
+          <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+            <table class="w-full text-xs text-left">
+              <thead class="bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-400 font-bold border-b border-slate-200 dark:border-slate-700">
+                <tr>
+                  <th class="py-2.5 px-3">Tên môn học</th>
+                  <th class="py-2.5 px-3 text-center">Tín chỉ</th>
+                  <th class="py-2.5 px-3 text-center">Điểm (Thang 10)</th>
+                  <th class="py-2.5 px-3 text-center">Điểm Chữ</th>
+                </tr>
+              </thead>
+              <tbody id="tSubjectsBody" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                <!-- Subject Rows Dynamic -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Overall Score Summary -->
+        <div class="grid grid-cols-2 gap-3 bg-indigo-50 dark:bg-indigo-950/40 p-3.5 rounded-xl border border-indigo-100 dark:border-indigo-900/40">
+          <div class="text-center">
+            <span class="block text-xs text-slate-500 dark:text-slate-400">Điểm Trung Bình Tích Lũy</span>
+            <span id="tOverallScore" class="text-xl font-black text-indigo-600 dark:text-indigo-400">0.00</span>
+          </div>
+          <div class="text-center">
+            <span class="block text-xs text-slate-500 dark:text-slate-400">GPA Quy Đổi Thang 4</span>
+            <span id="tOverallGpa" class="text-xl font-black text-purple-600 dark:text-purple-400">0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-50 dark:bg-slate-900/60 px-6 py-3 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+        <button onclick="closeModal('modalTranscript')" class="px-4 py-2 bg-slate-800 text-white text-xs font-semibold rounded-lg">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: DELETE CONFIRMATION -->
+  <div id="modalDel" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-sm text-center shadow-2xl">
+      <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/40 text-red-600 text-2xl flex items-center justify-center mx-auto mb-3">
+        ⚠️
+      </div>
+      <h3 class="font-bold text-slate-900 dark:text-white text-base">Xác nhận xóa sinh viên</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        Bạn có chắc chắn muốn xóa sinh viên <strong id="delStudentName" class="text-slate-800 dark:text-slate-200">---</strong>?
+      </p>
+      <div class="mt-5 flex items-center justify-center gap-2">
+        <button onclick="closeModal('modalDel')" class="px-4 py-2 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold rounded-lg">Hủy</button>
+        <button onclick="confirmDelete()" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-semibold rounded-lg shadow-md">Xóa vĩnh viễn</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs px-5 py-3 rounded-xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none translate-y-4 flex items-center gap-2 border border-slate-700">
+    <span id="toastMsg">Thông báo</span>
+  </div>
+
+</body>
+</html>
