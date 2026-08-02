@@ -133,3 +133,37 @@ body {
     border: 1px solid #ccc !important;
   }
 }
+/* =========================================================
+   USER MENU DROPDOWN (hover on name/avatar in header)
+========================================================= */
+.user-menu-group .user-dropdown-menu {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  pointer-events: none;
+}
+
+.user-menu-group:hover .user-dropdown-menu,
+.user-menu-group:focus-within .user-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.user-menu-group:hover .user-menu-caret,
+.user-menu-group:focus-within .user-menu-caret {
+  transform: rotate(180deg);
+}
+
+/* Small invisible bridge so the menu doesn't close when moving the mouse
+   from the name down into the dropdown */
+.user-menu-group .user-dropdown-menu::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
