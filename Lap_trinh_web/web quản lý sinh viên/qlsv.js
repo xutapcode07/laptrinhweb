@@ -42,7 +42,7 @@ function generateMockStudents() {
     { id: "ICT1.04", codePrefix: "251020904", count: 66 },
     { id: "ICT1.05", codePrefix: "251020905", count: 83 },
     { id: "ICT1.06", codePrefix: "251020906", count: 60 },
-    { id: "ICT1.07", codePrefix: "251020907", count: 55 }
+    { id: "ICT1.07", codePrefix: "251020907", count: 76 }
   ];
 
   const lnames = ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Vũ", "Võ", "Đặng", "Bùi", "Đỗ", "Hồ", "Dương", "Đàm", "Cao", "Lý", "Đinh", "Trịnh"];
@@ -141,10 +141,110 @@ function generateMockStudents() {
     {code:"251020905956", lname:"Bùi Anh", fname:"Vũ", dob:"2007-06-12", gender:"Nam", score:8.05, gpa:3.22, status:"Đang học"}
   ];
 
+  // Real complete student roster for ICT1.07 transcribed directly from class list photos.
+  // Điểm TB/GPA thật chưa được nhà trường công bố tại thời điểm nhập liệu (ghi chú "GPA chưa lên" / "*"
+  // trong bảng gốc) nên điểm số dưới đây là điểm minh hoạ do hệ thống tạo — Admin có thể sửa lại khi có điểm thật.
+  const presetICT107 = [
+    {code:"251020911944", lname:"Lê Hoàng", fname:"Anh", dob:"2006-12-29", gender:"Nam", score:9.26, gpa:3.66, status:"Đang học"},
+    {code:"251020912515", lname:"Nguyễn Hữu Hồng", fname:"Anh", dob:"2007-04-12", gender:"Nam", score:7.21, gpa:2.99, status:"Đang học"},
+    {code:"251020912029", lname:"Nguyễn Việt", fname:"Anh", dob:"2006-04-10", gender:"Nam", score:8.63, gpa:3.56, status:"Đang học"},
+    {code:"251020911117", lname:"Phạm Tuấn", fname:"Anh", dob:"2007-11-18", gender:"Nam", score:7.83, gpa:3.07, status:"Đang học"},
+    {code:"251020911059", lname:"Trần Văn Đức", fname:"Anh", dob:"2007-06-18", gender:"Nam", score:9.25, gpa:3.57, status:"Đang học"},
+    {code:"251020912331", lname:"Vũ Tuấn", fname:"Anh", dob:"2007-10-22", gender:"Nam", score:7.72, gpa:3.09, status:"Đang học"},
+    {code:"251020911757", lname:"Dương Gia", fname:"Bảo", dob:"2007-03-28", gender:"Nam", score:9.42, gpa:3.85, status:"Đang học"},
+    {code:"251020911164", lname:"Lê Quốc", fname:"Chiêu", dob:"2007-11-07", gender:"Nam", score:8.66, gpa:3.42, status:"Đang học"},
+    {code:"251020911636", lname:"Nguyễn Ngọc", fname:"Chính", dob:"2007-12-20", gender:"Nam", score:7.89, gpa:3.12, status:"Đang học"},
+    {code:"251020911443", lname:"Lương Đăng Thành", fname:"Công", dob:"2007-01-01", gender:"Nam", score:6.45, gpa:2.46, status:"Đang học"},
+    {code:"251020911394", lname:"Nguyễn Tất", fname:"Cương", dob:"2007-09-07", gender:"Nam", score:6.67, gpa:2.81, status:"Đang học"},
+    {code:"251020911132", lname:"Dương Việt", fname:"Dũng", dob:"2007-09-15", gender:"Nam", score:7.39, gpa:3.06, status:"Đang học"},
+    {code:"251020911342", lname:"Nguyễn Tiến", fname:"Dũng", dob:"2006-01-12", gender:"Nam", score:8.56, gpa:3.32, status:"Đang học"},
+    {code:"251020911560", lname:"Trần Minh Mạnh", fname:"Đạt", dob:"2007-03-30", gender:"Nam", score:6.80, gpa:2.82, status:"Đang học"},
+    {code:"251020912201", lname:"Vũ Huy", fname:"Đạt", dob:"2007-02-25", gender:"Nam", score:7.44, gpa:3.08, status:"Đang học"},
+    {code:"251020912161", lname:"Trần Minh", fname:"Đăng", dob:"2007-11-05", gender:"Nam", score:8.80, gpa:3.56, status:"Đang học"},
+    {code:"251020912284", lname:"Lê Anh", fname:"Đức", dob:"2005-03-01", gender:"Nam", score:7.72, gpa:2.97, status:"Đang học"},
+    {code:"251020912196", lname:"Nguyễn Viết", fname:"Đức", dob:"2005-05-12", gender:"Nam", score:8.01, gpa:3.07, status:"Đang học"},
+    {code:"251020912262", lname:"Trần Quốc Đại", fname:"Hiệp", dob:"2006-10-01", gender:"Nam", score:6.44, gpa:2.60, status:"Đang học"},
+    {code:"251020911595", lname:"Lê Minh", fname:"Hiếu", dob:"2007-08-12", gender:"Nam", score:9.14, gpa:3.76, status:"Đang học"},
+    {code:"251020911183", lname:"Phạm Minh", fname:"Hiếu", dob:"2007-11-03", gender:"Nam", score:7.72, gpa:3.10, status:"Đang học"},
+    {code:"251020911419", lname:"Phùng Văn", fname:"Hiếu", dob:"2007-07-28", gender:"Nam", score:6.87, gpa:2.88, status:"Đang học"},
+    {code:"251020912372", lname:"La Diệu", fname:"Hoa", dob:"2007-01-18", gender:"Nữ", score:4.34, gpa:1.79, status:"Thôi học"},
+    {code:"251020911504", lname:"Bùi Xuân", fname:"Hoà", dob:"2007-06-30", gender:"Nam", score:7.63, gpa:3.16, status:"Đang học"},
+    {code:"251020911464", lname:"Nguyễn Hữu", fname:"Hoàn", dob:"2007-08-11", gender:"Nam", score:7.62, gpa:3.13, status:"Đang học"},
+    {code:"251020911947", lname:"Nguyễn Huy", fname:"Hoàng", dob:"2007-03-03", gender:"Nam", score:9.51, gpa:3.76, status:"Đang học"},
+    {code:"251020911623", lname:"Nguyễn Thị Kim", fname:"Huệ", dob:"2007-01-16", gender:"Nữ", score:7.73, gpa:3.08, status:"Đang học"},
+    {code:"251020911754", lname:"Bùi Hữu", fname:"Hùng", dob:"2007-09-02", gender:"Nam", score:7.63, gpa:2.94, status:"Đang học"},
+    {code:"251020911978", lname:"Đinh Văn", fname:"Huy", dob:"2007-01-16", gender:"Nam", score:8.71, gpa:3.63, status:"Đang học"},
+    {code:"251020911813", lname:"Nguyễn Hữu", fname:"Huy", dob:"2007-07-20", gender:"Nam", score:8.92, gpa:3.65, status:"Đang học"},
+    {code:"251020912553", lname:"Hà Kim", fname:"Huyền", dob:"2007-10-27", gender:"Nữ", score:8.76, gpa:3.56, status:"Đang học"},
+    {code:"251020912100", lname:"Lê Ngọc Nam", fname:"Khánh", dob:"2007-06-10", gender:"Nam", score:7.37, gpa:2.94, status:"Đang học"},
+    {code:"251020911087", lname:"Phạm Duy", fname:"Khánh", dob:"2007-09-01", gender:"Nam", score:7.14, gpa:2.80, status:"Đang học"},
+    {code:"251020911456", lname:"Nguyễn Gia", fname:"Khiêm", dob:"2007-10-12", gender:"Nam", score:9.35, gpa:3.87, status:"Đang học"},
+    {code:"251020911909", lname:"Nguyễn Hữu", fname:"Khôi", dob:"2007-03-03", gender:"Nam", score:9.23, gpa:3.78, status:"Đang học"},
+    {code:"251020911060", lname:"Nguyễn Minh", fname:"Khôi", dob:"2007-10-20", gender:"Nam", score:9.38, gpa:3.80, status:"Đang học"},
+    {code:"251020911988", lname:"Nguyễn Trọng", fname:"Khôi", dob:"2007-09-02", gender:"Nam", score:7.49, gpa:2.92, status:"Đang học"},
+    {code:"251020911384", lname:"Phùng Trung", fname:"Kiên", dob:"2007-11-26", gender:"Nam", score:9.56, gpa:3.80, status:"Đang học"},
+    {code:"251020911313", lname:"Vũ Ngọc", fname:"Lan", dob:"2007-07-22", gender:"Nữ", score:9.22, gpa:3.83, status:"Đang học"},
+    {code:"251020912490", lname:"Vương Gia", fname:"Lợi", dob:"2007-03-21", gender:"Nam", score:9.37, gpa:3.60, status:"Đang học"},
+    {code:"251020912087", lname:"Nguyễn Triều", fname:"Minh", dob:"2007-05-05", gender:"Nam", score:8.18, gpa:3.19, status:"Đang học"},
+    {code:"251020911982", lname:"Nguyễn Tuấn", fname:"Minh", dob:"2007-08-31", gender:"Nam", score:6.21, gpa:2.60, status:"Đang học"},
+    {code:"251020912352", lname:"Nguyễn Hải", fname:"Nam", dob:"2007-09-30", gender:"Nam", score:8.98, gpa:3.68, status:"Đang học"},
+    {code:"251020911077", lname:"Mai Văn", fname:"Nhật", dob:"2007-11-07", gender:"Nam", score:8.20, gpa:3.25, status:"Đang học"},
+    {code:"251020911996", lname:"Mai Xuân", fname:"Phát", dob:"2007-11-08", gender:"Nam", score:6.56, gpa:2.75, status:"Đang học"},
+    {code:"251020911354", lname:"Trần Chấn", fname:"Phong", dob:"2007-08-14", gender:"Nam", score:9.43, gpa:3.65, status:"Đang học"},
+    {code:"251020911588", lname:"Trần Tuấn", fname:"Phong", dob:"2007-10-04", gender:"Nam", score:8.53, gpa:3.37, status:"Đang học"},
+    {code:"251020912050", lname:"Đỗ Hoàng", fname:"Phúc", dob:"2007-06-17", gender:"Nam", score:7.31, gpa:2.78, status:"Đang học"},
+    {code:"251020912454", lname:"Lê Thị", fname:"Phương", dob:"2007-06-20", gender:"Nữ", score:7.44, gpa:2.83, status:"Đang học"},
+    {code:"251020911416", lname:"Nguyễn Bồng", fname:"Phương", dob:"2007-07-18", gender:"Nam", score:8.65, gpa:3.43, status:"Đang học"},
+    {code:"251020912214", lname:"Thiều Xuân", fname:"Quỳnh", dob:"2007-11-14", gender:"Nam", score:7.06, gpa:2.89, status:"Đang học"},
+    {code:"251020911565", lname:"Vũ Minh", fname:"Sơn", dob:"2007-03-23", gender:"Nam", score:6.98, gpa:2.66, status:"Đang học"},
+    {code:"251020911093", lname:"Nguyễn Văn", fname:"Tài", dob:"2007-12-14", gender:"Nam", score:7.60, gpa:2.98, status:"Đang học"},
+    {code:"251020911842", lname:"Vũ Đức", fname:"Tài", dob:"2007-11-04", gender:"Nam", score:8.93, gpa:3.70, status:"Đang học"},
+    {code:"251020912156", lname:"Đàm Việt", fname:"Thành", dob:"2007-10-28", gender:"Nam", score:7.29, gpa:2.80, status:"Đang học"},
+    {code:"251020911319", lname:"Lù Vạn", fname:"Thành", dob:"2007-06-13", gender:"Nam", score:9.49, gpa:3.68, status:"Đang học"},
+    {code:"251020911794", lname:"Lê Văn", fname:"Thắng", dob:"2007-08-05", gender:"Nam", score:6.20, gpa:2.52, status:"Đang học"},
+    {code:"251020911635", lname:"Trần Đức", fname:"Thịnh", dob:"2007-01-16", gender:"Nam", score:9.59, gpa:3.98, status:"Đang học"},
+    {code:"251020912367", lname:"Vũ Đức", fname:"Thịnh", dob:"2007-10-29", gender:"Nam", score:8.75, gpa:3.63, status:"Đang học"},
+    {code:"251020911638", lname:"Trịnh Chí", fname:"Thức", dob:"2007-12-17", gender:"Nam", score:9.56, gpa:3.85, status:"Đang học"},
+    {code:"251020912233", lname:"Đỗ Mạnh", fname:"Tiến", dob:"2007-04-21", gender:"Nam", score:9.00, gpa:3.54, status:"Đang học"},
+    {code:"251020910985", lname:"Lưu Quốc", fname:"Tiến", dob:"2007-09-21", gender:"Nam", score:6.78, gpa:2.64, status:"Đang học"},
+    {code:"251020911911", lname:"Vương Đắc", fname:"Tiến", dob:"2007-06-09", gender:"Nam", score:9.46, gpa:3.83, status:"Đang học"},
+    {code:"251020912375", lname:"Nguyễn Như", fname:"Tình", dob:"2006-03-18", gender:"Nữ", score:8.84, gpa:3.68, status:"Đang học"},
+    {code:"251020912137", lname:"Đặng Việt", fname:"Trọng", dob:"2007-11-23", gender:"Nam", score:8.30, gpa:3.24, status:"Đang học"},
+    {code:"251020911810", lname:"Đinh Phú", fname:"Trọng", dob:"2007-06-18", gender:"Nam", score:7.63, gpa:2.93, status:"Đang học"},
+    {code:"251020910984", lname:"Ngô Đức", fname:"Trung", dob:"2007-11-19", gender:"Nam", score:6.03, gpa:2.28, status:"Đang học"},
+    {code:"251020912189", lname:"Nguyễn Mạnh", fname:"Trường", dob:"2007-02-05", gender:"Nam", score:6.22, gpa:2.60, status:"Đang học"},
+    {code:"251020911141", lname:"Bùi Vĩnh", fname:"Tú", dob:"2007-02-15", gender:"Nam", score:6.01, gpa:2.27, status:"Đang học"},
+    {code:"251020911569", lname:"Phạm Anh", fname:"Tú", dob:"2007-10-12", gender:"Nam", score:7.76, gpa:3.13, status:"Đang học"},
+    {code:"251020911404", lname:"Nguyễn Minh", fname:"Tường", dob:"2007-12-05", gender:"Nam", score:7.17, gpa:2.76, status:"Đang học"},
+    {code:"251020912279", lname:"Đỗ Văn", fname:"Việt", dob:"2007-06-07", gender:"Nam", score:8.33, gpa:3.30, status:"Đang học"},
+    {code:"251020911293", lname:"Phan Công", fname:"Vinh", dob:"2007-12-04", gender:"Nam", score:9.27, gpa:3.57, status:"Đang học"},
+    {code:"251020912150", lname:"Đỗ Long", fname:"Vũ", dob:"2007-07-31", gender:"Nam", score:6.68, gpa:2.58, status:"Đang học"},
+    {code:"251020911826", lname:"Nguyễn Mạnh", fname:"Vũ", dob:"2007-09-23", gender:"Nam", score:7.29, gpa:2.92, status:"Đang học"},
+    {code:"251020912303", lname:"Nguyễn Bá", fname:"Vững", dob:"2007-06-07", gender:"Nam", score:6.27, gpa:2.45, status:"Đang học"}
+  ];
+
   classesConfig.forEach(cls => {
     let presetCount = 0;
     if (cls.id === "ICT1.05") {
       presetICT105.forEach((st) => {
+        result.push({
+          id: currentId++,
+          code: st.code,
+          lname: st.lname,
+          fname: st.fname,
+          classId: cls.id,
+          dob: st.dob,
+          gender: st.gender,
+          email: `${st.code}@st.phenikaa-uni.edu.vn`,
+          score: st.score,
+          gpa: st.gpa,
+          status: st.status,
+          year: "2025-2026"
+        });
+        presetCount++;
+      });
+    } else if (cls.id === "ICT1.07") {
+      presetICT107.forEach((st) => {
         result.push({
           id: currentId++,
           code: st.code,
@@ -818,13 +918,18 @@ function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
+// Quy đổi điểm chữ sang thang điểm 4 theo đúng bảng quy đổi của trường
 function gradePoint(letter) {
   switch (letter) {
-    case 'A': return 4.0;
-    case 'B': return 3.0;
-    case 'C': return 2.0;
-    case 'D': return 1.0;
-    default:  return 0.0;
+    case 'A+': return 4.0;
+    case 'A':  return 3.7;
+    case 'B+': return 3.5;
+    case 'B':  return 3.0;
+    case 'C+': return 2.5;
+    case 'C':  return 2.0;
+    case 'D+': return 1.5;
+    case 'D':  return 1.0;
+    default:   return 0.0; // F
   }
 }
 
@@ -937,14 +1042,31 @@ function viewTranscript(studentId) {
   document.getElementById('tAvatar').textContent = st.fname.charAt(0).toUpperCase();
   document.getElementById('tCode').textContent = st.code;
   document.getElementById('tClass').textContent = st.classId || 'ICT1.05';
-  
+
+  // Dữ liệu môn học thật do Admin nhập (tự khởi tạo lần đầu nếu sinh viên chưa có bảng điểm chi tiết)
+  const subjects = getOrCreateSubjects(st);
+
+  // Tính lại Điểm TB (10) và GPA (4.0) trực tiếp từ bảng môn học đang hiển thị, theo đúng công thức
+  // bình quân gia quyền theo tín chỉ: Σ(điểm môn × tín chỉ) / Σ(tín chỉ) — thay vì dùng điểm lưu sẵn
+  // có thể đã lệch so với bảng điểm chi tiết.
+  let totalCredit = 0, sumScore = 0, sumGpaPoint = 0;
+  subjects.forEach(sub => {
+    const sc = clampScore(sub.score);
+    totalCredit += sub.credit;
+    sumScore += sc * sub.credit;
+    sumGpaPoint += gradePoint(getLetterScore(sc)) * sub.credit;
+  });
+  const overallScore = totalCredit ? sumScore / totalCredit : (st.score || 0);
+  const overallGpa = totalCredit ? sumGpaPoint / totalCredit : (st.gpa || 0);
+
+  // Đồng bộ lại vào bản ghi sinh viên để bảng danh sách / thống kê cũng khớp với bảng điểm chi tiết
+  st.score = +overallScore.toFixed(2);
+  st.gpa = +overallGpa.toFixed(2);
+
   const rk = getRank(st.gpa);
   document.getElementById('tRank').textContent = rk;
   document.getElementById('tOverallScore').textContent = st.score.toFixed(2);
   document.getElementById('tOverallGpa').textContent = st.gpa.toFixed(2);
-
-  // Dữ liệu môn học thật do Admin nhập (tự khởi tạo lần đầu nếu sinh viên chưa có bảng điểm chi tiết)
-  const subjects = getOrCreateSubjects(st);
 
   const tbody = document.getElementById('tSubjectsBody');
   if (!subjects.length) {
@@ -1137,11 +1259,16 @@ function getRank(gpa) {
   return "Yếu";
 }
 
+// Quy đổi điểm hệ 10 sang điểm chữ theo đúng khoảng điểm của trường
 function getLetterScore(score) {
+  if (score >= 9)   return "A+";
   if (score >= 8.5) return "A";
-  if (score >= 7.0) return "B";
+  if (score >= 8)   return "B+";
+  if (score >= 7)   return "B";
+  if (score >= 6.5) return "C+";
   if (score >= 5.5) return "C";
-  if (score >= 4.0) return "D";
+  if (score >= 5)   return "D+";
+  if (score >= 4)   return "D";
   return "F";
 }
 
