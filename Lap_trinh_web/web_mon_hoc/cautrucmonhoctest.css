@@ -1,10 +1,33 @@
+*{
+    box-sizing: border-box;
+}
+html{
+    scroll-behavior: smooth;
+}
 body{
     margin: 0;
     padding: 0;
+    font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
 }
 h1{
     color:blue;
     text-align:center;
+}
+h2{
+    color:#4a6fa5;
+    border-left: 5px solid #4a6fa5;
+    padding-left: 10px;
+    margin-top: 30px;
+}
+main{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 20px;
+}
+main p, main li{
+    color:#444;
 }
 nav ul{
     display:flex;
@@ -22,15 +45,25 @@ nav a{
     border:1px solid #ccc;
     border-radius:6px;
     text-decoration:none;
+    color:#333;
+    transition: background-color 0.25s ease, color 0.25s ease, transform 0.15s ease, box-shadow 0.25s ease;
 }
+
 img{
     display:block;
     margin-left:auto;
     margin-right:auto;
     border: 10px solid #ccc;
     padding: 3px;
-    height: 200;
+    height: 200px;
     width: 400px;
+    max-width: 100%;
+    border-radius: 14px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+img:hover{
+    transform: scale(1.03);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 h3{
     text-align:center;
@@ -62,6 +95,8 @@ nav a.active{
 nav a:hover{
     background: #B3B3B3;
     color: #3318e0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 /* Footer styling: tên dier tôi cuối trang */
@@ -96,4 +131,78 @@ header .header-logo{
 header h1{
     margin: 0;
     text-align: center;
+}
+
+/* Thanh tiến trình cuộn trang (do script.js điều khiển) */
+#scroll-progress{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background: linear-gradient(90deg, #4a6fa5, #ff8fa3);
+    z-index: 1000;
+    transition: width 0.1s ease-out;
+}
+
+/* Nút cuộn lên đầu trang (do script.js tạo ra) */
+#back-to-top{
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: none;
+    background: #4a6fa5;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.25s ease;
+    z-index: 999;
+}
+#back-to-top.show{
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+#back-to-top:hover{
+    background: #38547d;
+}
+
+/* Hiệu ứng xuất hiện nhẹ nhàng cho nội dung chính khi tải trang */
+main{
+    opacity: 0;
+    transform: translateY(14px);
+    animation: fadeInUp 0.6s ease forwards;
+}
+@keyframes fadeInUp{
+    to{
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive cho màn hình nhỏ (điện thoại) */
+@media (max-width: 480px){
+    header .header-logo{
+        width: 40px;
+        top: 12px;
+        left: 12px;
+    }
+    header h1{
+        font-size: 1.3rem;
+    }
+    nav a{
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+    img{
+        width: 100%;
+        height: auto;
+    }
 }
