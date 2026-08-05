@@ -22,8 +22,20 @@ tailwind.config = {
 ========================================================= */
 
 // User accounts with RBAC: Default Admin account. Students register their own accounts.
+// role "admin"      -> Quản trị viên hệ thống: xem & chỉnh sửa TẤT CẢ các lớp
+// role "classadmin"  -> Admin của một lớp (VD: lớp trưởng): chỉ được xem & CHỈNH SỬA sinh viên trong đúng lớp của mình
+// role "student"     -> Sinh viên: chỉ được XEM dữ liệu lớp của mình, không chỉnh sửa được
 let accounts = [
-  { hoTen: "Quản trị viên Hệ thống", maSV: "ADMIN", lop: "ALL", username: "admin123", password: "123456", role: "admin" }
+  { hoTen: "Quản trị viên Hệ thống", maSV: "ADMIN", lop: "ALL", username: "admin123", password: "123456", role: "admin" },
+
+  // Tài khoản Admin lớp (mỗi lớp 1 tài khoản, chỉ chỉnh sửa được đúng lớp đó)
+  { hoTen: "Admin Lớp ICT1.01", maSV: "ADMIN01", lop: "ICT1.01", username: "admin01", password: "123456", role: "classadmin" },
+  { hoTen: "Admin Lớp ICT1.02", maSV: "ADMIN02", lop: "ICT1.02", username: "admin02", password: "123456", role: "classadmin" },
+  { hoTen: "Admin Lớp ICT1.03", maSV: "ADMIN03", lop: "ICT1.03", username: "admin03", password: "123456", role: "classadmin" },
+  { hoTen: "Admin Lớp ICT1.04", maSV: "ADMIN04", lop: "ICT1.04", username: "admin04", password: "123456", role: "classadmin" },
+  { hoTen: "Admin Lớp ICT1.05", maSV: "ADMIN05", lop: "ICT1.05", username: "admin05", password: "123456", role: "classadmin" },
+  { hoTen: "Admin Lớp ICT1.06", maSV: "ADMIN06", lop: "ICT1.06", username: "admin06", password: "123456", role: "classadmin" },
+  { hoTen: "Admin Lớp ICT1.07", maSV: "ADMIN07", lop: "ICT1.07", username: "admin07", password: "123456", role: "classadmin" }
 ];
 
 let currentUser = null; // Currently logged in user object
@@ -358,7 +370,10 @@ function tryLogin() {
     dash.classList.remove('hidden');
 
     renderDashboard();
-    toast(`👋 Xin chào, ${acc.hoTen}! (${acc.role === 'admin' ? 'Quản trị viên' : 'Sinh viên ' + acc.lop})`);
+    const roleLabel = acc.role === 'admin' ? 'Quản trị viên hệ thống'
+      : acc.role === 'classadmin' ? 'Admin Lớp ' + acc.lop
+      : 'Sinh viên ' + acc.lop;
+    toast(`👋 Xin chào, ${acc.hoTen}! (${roleLabel})`);
   } else {
     errBox.textContent = "⚠️ Tên đăng nhập hoặc mật khẩu không chính xác";
     errBox.classList.remove('hidden');
@@ -367,7 +382,9 @@ function tryLogin() {
 
 function applyUserRoleSettings() {
   const isStudent = currentUser.role === 'student';
-  
+  const isClassAdmin = currentUser.role === 'classadmin';
+  const isSuperAdmin = currentUser.role === 'admin';
+
   // Update User Header Info
   document.getElementById('userNameDisplay').textContent = currentUser.hoTen;
   document.getElementById('userAvatar').textContent = currentUser.hoTen.charAt(0).toUpperCase();
@@ -386,7 +403,7 @@ function applyUserRoleSettings() {
   const studentBanner = document.getElementById('studentNoticeBanner');
 
   if (isStudent) {
-    // STUDENT ROLE RESTRICTIONS
+    // STUDENT ROLE RESTRICTIONS (chỉ xem, không chỉnh sửa)
     roleBadge.textContent = "Sinh viên";
     roleBadge.className = "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider";
     roleDetail.textContent = `Quyền hạn: Chỉ xem dữ liệu Lớp ${currentUser.lop}`;
@@ -405,8 +422,26 @@ function applyUserRoleSettings() {
     studentBanner.classList.remove('hidden');
     document.getElementById('studentBannerName').textContent = currentUser.hoTen;
     document.getElementById('studentBannerClass').textContent = `Lớp ${currentUser.lop}`;
+  } else if (isClassAdmin) {
+    // CLASS ADMIN ROLE (lớp trưởng): xem + chỉnh sửa/thêm/xóa nhưng CHỈ TRONG LỚP CỦA MÌNH
+    roleBadge.textContent = "Admin Lớp";
+    roleBadge.className = "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider";
+    roleDetail.textContent = `Quyền hạn: Quản lý & Chỉnh sửa Lớp ${currentUser.lop}`;
+
+    // Lock class selector to the class this admin manages
+    selectedClass = currentUser.lop;
+    headerClassSelect.value = currentUser.lop;
+    headerClassSelect.disabled = true;
+    toolbarClassSelect.value = currentUser.lop;
+    toolbarClassSelect.disabled = true;
+
+    // Show admin actions (Thêm sinh viên) - new students will be locked to their class
+    adminActionGroup.classList.remove('hidden');
+
+    // Hide student banner
+    studentBanner.classList.add('hidden');
   } else {
-    // ADMIN ROLE PERMISSIONS
+    // SUPER ADMIN ROLE PERMISSIONS
     roleBadge.textContent = "Admin";
     roleBadge.className = "bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider";
     roleDetail.textContent = "Quyền hạn: Quản lý & Chỉnh sửa tất cả các lớp";
@@ -729,7 +764,7 @@ function renderTable() {
   updateStats(list);
 
   const tbody = document.getElementById('studentTableBody');
-  const isStudent = currentUser.role === 'student';
+  const isStudent = currentUser.role === 'student'; // 'student' role = view-only, no edit/delete buttons
 
   if (list.length === 0) {
     tbody.innerHTML = `
@@ -1101,6 +1136,17 @@ function viewMyTranscript() {
   viewTranscript(mySt.id);
 }
 
+/* =========================================================
+   RBAC HELPER: Admin Lớp (classadmin) chỉ được thao tác trong lớp của mình
+========================================================= */
+// Trả về true nếu currentUser được phép chỉnh sửa/xóa sinh viên thuộc classId này
+function canManageClass(classId) {
+  if (!currentUser) return false;
+  if (currentUser.role === 'admin') return true; // Quản trị viên hệ thống: toàn quyền
+  if (currentUser.role === 'classadmin') return classId === currentUser.lop; // Admin lớp: chỉ đúng lớp mình
+  return false; // Sinh viên: không có quyền chỉnh sửa
+}
+
 /* CRUD Operations for Admin */
 function openAddModal() {
   document.getElementById('modalFormTitle').textContent = "Thêm Sinh Viên Mới";
@@ -1111,7 +1157,11 @@ function openAddModal() {
   document.getElementById('fFname').value = "";
   document.getElementById('fDob').value = "2007-01-01";
   document.getElementById('fGender').value = "Nam";
-  document.getElementById('fClass').value = selectedClass === "ALL" ? "ICT1.05" : selectedClass;
+  const fClass = document.getElementById('fClass');
+  fClass.value = selectedClass === "ALL" ? "ICT1.05" : selectedClass;
+  // Admin Lớp chỉ được thêm sinh viên vào đúng lớp mình quản lý -> khóa lựa chọn lớp
+  fClass.disabled = (currentUser.role === 'classadmin');
+  if (currentUser.role === 'classadmin') fClass.value = currentUser.lop;
   document.getElementById('fEmail').value = "";
   document.getElementById('fStatus').value = "Đang học";
   // Track the mã sinh viên used to auto-derive the email, so it can stay in sync
@@ -1127,13 +1177,22 @@ function openEditModal(id) {
   const st = students.find(s => s.id === id);
   if (!st) return;
 
+  // RBAC: Admin Lớp chỉ được sửa sinh viên trong đúng lớp mình quản lý
+  if (!canManageClass(st.classId || "ICT1.05")) {
+    toast("⛔ Bạn không có quyền chỉnh sửa sinh viên ngoài lớp của mình");
+    return;
+  }
+
   document.getElementById('modalFormTitle').textContent = "Chỉnh Sửa Thông Tin Sinh Viên";
   document.getElementById('editStudentId').value = st.id;
   const fCode = document.getElementById('fCode');
   fCode.value = st.code;
   document.getElementById('fLname').value = st.lname;
   document.getElementById('fFname').value = st.fname;
-  document.getElementById('fClass').value = st.classId || "ICT1.05";
+  const fClass = document.getElementById('fClass');
+  fClass.value = st.classId || "ICT1.05";
+  // Admin Lớp không được đổi sinh viên sang lớp khác -> khóa lựa chọn lớp
+  fClass.disabled = (currentUser.role === 'classadmin');
   document.getElementById('fDob').value = st.dob;
   document.getElementById('fGender').value = st.gender;
   document.getElementById('fEmail').value = st.email;
@@ -1179,6 +1238,12 @@ function saveStudent() {
 
   if (!code || !lname || !fname) {
     toast("⚠️ Vui lòng nhập đầy đủ các trường thông tin");
+    return;
+  }
+
+  // RBAC: Admin Lớp chỉ được thêm/sửa sinh viên trong đúng lớp mình quản lý
+  if (!canManageClass(classId)) {
+    toast("⛔ Bạn không có quyền chỉnh sửa sinh viên ngoài lớp của mình");
     return;
   }
 
@@ -1232,6 +1297,13 @@ function saveStudent() {
 function openDeleteModal(id) {
   const st = students.find(s => s.id === id);
   if (!st) return;
+
+  // RBAC: Admin Lớp chỉ được xóa sinh viên trong đúng lớp mình quản lý
+  if (!canManageClass(st.classId || "ICT1.05")) {
+    toast("⛔ Bạn không có quyền xóa sinh viên ngoài lớp của mình");
+    return;
+  }
+
   deleteTargetId = id;
   document.getElementById('delStudentName').textContent = `${st.lname} ${st.fname} (${st.code})`;
   openModal('modalDel');
@@ -1239,6 +1311,14 @@ function openDeleteModal(id) {
 
 function confirmDelete() {
   if (deleteTargetId) {
+    const st = students.find(s => s.id === deleteTargetId);
+    // RBAC double-check before actually deleting
+    if (st && !canManageClass(st.classId || "ICT1.05")) {
+      toast("⛔ Bạn không có quyền xóa sinh viên ngoài lớp của mình");
+      deleteTargetId = null;
+      closeModal('modalDel');
+      return;
+    }
     students = students.filter(s => s.id !== deleteTargetId);
     toast("🗑️ Đã xóa sinh viên khỏi hệ thống");
     deleteTargetId = null;
