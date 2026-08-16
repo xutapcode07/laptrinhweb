@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassBorrow - Đăng Nhập & Đăng Ký Hệ Thống</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                            dark: '#022c22'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b132b;
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(5, 150, 105, 0.12) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(15, 23, 42, 0.9) 0px, transparent 100%);
+            background-attachment: fixed;
+        }
+        /* Glassmorphism styling */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-left {
+            background: linear-gradient(135deg, rgba(6, 78, 59, 0.85) 0%, rgba(2, 44, 34, 0.95) 100%);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        /* Custom scrollbar for form area */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(16, 185, 129, 0.3);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(16, 185, 129, 0.6);
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-100 min-h-screen flex items-center justify-center p-4 md:p-6 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Background Tech Grid Graphics -->
+    <div class="fixed inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:24px_24px]"></div>
+
+    <!-- Main Container Card -->
+    <div class="w-full max-w-5xl glass-card rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10 my-auto">
+        
+        <!-- ================= LEFT SIDE: BRANDING & FEATURES ================= -->
+        <div class="lg:col-span-5 glass-left p-8 md:p-10 flex flex-col justify-between relative overflow-hidden">
+            <!-- Decorative Light Glow -->
+            <div class="absolute -top-24 -left-24 w-48 h-48 bg-brand-500 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
+
+            <div>
+                <!-- Brand Logo & Header -->
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center shadow-lg shadow-brand-500/30 text-white font-bold text-2xl">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-extrabold tracking-tight text-white flex items-center gap-1.5">
+                            PassBorrow
+                        </h1>
+                        <p class="text-xs font-medium text-brand-100/80">Chia Sẻ & Thuê Mượn Học Đường</p>
+                    </div>
+                </div>
+
+                <!-- Tagline Badge -->
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/20 border border-brand-500/30 text-brand-100 text-xs font-semibold mb-6">
+                    <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                    Tiết kiệm – Bền vững – Kết nối
+                </div>
+
+                <!-- Intro Description -->
+                <p class="text-slate-300 text-sm leading-relaxed mb-8">
+                    Cộng đồng trực tuyến cho thuê, mượn và mua bán đồ cũ dành cho học sinh, sinh viên. Tối ưu chi phí học tập và trang bị đời sống tiện lợi, an toàn.
+                </p>
+
+                <!-- Key Feature Badges (Matching Document Ideas) -->
+                <div class="space-y-3.5">
+                    <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-3 hover:bg-white/10 transition duration-300">
+                        <div class="p-2 rounded-xl bg-brand-500/20 text-brand-500 shrink-0 mt-0.5">
+                            <i class="fa-solid fa-shield-halved text-base"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-white">Xác thực Học sinh / Sinh viên</h4>
+                            <p class="text-xs text-slate-400 mt-0.5">Xác minh thẻ SV & Email trường giúp tăng điểm uy tín cộng đồng.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-3 hover:bg-white/10 transition duration-300">
+                        <div class="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0 mt-0.5">
+                            <i class="fa-solid fa-wallet text-base"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-white">Ví Trung Gian Escrow</h4>
+                            <p class="text-xs text-slate-400 mt-0.5">Giữ tiền đặt cọc an toàn, tự động hoàn trả khi giao dịch hoàn tất.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-3 hover:bg-white/10 transition duration-300">
+                        <div class="p-2 rounded-xl bg-teal-500/20 text-teal-400 shrink-0 mt-0.5">
+                            <i class="fa-solid fa-map-location-dot text-base"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-white">Lọc 2 Cấp Toàn Quốc</h4>
+                            <p class="text-xs text-slate-400 mt-0.5">Dễ dàng kết nối tìm món đồ gần nhất theo Tỉnh/TP & Xã/Phường.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Left Footer Note -->
+            <div class="mt-8 pt-6 border-t border-white/10 flex items-center justify-between text-xs text-slate-400">
+                <span>© 2026 PassBorrow Inc.</span>
+                <span class="flex items-center gap-1.0 text-brand-500"><i class="fa-solid fa-lock text-[10px]"></i> Bảo mật 256-bit</span>
+            </div>
+        </div>
+
+        <!-- ================= RIGHT SIDE: FORM CONTAINER ================= -->
+        <div class="lg:col-span-7 p-6 md:p-10 flex flex-col justify-center relative max-h-[85vh] lg:max-h-[90vh] overflow-y-auto custom-scrollbar">
+            
+            <!-- FORM SWITCH TABS -->
+            <div class="flex bg-slate-900/60 p-1.5 rounded-2xl border border-slate-800 mb-8 max-w-sm mx-auto w-full">
+                <button id="tab-login-btn" onclick="switchTab('login')" class="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-300 bg-brand-600 text-white shadow-lg shadow-brand-600/30">
+                    <i class="fa-solid fa-right-to-bracket mr-2"></i>Đăng Nhập
+                </button>
+                <button id="tab-register-btn" onclick="switchTab('register')" class="flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-user-plus mr-2"></i>Tạo Tài Khoản
+                </button>
+            </div>
+
+            <!-- ================= LOGIN FORM ================= -->
+            <div id="login-form-container" class="space-y-6 transition-all duration-300">
+                <div class="text-center md:text-left">
+                    <h2 class="text-2xl font-bold text-white tracking-tight">Đăng Nhập Hệ Thống</h2>
+                    <p class="text-sm text-slate-400 mt-1">Chào mừng bạn trở lại với cộng đồngPassBorrow</p>
+                </div>
+
+                <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <!-- Username Input -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Tên đăng nhập / SĐT</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                <i class="fa-solid fa-user text-sm"></i>
+                            </span>
+                            <input type="text" id="login-username" required placeholder="Nhập tên đăng nhập hoặc số điện thoại" 
+                                class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition duration-200">
+                        </div>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Mật khẩu (Password)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                <i class="fa-solid fa-lock text-sm"></i>
+                            </span>
+                            <input type="password" id="login-password" required placeholder="••••••••" 
+                                class="w-full pl-10 pr-11 py-3 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition duration-200">
+                            <button type="button" onclick="togglePassword('login-password', 'login-eye-icon')" class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-200">
+                                <i id="login-eye-icon" class="fa-solid fa-eye text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Options: Remember & Forgot Password -->
+                    <div class="flex items-center justify-between text-xs pt-1">
+                        <label class="flex items-center gap-2 text-slate-300 cursor-pointer select-none">
+                            <input type="checkbox" class="w-4 h-4 rounded bg-slate-900 border-slate-700 text-brand-600 focus:ring-brand-500 focus:ring-offset-slate-900">
+                            <span>Ghi nhớ đăng nhập</span>
+                        </label>
+                        <a href="#" onclick="showModal('Quên mật khẩu', 'Vui lòng nhập số điện thoại hoặc Email đã đăng ký để nhận liên kết khôi phục mật khẩu.'); return false;" class="text-brand-500 hover:text-brand-400 font-medium transition duration-200">Quên mật khẩu?</a>
+                    </div>
+
+                    <!-- Submit Login Button -->
+                    <button type="submit" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white font-bold text-sm shadow-lg shadow-brand-600/30 transition duration-300 transform active:scale-[0.99] flex items-center justify-center gap-2">
+                        <span>Đăng Nhập</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </form>
+
+                <!-- Social Login Options -->
+                <div class="pt-4 border-t border-slate-800">
+                    <p class="text-center text-xs text-slate-400 mb-4 font-medium">Hoặc đăng nhập nhanh qua</p>
+                    <div class="grid grid-cols-3 gap-3">
+                        <a href="#" onclick="showToast('Phương thức Google sẽ được liên kết khi vận hành chính thức.'); return false;" class="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition duration-200">
+                            <i class="fa-brands fa-google text-red-400 text-sm"></i>
+                            <span class="hidden sm:inline">Google</span>
+                        </a>
+                        <a href="#" onclick="showToast('Phương thức Facebook sẽ được liên kết khi vận hành chính thức.'); return false;" class="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition duration-200">
+                            <i class="fa-brands fa-facebook text-blue-500 text-sm"></i>
+                            <span class="hidden sm:inline">Facebook</span>
+                        </a>
+                        <a href="#" onclick="showToast('Phương thức Email OTP sẽ được liên kết khi vận hành chính thức.'); return false;" class="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition duration-200">
+                            <i class="fa-solid fa-envelope text-emerald-400 text-sm"></i>
+                            <span class="hidden sm:inline">Email OTP</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Footer Switch Link -->
+                <p class="text-center text-xs text-slate-400 pt-2">
+                    Chưa có tài khoản? 
+                    <button onclick="switchTab('register')" class="text-brand-500 hover:underline font-bold ml-1">Tạo tài khoản</button>
+                </p>
+            </div>
+
+            <!-- ================= REGISTER FORM ================= -->
+            <div id="register-form-container" class="space-y-5 hidden transition-all duration-300">
+                <div class="text-center md:text-left">
+                    <h2 class="text-2xl font-bold text-white tracking-tight">Tạo Tài Khoản Mới</h2>
+                    <p class="text-sm text-slate-400 mt-1">Gia nhập cộng đồng cho thuê & chia sẻ đồ PassBorrow</p>
+                </div>
+
+                <form onsubmit="handleRegister(event)" class="space-y-3.5">
+                    
+                    <!-- Grid Row 1: Full Name & Phone Number -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <!-- Họ và Tên -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Họ và tên <span class="text-red-400">*</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-solid fa-id-card text-xs"></i>
+                                </span>
+                                <input type="text" id="reg-fullname" required placeholder="Ví dụ: Nguyễn Văn A" 
+                                    class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition duration-200">
+                            </div>
+                        </div>
+
+                        <!-- Số điện thoại (Để gửi passcode) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                                Số điện thoại <span class="text-red-400">*</span>
+                                <span class="text-[10px] text-brand-400 font-normal lowercase">(gửi passcode)</span>
+                            </label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-solid fa-phone text-xs"></i>
+                                </span>
+                                <input type="tel" id="reg-phone" pattern="[0-9]{10,11}" required placeholder="0912345678" 
+                                    class="w-full pl-9 pr-16 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition duration-200">
+                                <button type="button" onclick="sendPasscode()" class="absolute inset-y-1 right-1 px-2 rounded-lg bg-brand-600/30 hover:bg-brand-600/50 text-brand-300 text-[10px] font-semibold transition">
+                                    Mã OTP
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid Row 2: Email (Optional) & Date of birth -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <!-- Email (Không bắt buộc) -->
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Tài khoản Email</label>
+                                <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-normal">Không bắt buộc</span>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-solid fa-envelope text-xs"></i>
+                                </span>
+                                <input type="email" id="reg-email" placeholder="example@gmail.com" 
+                                    class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition duration-200">
+                            </div>
+                        </div>
+
+                        <!-- Ngày tháng năm sinh -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Ngày tháng năm sinh <span class="text-red-400">*</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-solid fa-calendar-days text-xs"></i>
+                                </span>
+                                <input type="date" id="reg-dob" required 
+                                    class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white text-xs focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition duration-200 [color-scheme:dark]">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tên đăng nhập -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Tên đăng nhập <span class="text-red-400">*</span></label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                <i class="fa-solid fa-at text-xs"></i>
+                            </span>
+                            <input type="text" id="reg-username" required placeholder="Tên đăng nhập muốn đặt (ví dụ: student123)" 
+                                class="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition duration-200">
+                        </div>
+                    </div>
+
+                    <!-- Grid Row 3: Password & Confirm Password -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <!-- Mật khẩu muốn đặt -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Mật khẩu muốn đặt <span class="text-red-400">*</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-solid fa-key text-xs"></i>
+                                </span>
+                                <input type="password" id="reg-password" required onkeyup="checkPasswordMatch()" placeholder="Ít nhất 6 ký tự" 
+                                    class="w-full pl-9 pr-9 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition duration-200">
+                                <button type="button" onclick="togglePassword('reg-password', 'reg-eye-icon1')" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-200">
+                                    <i id="reg-eye-icon1" class="fa-solid fa-eye text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Xác nhận lại mật khẩu -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Xác nhận lại mật khẩu <span class="text-red-400">*</span></label>
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                                    <i class="fa-solid fa-check-double text-xs"></i>
+                                </span>
+                                <input type="password" id="reg-confirm-password" required onkeyup="checkPasswordMatch()" placeholder="Nhập lại mật khẩu" 
+                                    class="w-full pl-9 pr-9 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-white text-xs placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition duration-200">
+                                <button type="button" onclick="togglePassword('reg-confirm-password', 'reg-eye-icon2')" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-200">
+                                    <i id="reg-eye-icon2" class="fa-solid fa-eye text-xs"></i>
+                                </button>
+                            </div>
+                            <!-- Password match indicator -->
+                            <p id="password-match-msg" class="text-[11px] mt-1 hidden"></p>
+                        </div>
+                    </div>
+
+                    <!-- Terms agreement checkbox -->
+                    <div class="flex items-start gap-2 pt-1">
+                        <input type="checkbox" id="terms-check" required class="mt-0.5 w-3.5 h-3.5 rounded bg-slate-900 border-slate-700 text-brand-600 focus:ring-brand-500 focus:ring-offset-slate-900">
+                        <label for="terms-check" class="text-xs text-slate-400 cursor-pointer select-none">
+                            Tôi đồng ý với <a href="#" onclick="openTermsModal(); return false;" class="text-brand-400 underline font-semibold">Điều khoản & Chính sách</a> sử dụng của PassBorrow.
+                        </label>
+                    </div>
+
+                    <!-- Submit Register Button -->
+                    <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white font-bold text-xs shadow-lg shadow-brand-600/30 transition duration-300 transform active:scale-[0.99] flex items-center justify-center gap-2 mt-2">
+                        <i class="fa-solid fa-user-check"></i>
+                        <span>Tạo Tài Khoản Ngay</span>
+                    </button>
+                </form>
+
+                <!-- Social Logins for Registration -->
+                <div class="pt-3 border-t border-slate-800">
+                    <p class="text-center text-[11px] text-slate-400 mb-2.5">Hoặc đăng ký nhanh bằng</p>
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <a href="#" onclick="showToast('Phương thức Google sẽ được liên kết khi vận hành chính thức.'); return false;" class="py-2 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                            <i class="fa-brands fa-google text-red-400"></i>
+                            <span class="hidden sm:inline">Google</span>
+                        </a>
+                        <a href="#" onclick="showToast('Phương thức Facebook sẽ được liên kết khi vận hành chính thức.'); return false;" class="py-2 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                            <i class="fa-brands fa-facebook text-blue-500"></i>
+                            <span class="hidden sm:inline">Facebook</span>
+                        </a>
+                        <a href="#" onclick="showToast('Phương thức Email OTP sẽ được liên kết khi vận hành chính thức.'); return false;" class="py-2 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition">
+                            <i class="fa-solid fa-envelope text-emerald-400"></i>
+                            <span class="hidden sm:inline">Email OTP</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Footer Switch Link -->
+                <p class="text-center text-xs text-slate-400">
+                    Đã có tài khoản? 
+                    <button onclick="switchTab('login')" class="text-brand-500 hover:underline font-bold ml-1">Đăng nhập ngay</button>
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Custom Dialog / Modal Notification -->
+    <div id="info-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-700 rounded-2xl max-w-md w-full p-6 text-center shadow-2xl transform scale-95 transition-transform duration-300" id="modal-box">
+            <div id="modal-icon" class="w-12 h-12 bg-brand-500/20 text-brand-400 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
+                <i class="fa-solid fa-circle-info"></i>
+            </div>
+            <h3 id="modal-title" class="text-lg font-bold text-white mb-2">Thông báo</h3>
+            <p id="modal-desc" class="text-xs text-slate-300 leading-relaxed mb-6">Nội dung thông báo</p>
+            <button onclick="closeModal()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold rounded-xl text-xs transition">
+                Đóng
+            </button>
+        </div>
+    </div>
+
+    <!-- Terms & Policies Detailed Modal -->
+    <div id="terms-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden transition-opacity duration-300">
+        <div class="bg-slate-900 border border-slate-700/80 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center text-lg">
+                        <i class="fa-solid fa-file-contract"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Điều Khoản Dịch Vụ & Chính Sách Vận Hành PassBorrow</h3>
+                        <p class="text-[11px] text-slate-400">Quy chế hoạt động, Giữ cọc Escrow & An toàn Cộng đồng Học đường</p>
+                    </div>
+                </div>
+                <button onclick="closeTermsModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content (Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-5 text-xs text-slate-300 leading-relaxed custom-scrollbar">
+                
+                <!-- Section 1 -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1.5">
+                    <h4 class="text-xs font-bold text-brand-400 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-circle-info"></i> 1. Quy Định Chung & Mục Đích Nền Tảng
+                    </h4>
+                    <p>PassBorrow là nền tảng kết nối trực tuyến P2P (Peer-to-Peer) dành cho cộng đồng Học sinh - Sinh viên để chia sẻ, cho mượn (0đ), cho thuê và thanh lý các sản phẩm/thiết bị học tập, công nghệ, đồ dùng sinh hoạt.</p>
+                    <p>PassBorrow đóng vai trò đơn vị cung cấp hạ tầng kết nối, hệ thống Hợp đồng điện tử và Cơ chế Ví trung gian Escrow để đảm bảo tính an toàn, minh bạch cho mọi giao dịch.</p>
+                </div>
+
+                <!-- Section 2 -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1.5">
+                    <h4 class="text-xs font-bold text-brand-400 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-user-shield"></i> 2. Xác Thực Tài Khoản & Tư Cách Thành Viên
+                    </h4>
+                    <p><strong>Xác thực học đường (eKYC Sinh viên):</strong> Thành viên được khuyến khích xác minh Thẻ Sinh viên/Học sinh, Email trường (.edu.vn) hoặc CCCD để nhận Huy hiệu Uy tín & Mở khóa đặc quyền mượn đồ 0đ.</p>
+                    <p><strong>Tính chính xác thông tin:</strong> Thành viên chịu trách nhiệm hoàn toàn về tính chuẩn xác của thông tin cá nhân. Mỗi cá nhân chỉ sở hữu 01 tài khoản duy nhất. Mọi hành vi tạo tài khoản giả mạo sẽ bị khóa vĩnh viễn.</p>
+                </div>
+
+                <!-- Section 3 -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1.5">
+                    <h4 class="text-xs font-bold text-brand-400 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-vault"></i> 3. Quy Trình Giao Dịch & Cơ Chế Ví Escrow (Giữ Cọc Trung Gian)
+                    </h4>
+                    <p><strong>Giữ cọc an toàn:</strong> Khi xác nhận hợp đồng thuê/mượn, tiền phí và Tiền cọc Escrow sẽ được tạm khóa bảo mật tại PassBorrow.</p>
+                    <p><strong>Biên bản bàn giao:</strong> Hai bên chụp ảnh/quay video xác nhận trạng thái sản phẩm lúc giao nhận và tải lên hệ thống.</p>
+                    <p><strong>Giải ngân & Hoàn cọc:</strong> Khi sản phẩm được trả đúng trạng thái, hệ thống Escrow tự động chuyển tiền phí cho chủ đồ và hoàn trả 100% Tiền cọc cho người thuê trong 24h.</p>
+                </div>
+
+                <!-- Section 4 -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1.5">
+                    <h4 class="text-xs font-bold text-brand-400 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i> 4. Quy Định Trả Đồ Trễ Hạn, Hư Hỏng & Mất Mát
+                    </h4>
+                    <p><strong>Trả đồ trễ hạn:</strong> Trễ &lt; 12h tính phí quá hạn 50% tiền thuê/ngày. Trễ &gt;= 24h không báo trước sẽ trừ phí thuê trực tiếp từ Tiền cọc Escrow.</p>
+                    <p><strong>Đền bù hỏng hóc:</strong> Lỗi nhẹ đền bù 10-20% cọc. Hỏng nặng hoặc mất đồ, toàn bộ Tiền cọc Escrow được trích đền bù cho chủ sản phẩm theo giá trị thực tế.</p>
+                    <p><strong>Vi phạm nghiêm trọng:</strong> Chiếm đoạt tài sản trễ quá 3 ngày không liên lạc sẽ bị đưa vào danh sách đen (Blacklist) và gửi hồ sơ sang Ban Giám hiệu Nhà trường & Cơ quan chức năng.</p>
+                </div>
+
+                <!-- Section 5 -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1.5">
+                    <h4 class="text-xs font-bold text-brand-400 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-ban"></i> 5. Danh Mục Hàng Hóa Cấm & Quy Chuẩn Bài Đăng
+                    </h4>
+                    <p>Nghiêm cấm đăng tải: Vũ khí, chất cấm, tài liệu vi phạm pháp luật, hàng nhái nguy hiểm, đồ vật không thuộc sở hữu hợp pháp.</p>
+                    <p>Bài đăng phải dùng ảnh thật, mô tả trung thực tình trạng cũ/mới và chi tiết phụ kiện đi kèm.</p>
+                </div>
+
+                <!-- Section 6 -->
+                <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-1.5">
+                    <h4 class="text-xs font-bold text-brand-400 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-lock"></i> 6. Bảo Mật Thông Tin & Trọng Tài Escrow
+                    </h4>
+                    <p>Thông tin cá nhân được bảo mật 256-bit và chỉ chia sẻ giữa 2 bên khi hợp đồng giao dịch được tạo.</p>
+                    <p>Đội ngũ Trọng tài PassBorrow trực tiếp tiếp nhận & phân xử mọi khiếu nại minh bạch dựa trên minh chứng bàn giao.</p>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-3.5 border-t border-slate-800 flex justify-end bg-slate-950/50">
+                <button onclick="closeTermsModal()" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs transition shadow-lg shadow-brand-600/30">
+                    Tôi Đã Đọc & Đồng Ý
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Popup -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-slate-800 border border-brand-500/40 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="text-brand-400 text-lg"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="text-xs font-medium" id="toast-text">Thành công!</div>
+    </div>
+
+    <script>
+        function openTermsModal() {
+            document.getElementById('terms-modal').classList.remove('hidden');
+        }
+
+        function closeTermsModal() {
+            document.getElementById('terms-modal').classList.add('hidden');
+        }
+        // Tab switching logic
+        function switchTab(tab) {
+            const loginForm = document.getElementById('login-form-container');
+            const registerForm = document.getElementById('register-form-container');
+            const loginBtn = document.getElementById('tab-login-btn');
+            const registerBtn = document.getElementById('tab-register-btn');
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                
+                loginBtn.className = "flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-300 bg-brand-600 text-white shadow-lg shadow-brand-600/30";
+                registerBtn.className = "flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-white";
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+
+                registerBtn.className = "flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-300 bg-brand-600 text-white shadow-lg shadow-brand-600/30";
+                loginBtn.className = "flex-1 py-2.5 px-4 rounded-xl text-sm font-semibold transition-all duration-300 text-slate-400 hover:text-white";
+            }
+        }
+
+        // Toggle Password visibility
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Live Password Match Check
+        function checkPasswordMatch() {
+            const pass = document.getElementById('reg-password').value;
+            const confirmPass = document.getElementById('reg-confirm-password').value;
+            const msg = document.getElementById('password-match-msg');
+
+            if (!confirmPass) {
+                msg.classList.add('hidden');
+                return;
+            }
+
+            msg.classList.remove('hidden');
+            if (pass === confirmPass) {
+                msg.textContent = '✓ Mật khẩu trùng khớp';
+                msg.className = 'text-[11px] mt-1 text-emerald-400 font-medium';
+            } else {
+                msg.textContent = '✗ Mật khẩu xác nhận chưa khớp';
+                msg.className = 'text-[11px] mt-1 text-red-400 font-medium';
+            }
+        }
+
+        // Simulate Passcode / OTP Send
+        function sendPasscode() {
+            const phone = document.getElementById('reg-phone').value;
+            if (!phone || phone.length < 10) {
+                showModal('Yêu cầu số điện thoại', 'Vui lòng nhập đúng số điện thoại (10 chữ số) để hệ thống gửi mã Passcode / OTP xác thực.');
+                return;
+            }
+            showToast('Mã Passcode đã được gửi tới SĐT: ' + phone);
+        }
+
+        // Registered Users Storage Helper
+        function getUsers() {
+            const data = localStorage.getItem('passborrow_users');
+            if (!data) {
+                const defaultUsers = [
+                    { username: 'admin', phone: '0912345678', password: '123456', fullName: 'Admin' },
+                    { username: 'student', phone: '0987654321', password: '123456', fullName: 'Student' }
+                ];
+                localStorage.setItem('passborrow_users', JSON.stringify(defaultUsers));
+                return defaultUsers;
+            }
+            try {
+                return JSON.parse(data);
+            } catch (err) {
+                return [];
+            }
+        }
+
+        // Form Submit Actions
+        function handleLogin(e) {
+            e.preventDefault();
+            const usernameInput = document.getElementById('login-username').value.trim();
+            const passwordInput = document.getElementById('login-password').value;
+
+            const users = getUsers();
+            const foundUser = users.find(u => 
+                u.username.toLowerCase() === usernameInput.toLowerCase() || 
+                u.phone === usernameInput
+            );
+
+            if (!foundUser) {
+                showModal('Đăng nhập thất bại', 'Tài khoản "' + usernameInput + '" chưa tồn tại trên hệ thống. Vui lòng bấm vào "Tạo tài khoản" ở phía dưới để đăng ký trước!');
+                return;
+            }
+
+            if (foundUser.password !== passwordInput) {
+                showModal('Đăng nhập thất bại', 'Mật khẩu nhập vào không chính xác. Vui lòng kiểm tra lại!');
+                return;
+            }
+
+            // Authentication Successful
+            localStorage.setItem('passborrow_is_logged_in', 'true');
+            localStorage.setItem('passborrow_user_name', foundUser.fullName || foundUser.username);
+            localStorage.setItem('passborrow_user_phone', foundUser.phone || '');
+            
+            showToast('Đăng nhập thành công! Đang chuyển hướng...');
+            setTimeout(() => {
+                window.location.href = 'PassBorrow.html';
+            }, 800);
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('reg-fullname').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const username = document.getElementById('reg-username').value.trim();
+            const pass = document.getElementById('reg-password').value;
+            const confirmPass = document.getElementById('reg-confirm-password').value;
+
+            if (pass !== confirmPass) {
+                showModal('Lỗi xác nhận', 'Mật khẩu muốn đặt và Mật khẩu xác nhận không trùng khớp.');
+                return;
+            }
+
+            const users = getUsers();
+            
+            // Check if username or phone already exists
+            const existingUser = users.find(u => 
+                u.username.toLowerCase() === username.toLowerCase() || 
+                u.phone === phone
+            );
+
+            if (existingUser) {
+                showModal('Tài khoản đã tồn tại', 'Tên đăng nhập hoặc Số điện thoại này đã được đăng ký. Vui lòng chọn tên đăng nhập khác hoặc bấm Đăng nhập.');
+                return;
+            }
+
+            // Save new account
+            const newUser = { username, phone, password: pass, fullName };
+            users.push(newUser);
+            localStorage.setItem('passborrow_users', JSON.stringify(users));
+
+            // Log in newly registered user
+            localStorage.setItem('passborrow_is_logged_in', 'true');
+            localStorage.setItem('passborrow_user_name', fullName || username);
+            localStorage.setItem('passborrow_user_phone', phone);
+
+            showToast('Đăng ký tài khoản thành công! Đang chuyển hướng...');
+            setTimeout(() => {
+                window.location.href = 'PassBorrow.html';
+            }, 1000);
+        }
+
+        function handleSocialLogin(provider) {
+            showToast('Phương thức ' + provider + ' sẽ được tích hợp khi vận hành chính thức!');
+        }
+
+        // Modal Helpers
+        function showModal(title, desc) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-desc').textContent = desc;
+            const modal = document.getElementById('info-modal');
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('info-modal').classList.add('hidden');
+        }
+
+        // Toast Helper
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').textContent = text;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

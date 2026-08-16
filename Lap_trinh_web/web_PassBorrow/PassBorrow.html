@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassBorrow - Nền Tảng Cho Thuê, Mượn & Mua Bán Đồ Cũ Học Sinh Sinh Viên</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        @keyframes pulse-subtle { 0%, 100% { opacity: 1; } 50% { opacity: 0.85; } }
+        .animate-pulse-subtle { animation: pulse-subtle 2s infinite ease-in-out; }
+    </style>
+</head>
+<body class="h-full text-slate-800 flex flex-col font-sans">
+
+<div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+<!-- HEADER / NAVIGATION -->
+<header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16 gap-4">
+            
+            <!-- Logo & Brand with Interactive Dropdown Menu -->
+            <div class="relative">
+                <div id="logo-trigger" onclick="toggleLogoMenu(event)" class="flex items-center gap-3 cursor-pointer select-none hover:bg-slate-100/80 p-1.5 -ml-1.5 rounded-xl transition">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-xl shadow-md shadow-brand-500/20">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xl font-extrabold bg-gradient-to-r from-brand-700 to-emerald-600 bg-clip-text text-transparent">PassBorrow</span>
+                            <i id="logo-chevron" class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"></i>
+                        </div>
+                        <span class="block text-[10px] text-slate-500 font-medium leading-none">Chia Sẻ & Thuê Mượn Học Đường</span>
+                    </div>
+                </div>
+
+                <!-- Logo Interactive Menu Dropdown -->
+                <div id="logo-dropdown-menu" class="hidden absolute top-full left-0 mt-2 w-72 bg-white rounded-2xl shadow-xl border border-slate-200 p-2.5 z-50 space-y-1">
+                    <!-- User Account Status Badge -->
+                    <div id="logo-user-status-card" class="p-3 rounded-xl bg-slate-50 border border-slate-100 mb-1">
+                        <!-- Dynamically filled via JS -->
+                    </div>
+
+                    <!-- Option 1: Trang chủ -->
+                    <button onclick="showSection('home'); toggleLogoMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-house"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold text-slate-800">Trang chủ</div>
+                            <div class="text-[10px] text-slate-400 font-normal">Xem tất cả danh mục & sản phẩm</div>
+                        </div>
+                    </button>
+
+                    <!-- Option 2: Cài đặt -->
+                    <button onclick="openSettingsModal(); toggleLogoMenu();" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 transition">
+                        <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-gear"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold text-slate-800">Cài đặt tài khoản</div>
+                            <div class="text-[10px] text-slate-400 font-normal">Đổi tên, đổi mật khẩu & chỉnh sửa hồ sơ</div>
+                        </div>
+                    </button>
+
+                    <!-- Option 3: Đăng nhập (Links to dang-nhap.html) -->
+                    <a href="dang-nhap.html" id="logo-login-btn" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-brand-800 bg-brand-50 hover:bg-brand-100 border border-brand-200 transition">
+                        <div class="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-right-to-bracket"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold">Đăng nhập tài khoản</div>
+                            <div class="text-[10px] text-brand-600 font-normal">Đăng nhập để mua, thuê hoặc đăng tin</div>
+                        </div>
+                    </a>
+
+                    <!-- Option 4: Đăng xuất -->
+                    <button id="logo-logout-btn" onclick="handleLogout()" class="hidden w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-transparent transition">
+                        <div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </div>
+                        <div class="text-left">
+                            <div class="font-bold">Đăng xuất</div>
+                            <div class="text-[10px] text-rose-400 font-normal">Chuyển sang chế độ chỉ xem</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Global Search & Admin Area 2-Level Filter -->
+            <div class="hidden md:flex flex-1 max-w-2xl items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                <div class="flex items-center pl-3 text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <input id="global-search" type="text" placeholder="Tìm máy tính Casio, giáo trình Giải tích, bàn học..." 
+                       class="bg-transparent text-sm text-slate-800 placeholder-slate-400 focus:outline-none w-full px-2"
+                       oninput="handleSearch()">
+                
+                <!-- Quick Location Selector -->
+                <div class="flex items-center gap-1 border-l border-slate-300 pl-2 pr-1 text-xs">
+                    <i class="fa-solid fa-location-dot text-brand-600"></i>
+                    <select id="header-province" onchange="onHeaderProvinceChange()" class="bg-transparent font-medium text-slate-700 text-xs focus:outline-none max-w-[120px] truncate cursor-pointer">
+                        <option value="">Tất cả Tỉnh/TP</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- User Actions & Balance Badge -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="openVerificationModal()" class="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span id="header-verify-status">Xác thực SV</span>
+                </button>
+
+                <button onclick="showSection('escrow')" class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 transition text-xs font-medium">
+                    <i class="fa-solid fa-wallet text-brand-600"></i>
+                    <span>Ví Escrow: <strong id="user-balance-display" class="text-brand-700">500.000đ</strong></span>
+                </button>
+
+                <button onclick="showSection('saved')" class="relative p-2 text-slate-600 hover:text-rose-500 hover:bg-slate-100 rounded-lg transition" title="Tin đã lưu">
+                    <i class="fa-solid fa-heart text-lg"></i>
+                    <span id="saved-count-badge" class="hidden absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 bg-rose-500 text-white text-[9px] font-bold rounded-full ring-2 ring-white flex items-center justify-center">0</span>
+                </button>
+
+                <button onclick="showSection('chat')" class="relative p-2 text-slate-600 hover:text-brand-600 hover:bg-slate-100 rounded-lg transition" title="Tin nhắn">
+                    <i class="fa-solid fa-comment-dots text-lg"></i>
+                    <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-white"></span>
+                </button>
+
+                <button onclick="openNewListingModal()" class="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs sm:text-sm shadow-md shadow-brand-600/30 transition transform active:scale-95">
+                    <i class="fa-solid fa-plus"></i>
+                    <span class="hidden sm:inline">Đăng tin</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Search Bar (Only on Small screens) -->
+        <div class="md:hidden pb-3 pt-1">
+            <div class="flex items-center gap-2 bg-slate-100 p-2 rounded-xl border border-slate-200">
+                <i class="fa-solid fa-magnifying-glass text-slate-400 pl-1"></i>
+                <input id="global-search-mobile" type="text" placeholder="Tìm kiếm sách, dụng cụ, laptop..." 
+                       class="bg-transparent text-xs text-slate-800 focus:outline-none w-full"
+                       oninput="syncAndSearchMobile(this.value)">
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- MAIN CONTAINER -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- TAB VIEW 1: HOME PAGE (CATALOG & FILTERS) -->
+    <div id="view-home" class="space-y-6">
+
+        <!-- Hero Notice & Community Banner -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-800 via-brand-700 to-teal-800 text-white p-6 sm:p-8 shadow-xl">
+            <div class="relative z-10 max-w-2xl space-y-3">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-400/20 text-emerald-200 border border-emerald-300/30">
+                    <i class="fa-solid fa-leaf"></i> Tiết kiệm - Bền vững - Kết nối
+                </span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Cộng Đồng Cho Thuê - Mượn & Mua Bán Đồ Cũ Học Sinh, Sinh Viên</h1>
+                <p class="text-xs sm:text-sm text-emerald-100/90 leading-relaxed">
+                    Giải quyết nhu cầu đồ dùng học tập, phòng trọ ngắn hạn. Đảm bảo an toàn với hợp đồng điện tử tự động &amp; tiền cọc được giữ an toàn tại ví trung gian Escrow.
+                </p>
+                <div class="pt-2 flex flex-wrap items-center gap-4 text-xs font-medium text-emerald-100">
+                    <div class="flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-400"></i> Xác thực SV 100%</div>
+                    <div class="flex items-center gap-1.5"><i class="fa-solid fa-shield-cat text-emerald-400"></i> Bảo vệ tiền cọc</div>
+                    <div class="flex items-center gap-1.5"><i class="fa-solid fa-map-location-dot text-emerald-400"></i> Lọc 2 cấp Tỉnh/TP - Xã/Phường</div>
+                </div>
+            </div>
+            <div class="absolute -right-10 -bottom-10 opacity-15 pointer-events-none text-slate-100">
+                <i class="fa-solid fa-graduation-cap text-[220px]"></i>
+            </div>
+        </div>
+
+        <!-- Seasonal Suggestion Banner -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4 justify-between">
+            <div class="space-y-2 max-w-xl">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-white text-amber-700 border border-amber-200">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Gợi ý theo mùa vụ · Tháng 8
+                </span>
+                <h3 class="text-sm sm:text-base font-extrabold text-slate-800">Mùa nhập học đang đến gần — chuẩn bị đồ dùng với giá tốt nhất</h3>
+                <p class="text-xs text-slate-600 leading-relaxed">Từ tháng 7–8, nhu cầu SGK, đồng phục, bàn học tăng vọt. PassBorrow tự động ưu tiên hiển thị danh mục phù hợp với thời điểm trong năm học.</p>
+                <div class="flex flex-wrap gap-2 pt-1">
+                    <button onclick="setCategoryFilterFromChip('sach')" class="text-[11px] font-semibold bg-white border border-amber-200 text-slate-700 px-2.5 py-1 rounded-full hover:bg-amber-100 transition">📚 SGK &amp; Giáo trình</button>
+                    <button onclick="setCategoryFilterFromChip('thoi-trang')" class="text-[11px] font-semibold bg-white border border-amber-200 text-slate-700 px-2.5 py-1 rounded-full hover:bg-amber-100 transition">🎒 Đồng phục</button>
+                    <button onclick="setCategoryFilterFromChip('gia-dung')" class="text-[11px] font-semibold bg-white border border-amber-200 text-slate-700 px-2.5 py-1 rounded-full hover:bg-amber-100 transition">🛏️ Đồ phòng trọ</button>
+                    <button onclick="setCategoryFilterFromChip('dung-cu')" class="text-[11px] font-semibold bg-white border border-amber-200 text-slate-700 px-2.5 py-1 rounded-full hover:bg-amber-100 transition">🪑 Dụng cụ học tập</button>
+                </div>
+            </div>
+            <button onclick="showToast('Đã bật nhắc hẹn! Chúng tôi sẽ báo bạn khi có đồ mới phù hợp mùa thi.', 'success')" class="shrink-0 self-start sm:self-center px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-md transition">
+                <i class="fa-solid fa-bell mr-1.5"></i> Đặt nhắc hẹn mùa thi
+            </button>
+        </div>
+
+        <!-- Multi-Filter Control Panel -->
+        <div class="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200 shadow-sm space-y-4">
+            
+            <!-- Category Chips -->
+            <div class="flex items-center gap-2 overflow-x-auto custom-scrollbar pb-1 text-xs">
+                <button onclick="setCategoryFilter('all')" data-cat="all" class="cat-btn active px-3.5 py-2 rounded-xl font-semibold bg-brand-600 text-white transition whitespace-nowrap shadow-sm">
+                    <i class="fa-solid fa-border-all mr-1.5"></i> Tất cả
+                </button>
+                <button onclick="setCategoryFilter('sach')" data-cat="sach" class="cat-btn px-3.5 py-2 rounded-xl font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition whitespace-nowrap">
+                    <i class="fa-solid fa-book mr-1.5 text-amber-600"></i> Sách vở & Giáo trình
+                </button>
+                <button onclick="setCategoryFilter('dung-cu')" data-cat="dung-cu" class="cat-btn px-3.5 py-2 rounded-xl font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition whitespace-nowrap">
+                    <i class="fa-solid fa-calculator mr-1.5 text-blue-600"></i> Dụng cụ học tập
+                </button>
+                <button onclick="setCategoryFilter('thoi-trang')" data-cat="thoi-trang" class="cat-btn px-3.5 py-2 rounded-xl font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition whitespace-nowrap">
+                    <i class="fa-solid fa-shirt mr-1.5 text-purple-600"></i> Thời trang & Trang phục
+                </button>
+                <button onclick="setCategoryFilter('gia-dung')" data-cat="gia-dung" class="cat-btn px-3.5 py-2 rounded-xl font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition whitespace-nowrap">
+                    <i class="fa-solid fa-couch mr-1.5 text-emerald-600"></i> Đồ phòng trọ / Gia dụng
+                </button>
+                <button onclick="setCategoryFilter('dien-tu')" data-cat="dien-tu" class="cat-btn px-3.5 py-2 rounded-xl font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 transition whitespace-nowrap">
+                    <i class="fa-solid fa-laptop mr-1.5 text-rose-600"></i> Thiết bị điện tử
+                </button>
+            </div>
+
+            <!-- Secondary Filters: Deal Type, 2-Level Admin Location, School -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-slate-100 text-xs">
+                
+                <!-- Deal Type Selector -->
+                <div>
+                    <label class="block text-slate-500 font-medium mb-1">Hình thức giao dịch</label>
+                    <select id="filter-deal-type" onchange="renderListings()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="all">Tất cả (Thuê / Mượn / Mua Bán)</option>
+                        <option value="thue">Cho Thuê (Có tính phí/ngày)</option>
+                        <option value="muon">Cho Mượn Miễn Phí (0đ)</option>
+                        <option value="ban">Thanh Lý / Mua Bán</option>
+                    </select>
+                </div>
+
+                <!-- Administrative Level 1: Tỉnh/Thành phố -->
+                <div>
+                    <label class="block text-slate-500 font-medium mb-1">Tỉnh / Thành phố (Cấp 1)</label>
+                    <select id="filter-province" onchange="onProvinceChange()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="">Toàn quốc (34 Tỉnh/TP)</option>
+                    </select>
+                </div>
+
+                <!-- Administrative Level 2: Xã/Phường -->
+                <div>
+                    <label class="block text-slate-500 font-medium mb-1">Xã / Phường / Đặc khu (Cấp 2)</label>
+                    <select id="filter-ward" onchange="renderListings()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-50" disabled>
+                        <option value="">Tất cả Xã/Phường</option>
+                    </select>
+                </div>
+
+                <!-- School / Campus Filter -->
+                <div>
+                    <label class="block text-slate-500 font-medium mb-1">Trường học / Ký túc xá</label>
+                    <select id="filter-school" onchange="renderListings()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-700 font-medium focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="">Tất cả Trường học</option>
+                        <option value="DHQG">ĐHQG TP.HCM / Hà Nội</option>
+                        <option value="BK">ĐH Bách Khoa</option>
+                        <option value="NEU">ĐH Kinh tế Quốc Dân</option>
+                        <option value="UEH">ĐH Kinh tế TP.HCM</option>
+                        <option value="THPT">Các trường THPT chuyên</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Active Filter Status & Reset -->
+            <div class="flex items-center justify-between pt-1 text-xs text-slate-500">
+                <span>Hiển thị <strong id="listing-count" class="text-brand-700">0</strong> kết quả phù hợp</span>
+                <button onclick="resetFilters()" class="text-slate-500 hover:text-rose-600 underline font-medium">Xóa bộ lọc</button>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div id="listings-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            <!-- Dynamic JS dynamic render items here -->
+        </div>
+    </div>
+
+    <!-- TAB VIEW 2: ESCROW & CONTRACT MANAGEMENT -->
+    <div id="view-escrow" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-800">Ví Trung Gian Escrow &amp; Quản Lý Hợp Đồng</h2>
+                <p class="text-xs text-slate-500">Minh bạch tiền cọc, tự động hoàn trả khi hết hạn &amp; xử lý tranh chấp giao dịch</p>
+            </div>
+            <button onclick="showSection('home')" class="text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-100 px-3 py-2 rounded-xl transition">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Quay lại
+            </button>
+        </div>
+
+        <!-- Wallet Cards & Info -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-gradient-to-br from-brand-700 to-emerald-800 text-white rounded-2xl p-5 shadow-md flex flex-col justify-between">
+                <div>
+                    <div class="text-xs font-medium text-emerald-200">Số Dư Tự Có (Khả Dụng)</div>
+                    <div class="text-2xl font-extrabold mt-1" id="escrow-available-balance">500.000 VNĐ</div>
+                </div>
+                <div class="pt-4 flex items-center gap-2">
+                    <button onclick="topUpBalance()" class="flex-1 bg-white text-brand-700 hover:bg-emerald-50 text-xs font-bold py-2 rounded-xl transition text-center shadow">
+                        <i class="fa-solid fa-plus-circle mr-1"></i> Nạp thêm
+                    </button>
+                    <button onclick="withdrawBalance()" class="flex-1 bg-emerald-600/50 hover:bg-emerald-600 text-white text-xs font-semibold py-2 rounded-xl transition border border-emerald-400/30 text-center">
+                        Rút về Ngân hàng
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                <div class="text-xs font-medium text-slate-500">Tiền Đang Cọc Trong Hợp Đồng (Locked Escrow)</div>
+                <div class="text-2xl font-extrabold text-amber-600 mt-1" id="escrow-locked-balance">400.000 VNĐ</div>
+                <p class="text-[11px] text-slate-400 mt-2">
+                    <i class="fa-solid fa-shield-halved text-brand-600 mr-1"></i> Tiền này do PassBorrow giữ an toàn cho đến khi đồ được hoàn trả.
+                </p>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+                <div class="text-xs font-medium text-slate-500">Điểm Uy Tín Học Đường</div>
+                <div class="flex items-center gap-2 mt-1">
+                    <span class="text-2xl font-extrabold text-indigo-600">98 / 100</span>
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">Hạng Xuất Sắc</span>
+                </div>
+                <p class="text-[11px] text-slate-400 mt-2">
+                    <i class="fa-solid fa-star text-amber-400 mr-1"></i> 100% giao dịch trả đúng hạn. Được ưu tiên giảm 50% phí cọc.
+                </p>
+            </div>
+        </div>
+
+        <!-- Active Contracts Table & Workflow -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+            <h3 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-file-contract text-brand-600"></i> Hợp Đồng &amp; Giao Dịch Đang Diễn Ra
+            </h3>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
+                        <tr>
+                            <th class="p-3">Mã Hợp Đồng</th>
+                            <th class="p-3">Món Đồ</th>
+                            <th class="p-3">Đối Tác</th>
+                            <th class="p-3">Thời Hạn</th>
+                            <th class="p-3">Tiền Cọc Giữ</th>
+                            <th class="p-3">Trạng Thái Escrow</th>
+                            <th class="p-3 text-right">Thao Tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contracts-table-body" class="divide-y divide-slate-100">
+                        <!-- Dynamic items via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB VIEW 3: IN-APP CHAT & NEGOTIATION -->
+    <div id="view-chat" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+            <h2 class="text-xl font-bold text-slate-800">Tin Nhắn &amp; Trao Đổi Giao Dịch</h2>
+            <button onclick="showSection('home')" class="text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-100 px-3 py-1.5 rounded-xl transition">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Trở về
+            </button>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl shadow-sm grid grid-cols-1 md:grid-cols-3 h-[600px] overflow-hidden">
+            
+            <!-- Chat List Sidebar -->
+            <div class="border-r border-slate-200 flex flex-col h-full bg-slate-50/50">
+                <div class="p-3 border-b border-slate-200">
+                    <input type="text" placeholder="Tìm đoạn chat..." class="w-full bg-white border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-700 focus:outline-none">
+                </div>
+                <div class="flex-1 overflow-y-auto custom-scrollbar divide-y divide-slate-100" id="chat-thread-list">
+                    <!-- Chat conversations injected by JS -->
+                </div>
+            </div>
+
+            <!-- Active Chat Conversation Box -->
+            <div class="md:col-span-2 flex flex-col h-full bg-white">
+                
+                <!-- Chat Partner Banner -->
+                <div class="p-3 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+                    <div class="flex items-center gap-3">
+                        <div class="relative">
+                            <img id="chat-active-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" class="w-9 h-9 rounded-full object-cover">
+                            <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-brand-500 rounded-full ring-2 ring-white"></span>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-1.5">
+                                <span id="chat-active-name" class="font-bold text-xs text-slate-800">Nguyễn Thu Thảo</span>
+                                <span class="bg-emerald-100 text-emerald-700 text-[10px] px-1.5 py-0.2 rounded font-semibold"><i class="fa-solid fa-check"></i> SV Bách Khoa</span>
+                            </div>
+                            <div id="chat-active-item" class="text-[11px] text-slate-500">Đang trao đổi về: Máy tính Casio FX-580VN X</div>
+                        </div>
+                    </div>
+
+                    <button onclick="openContractPreviewFromChat()" class="px-3 py-1.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs shadow-sm transition">
+                        <i class="fa-solid fa-file-signature mr-1"></i> Lập Hợp Đồng Thuê
+                    </button>
+                </div>
+
+                <!-- Messages Body -->
+                <div id="chat-messages-body" class="flex-1 p-4 overflow-y-auto custom-scrollbar space-y-3 bg-slate-50/30">
+                    <!-- Dynamic chat messages injected here -->
+                </div>
+
+                <!-- Chat Input Area -->
+                <div class="p-3 border-t border-slate-200 bg-white flex items-center gap-2">
+                    <button class="p-2 text-slate-400 hover:text-slate-600 transition" title="Gửi ảnh tình trạng đồ">
+                        <i class="fa-solid fa-camera text-lg"></i>
+                    </button>
+                    <input id="chat-input-field" type="text" placeholder="Nhập tin nhắn trao đổi (ví dụ: Chốt mượn từ 12/08 đến 15/08 nhé)..." 
+                           class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"
+                           onkeypress="if(event.key==='Enter') sendChatMessage()">
+                    <button onclick="sendChatMessage()" class="p-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl transition">
+                        <i class="fa-solid fa-paper-plane text-sm"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB VIEW 4: SAVED / WISHLIST ITEMS -->
+    <div id="view-saved" class="hidden space-y-4">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-heart text-rose-500 mr-1.5"></i>Tin Đã Lưu</h2>
+                <p class="text-xs text-slate-500">Những món đồ bạn quan tâm, lưu lại để so sánh hoặc quay lại sau</p>
+            </div>
+            <button onclick="showSection('home')" class="text-xs font-semibold text-slate-600 bg-white border border-slate-200 hover:bg-slate-100 px-3 py-2 rounded-xl transition">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Quay lại
+            </button>
+        </div>
+        <div id="saved-items-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            <!-- Dynamic JS render -->
+        </div>
+    </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="mt-10 bg-slate-900 text-slate-400">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
+
+        <!-- Brand column -->
+        <div class="lg:col-span-1 sm:col-span-2 space-y-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                </div>
+                <span class="text-lg font-extrabold text-white">PassBorrow</span>
+            </div>
+            <p class="text-xs leading-relaxed max-w-xs">
+                Nền tảng kết nối cho thuê – cho mượn – mua bán đồ cũ dành cho học sinh, sinh viên trên toàn quốc. Tiết kiệm — Bền vững — Kết nối.
+            </p>
+            <div class="flex items-center gap-2 pt-1">
+                <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" aria-label="TikTok" class="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="#" aria-label="Youtube" class="w-9 h-9 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center transition"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+
+        <!-- Platform links -->
+        <div>
+            <h5 class="text-xs font-bold uppercase tracking-wider text-white mb-4">Nền tảng</h5>
+            <ul class="space-y-2.5 text-xs">
+                <li><a href="#" onclick="showSection('home')" class="hover:text-brand-400 transition">Khám phá đồ dùng</a></li>
+                <li><a href="#" onclick="openNewListingModal()" class="hover:text-brand-400 transition">Đăng tin miễn phí</a></li>
+                <li><a href="#" onclick="showSection('escrow')" class="hover:text-brand-400 transition">Ví Escrow &amp; hợp đồng</a></li>
+                <li><a href="#" class="hover:text-brand-400 transition">Trở thành đối tác trường học</a></li>
+            </ul>
+        </div>
+
+        <!-- Safety links -->
+        <div>
+            <h5 class="text-xs font-bold uppercase tracking-wider text-white mb-4">An toàn</h5>
+            <ul class="space-y-2.5 text-xs">
+                <li><a href="#" onclick="openVerificationModal(); return false;" class="hover:text-brand-400 transition">Xác thực tài khoản SV</a></li>
+                <li><a href="#" onclick="openTermsModal(); return false;" class="hover:text-brand-400 transition">Chính sách Ví Escrow</a></li>
+                <li><a href="#" onclick="openTermsModal(); return false;" class="hover:text-brand-400 transition">Quy trình xử lý tranh chấp</a></li>
+                <li><a href="#" onclick="openTermsModal(); return false;" class="hover:text-brand-400 transition">Điều khoản dịch vụ</a></li>
+            </ul>
+        </div>
+
+        <!-- Support links -->
+        <div>
+            <h5 class="text-xs font-bold uppercase tracking-wider text-white mb-4">Hỗ trợ</h5>
+            <ul class="space-y-2.5 text-xs">
+                <li><a href="#" class="hover:text-brand-400 transition">Trung tâm trợ giúp</a></li>
+                <li><a href="#" class="hover:text-brand-400 transition">Câu hỏi thường gặp</a></li>
+                <li><a href="#" class="hover:text-brand-400 transition">Báo cáo vi phạm</a></li>
+                <li><a href="#" class="hover:text-brand-400 transition">Liên hệ đội ngũ</a></li>
+            </ul>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="sm:col-span-2 lg:col-span-1">
+            <h5 class="text-xs font-bold uppercase tracking-wider text-white mb-4">Nhận tin mùa vụ</h5>
+            <p class="text-xs leading-relaxed mb-3">Nhắc bạn đăng bán SGK, đồ dùng đúng lúc trước mỗi mùa tựu trường &amp; mùa thi.</p>
+            <form onsubmit="handleNewsletterSignup(event)" class="flex items-center gap-2">
+                <input type="email" required placeholder="Email của bạn" class="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <button type="submit" class="shrink-0 px-3.5 py-2 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold transition">Đăng ký</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-500">
+            <span>© 2026 PassBorrow. Nền tảng trung gian kết nối — không trực tiếp cho thuê/bán tài sản.</span>
+            <span>Được xây dựng cho cộng đồng học đường Việt Nam 🇻🇳</span>
+        </div>
+    </div>
+</footer>
+
+<!-- Back to top button -->
+<button id="back-to-top" onclick="window.scrollTo({top:0, behavior:'smooth'})" class="hidden fixed bottom-6 right-6 z-40 w-11 h-11 rounded-full bg-brand-600 hover:bg-brand-700 text-white shadow-lg flex items-center justify-center transition" title="Lên đầu trang">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<!-- MODAL 1: PRODUCT DETAIL & RENTAL CONTRACT GENERATOR -->
+<div id="modal-product" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl border border-slate-200 flex flex-col">
+        
+        <!-- Modal Header -->
+        <div class="p-4 border-b border-slate-200 flex items-center justify-between sticky top-0 bg-white z-10">
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-700 bg-brand-50 px-2.5 py-1 rounded-md border border-brand-200" id="modal-item-badge">
+                Cho Thuê
+            </span>
+            <button onclick="closeModal('modal-product')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="p-5 space-y-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Product Image Gallery -->
+                <div class="space-y-2">
+                    <div class="aspect-4/3 rounded-xl bg-slate-100 overflow-hidden border border-slate-200 relative">
+                        <img id="modal-item-image" src="" class="w-full h-full object-cover">
+                        <div class="absolute bottom-2 left-2 bg-slate-900/70 backdrop-blur-md text-white text-[11px] px-2 py-0.5 rounded-md" id="modal-item-condition">
+                            Tình trạng: Mới 95%
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-slate-500">
+                        <i class="fa-solid fa-camera text-slate-400"></i>
+                        <span>Ảnh minh chứng tình trạng đã xác nhận qua hệ thống</span>
+                    </div>
+                </div>
+
+                <!-- Product Details & Owner Info -->
+                <div class="space-y-3">
+                    <h2 id="modal-item-title" class="text-lg font-bold text-slate-800 leading-snug">
+                        Giáo trình Giải Tích 1 + 2 (ĐH Bách Khoa)
+                    </h2>
+
+                    <!-- Price Box -->
+                    <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-between">
+                        <div>
+                            <div class="text-[11px] text-emerald-800 font-medium">Chi Phí</div>
+                            <div id="modal-item-price" class="text-xl font-black text-brand-700">10.000đ / ngày</div>
+                            <div id="modal-item-savings" class="text-[10px] font-bold text-emerald-700 mt-0.5 hidden"><i class="fa-solid fa-piggy-bank mr-1"></i><span></span></div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[11px] text-slate-500 font-medium">Yêu cầu cọc trung gian</div>
+                            <div id="modal-item-deposit" class="text-sm font-bold text-slate-700">100.000đ</div>
+                        </div>
+                    </div>
+
+                    <!-- Owner Card -->
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <img id="modal-owner-avatar" src="" class="w-10 h-10 rounded-full object-cover">
+                            <div>
+                                <div id="modal-owner-name" class="text-xs font-bold text-slate-800">Trần Văn Nam</div>
+                                <div id="modal-owner-school" class="text-[11px] text-brand-700 font-medium">
+                                    <i class="fa-solid fa-graduation-cap"></i> ĐH Bách Khoa TP.HCM
+                                </div>
+                                <div class="text-[10px] text-amber-500 font-semibold mt-0.5"><i class="fa-solid fa-star"></i> <span id="modal-owner-rating">4.9</span> điểm uy tín</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-end gap-1.5">
+                            <span class="text-[10px] font-bold px-2 py-1 rounded bg-emerald-100 text-emerald-800">
+                                <i class="fa-solid fa-user-check"></i> Đã xác thực SV
+                            </span>
+                            <button onclick="toggleSaveItem(selectedItemForModal.id, true)" id="modal-save-btn" class="text-[10px] font-semibold px-2 py-1 rounded bg-slate-100 text-slate-600 hover:bg-rose-50 hover:text-rose-600 transition">
+                                <i class="fa-regular fa-heart mr-1"></i><span>Lưu tin</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Location 2-Level Admin Tag -->
+                    <div class="text-xs text-slate-600 space-y-1">
+                        <div class="flex items-start gap-1.5">
+                            <i class="fa-solid fa-location-dot text-rose-500 mt-0.5"></i>
+                            <div>
+                                <strong class="text-slate-800">Địa điểm giao nhận:</strong>
+                                <div id="modal-item-location" class="text-slate-600">Phường Thảo Điền, TP. Hồ Chí Minh</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <p id="modal-item-desc" class="text-xs text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        Mô tả đầy đủ chi tiết mặt hàng ở đây...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Electronic Rental Contract Generator Section -->
+            <div class="p-4 rounded-2xl bg-amber-50/60 border border-amber-200 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-amber-900 uppercase tracking-wide flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-contract text-amber-600"></i> Hợp Đồng Thuê Điện Tử Tự Động (Điều khoản đính kèm)
+                    </h3>
+                    <span class="text-[10px] font-semibold bg-amber-200/70 text-amber-900 px-2 py-0.5 rounded">Pháp lý dân sự</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Ngày bắt đầu thuê</label>
+                        <input id="contract-start-date" type="date" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs" onchange="calculateRentalTotal()">
+                    </div>
+                    <div>
+                        <label class="block font-medium text-slate-700 mb-1">Ngày dự kiến hoàn trả</label>
+                        <input id="contract-end-date" type="date" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs" onchange="calculateRentalTotal()">
+                    </div>
+                </div>
+
+                <div class="text-[11px] text-slate-600 space-y-1 bg-white p-3 rounded-xl border border-amber-200">
+                    <p>• <strong>Tiền cọc Escrow:</strong> Được khóa tự động tại hệ thống PassBorrow cho tới khi bên cho thuê nhận lại đồ đúng tình trạng.</p>
+                    <p>• <strong>Phạt trễ hạn:</strong> Mọi hành vi trễ hạn không báo trước sẽ bị trừ cọc 20%/ngày theo giá trị hợp đồng.</p>
+                    <p>• <strong>Bảo chứng tình trạng:</strong> Chụp ảnh/video trước và sau khi bàn giao trực tiếp.</p>
+                </div>
+
+                <!-- Total Fee Summary -->
+                <div class="flex items-center justify-between pt-1">
+                    <span class="text-xs text-slate-600">Tổng phí thanh toán giữ cọc:</span>
+                    <span id="contract-total-summary" class="text-base font-extrabold text-brand-700">110.000 VNĐ</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-end gap-3 sticky bottom-0">
+            <button onclick="startChatFromModal()" class="px-4 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs transition">
+                <i class="fa-solid fa-comment-dots mr-1"></i> Nhắn tin trao đổi
+            </button>
+            <button onclick="confirmEscrowCheckout()" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md transition">
+                <i class="fa-solid fa-lock mr-1"></i> Ký Hợp Đồng &amp; Đặt Cọc Escrow
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL 2: POST NEW ITEM -->
+<div id="modal-new-post" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl border border-slate-200 p-6 space-y-4">
+        
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-lg font-bold text-slate-800">Đăng Tin Cho Thuê - Mượn Hoặc Thanh Lý Đồ Cũ</h2>
+            <button onclick="closeModal('modal-new-post')" class="text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <form id="form-new-post" onsubmit="handleCreatePost(event)" class="space-y-4 text-xs">
+            
+            <!-- Type Selection -->
+            <div class="grid grid-cols-3 gap-2">
+                <label class="cursor-pointer border border-slate-200 rounded-xl p-3 text-center hover:border-brand-500 transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50">
+                    <input type="radio" name="post_type" value="thue" class="sr-only" checked>
+                    <div class="font-bold text-slate-800">Cho Thuê</div>
+                    <div class="text-[10px] text-slate-500">Tính phí/ngày</div>
+                </label>
+                <label class="cursor-pointer border border-slate-200 rounded-xl p-3 text-center hover:border-brand-500 transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50">
+                    <input type="radio" name="post_type" value="muon" class="sr-only">
+                    <div class="font-bold text-slate-800">Cho Mượn</div>
+                    <div class="text-[10px] text-slate-500">Miễn phí (0đ)</div>
+                </label>
+                <label class="cursor-pointer border border-slate-200 rounded-xl p-3 text-center hover:border-brand-500 transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50">
+                    <input type="radio" name="post_type" value="ban" class="sr-only">
+                    <div class="font-bold text-slate-800">Thanh Lý</div>
+                    <div class="text-[10px] text-slate-500">Bán lại</div>
+                </label>
+            </div>
+
+            <!-- Title & Category -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Tên món đồ / Tiêu đề tin đăng *</label>
+                    <input id="post-title" type="text" required placeholder="Ví dụ: Máy tính bỏ túi Casio FX 580VN X" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Nhóm hàng *</label>
+                    <select id="post-category" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="sach">Sách vở & Giáo trình</option>
+                        <option value="dung-cu">Dụng cụ học tập</option>
+                        <option value="thoi-trang">Thời trang & Trang phục</option>
+                        <option value="gia-dung">Đồ phòng trọ / Gia dụng</option>
+                        <option value="dien-tu">Thiết bị điện tử</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Price & Deposit -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Giá bán hoặc Giá thuê / ngày (VNĐ) *</label>
+                    <input id="post-price" type="number" required placeholder="15000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Số tiền yêu cầu cọc trung gian (VNĐ)</label>
+                    <input id="post-deposit" type="number" placeholder="200000" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+
+            <!-- 2-Level Administrative Location Selection -->
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                <span class="font-bold text-slate-800 block">Khu Vực Giao Nhận (Mô hình địa giới 2 cấp 2026)</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-slate-600 mb-1">Tỉnh / Thành phố *</label>
+                        <select id="post-province" required onchange="onPostProvinceChange()" class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
+                            <option value="">-- Chọn Tỉnh / TP --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-slate-600 mb-1">Xã / Phường / Đặc khu *</label>
+                        <select id="post-ward" required class="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none disabled:opacity-50" disabled>
+                            <option value="">-- Chọn Xã / Phường --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image URL Mock -->
+            <div>
+                <label class="block font-medium text-slate-700 mb-1">Link Ảnh Sản Phẩm (Hoặc Chọn Ảnh Mẫu)</label>
+                <input id="post-image-url" type="url" placeholder="https://..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block font-medium text-slate-700 mb-1">Mô tả chi tiết &amp; Tình trạng sử dụng *</label>
+                <textarea id="post-desc" rows="3" required placeholder="Ghi rõ thông tin tình trạng, lưu ý khi cho thuê hoặc bán..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="flex items-center justify-end gap-3 pt-2">
+                <button type="button" onclick="closeModal('modal-new-post')" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition">
+                    Hủy bỏ
+                </button>
+                <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold shadow-md transition">
+                    Đăng Tin Ngay
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL 3: STUDENT ID VERIFICATION -->
+<div id="modal-verify" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 p-6 space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-id-card text-brand-600"></i> Xác Thực Thẻ Học Sinh / Sinh Viên
+            </h2>
+            <button onclick="closeModal('modal-verify')" class="text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <p class="text-xs text-slate-600 leading-relaxed">
+            Tăng điểm uy tín lên 100%, ưu tiên hiển thị tin đăng &amp; gia tăng lòng tin khi giao nhận đồ ngắn hạn trong cộng đồng.
+        </p>
+
+        <form onsubmit="handleVerifyStudent(event)" class="space-y-3 text-xs">
+            <div>
+                <label class="block font-medium text-slate-700 mb-1">Trường học / Viện đào tạo</label>
+                <input type="text" required placeholder="Ví dụ: Đại Học Bách Khoa TP.HCM" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
+            </div>
+            <div>
+                <label class="block font-medium text-slate-700 mb-1">Mã số sinh viên (MSSV)</label>
+                <input type="text" required placeholder="Ví dụ: 20216789" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none">
+            </div>
+            <div class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:bg-slate-50 cursor-pointer">
+                <i class="fa-solid fa-cloud-arrow-up text-2xl text-slate-400 mb-1"></i>
+                <div class="text-xs font-semibold text-slate-700">Tải lên ảnh Thẻ SV / CCCD chính chủ</div>
+                <div class="text-[10px] text-slate-400">Hệ thống bảo mật dữ liệu theo chuẩn AI</div>
+            </div>
+
+            <div class="pt-2 flex justify-end gap-2">
+                <button type="button" onclick="closeModal('modal-verify')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold">Đóng</button>
+                <button type="submit" class="px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold shadow">Xác Thực Ngay</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL 4: USER SETTINGS & PROFILE EDITING -->
+<div id="modal-settings" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl border border-slate-200 p-6 space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                <i class="fa-solid fa-gear text-brand-600"></i> Cài Đặt Tài Khoản & Hồ Sơ Cá Nhân
+            </h2>
+            <button onclick="closeModal('modal-settings')" class="text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Settings Navigation Tabs -->
+        <div class="flex border-b border-slate-200 gap-4 text-xs font-semibold">
+            <button id="set-tab-profile-btn" onclick="switchSettingsTab('profile')" class="pb-2 text-brand-600 border-b-2 border-brand-600 font-bold">
+                <i class="fa-solid fa-user mr-1"></i> Thông tin hồ sơ
+            </button>
+            <button id="set-tab-password-btn" onclick="switchSettingsTab('password')" class="pb-2 text-slate-500 hover:text-slate-700">
+                <i class="fa-solid fa-key mr-1"></i> Đổi mật khẩu
+            </button>
+        </div>
+
+        <!-- Tab 1: Profile Editing -->
+        <form id="form-settings-profile" onsubmit="saveProfileSettings(event)" class="space-y-3.5 text-xs">
+            <div>
+                <label class="block font-medium text-slate-700 mb-1">Tên hiển thị / Họ và tên *</label>
+                <input id="settings-name" type="text" required placeholder="Nguyễn Văn A" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Số điện thoại liên hệ</label>
+                    <input id="settings-phone" type="tel" placeholder="0912345678" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Địa chỉ Email</label>
+                    <input id="settings-email" type="email" placeholder="student@gmail.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Trường học / Viện đào tạo</label>
+                    <input id="settings-school" type="text" placeholder="ĐH Bách Khoa TP.HCM" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block font-medium text-slate-700 mb-1">Mã số sinh viên (MSSV)</label>
+                    <input id="settings-student-id" type="text" placeholder="20216789" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-medium text-slate-700 mb-1">Địa chỉ nhận đồ mặc định</label>
+                <input id="settings-address" type="text" placeholder="Ký túc xá Khu A, ĐHQG TP.HCM" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+
+            <div class="pt-2 flex justify-end gap-2">
+                <button type="button" onclick="closeModal('modal-settings')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold">Đóng</button>
+                <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold shadow">
+                    Lưu Thay Đổi
+                </button>
+            </div>
+        </form>
+
+        <!-- Tab 2: Password Changing -->
+        <form id="form-settings-password" onsubmit="savePasswordSettings(event)" class="hidden space-y-3.5 text-xs">
+            <div>
+                <label class="block font-medium text-slate-700 mb-1">Mật khẩu hiện tại *</label>
+                <input id="settings-old-pass" type="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+                <label class="block font-medium text-slate-700 mb-1">Mật khẩu mới *</label>
+                <input id="settings-new-pass" type="password" required placeholder="Ít nhất 6 ký tự" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <div>
+                <label class="block font-medium text-slate-700 mb-1">Xác nhận mật khẩu mới *</label>
+                <input id="settings-confirm-pass" type="password" required placeholder="Nhập lại mật khẩu mới" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+
+            <div class="pt-2 flex justify-end gap-2">
+                <button type="button" onclick="closeModal('modal-settings')" class="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-semibold">Đóng</button>
+                <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold shadow">
+                    Cập Nhật Mật Khẩu
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL 5: REQUIRE LOGIN BEFORE BUYING/RENTING -->
+<div id="modal-login-required" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 p-6 text-center space-y-4">
+        <div class="w-14 h-14 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center mx-auto text-2xl shadow-inner">
+            <i class="fa-solid fa-lock"></i>
+        </div>
+        <div>
+            <h3 class="text-lg font-bold text-slate-800">Yêu Cầu Đăng Nhập Tài Khoản</h3>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                Hiện tại bạn đang ở chế độ xem sản phẩm. Để <strong>mua, thuê hoặc đặt cọc Escrow</strong> sản phẩm trên PassBorrow, bạn cần phải đăng nhập tài khoản.
+            </p>
+        </div>
+        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-left text-xs text-amber-800 space-y-1">
+            <div class="font-bold flex items-center gap-1.5">
+                <i class="fa-solid fa-shield-halved"></i> Quyền lợi khi đăng nhập:
+            </div>
+            <p>• Bảo vệ tiền cọc bằng ví Escrow trung gian</p>
+            <p>• Ký hợp đồng thuê điện tử tự động</p>
+            <p>• Nhắn tin trực tiếp với chủ đồ & tích lũy điểm uy tín</p>
+        </div>
+        <div class="flex items-center gap-3 pt-2">
+            <button onclick="closeModal('modal-login-required')" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition">
+                Để sau (Tiếp tục xem)
+            </button>
+            <a href="dang-nhap.html" class="flex-1 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-right-to-bracket"></i> Đăng Nhập Ngay
+            </a>
+    </div>
+</div>
+
+<!-- MODAL 6: DETAILED TERMS & OPERATIONAL POLICIES -->
+<div id="modal-terms" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center text-lg shadow-sm">
+                    <i class="fa-solid fa-file-contract"></i>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-slate-800">Điều Khoản Dịch Vụ & Chính Sách PassBorrow</h3>
+                    <p class="text-[11px] text-slate-500">Quy chế hoạt động, Giữ cọc Escrow & An toàn Cộng đồng Học đường</p>
+                </div>
+            </div>
+            <button onclick="closeModal('modal-terms')" class="w-8 h-8 rounded-full bg-slate-200/70 text-slate-500 hover:text-slate-800 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <!-- Modal Content (Scrollable) -->
+        <div class="p-6 overflow-y-auto space-y-4 text-xs text-slate-600 leading-relaxed custom-scrollbar">
+            
+            <!-- Section 1 -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <h4 class="text-xs font-bold text-brand-700 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info"></i> 1. Quy Định Chung & Mục Đích Nền Tảng
+                </h4>
+                <p>PassBorrow là nền tảng kết nối trực tuyến P2P (Peer-to-Peer) dành cho cộng đồng Học sinh - Sinh viên để chia sẻ, cho mượn (0đ), cho thuê và thanh lý các sản phẩm/thiết bị học tập, công nghệ, đồ dùng sinh hoạt.</p>
+                <p>PassBorrow đóng vai trò đơn vị cung cấp hạ tầng kết nối, hệ thống Hợp đồng điện tử và Cơ chế Ví trung gian Escrow để đảm bảo tính an toàn, minh bạch cho mọi giao dịch.</p>
+            </div>
+
+            <!-- Section 2 -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <h4 class="text-xs font-bold text-brand-700 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-user-shield"></i> 2. Xác Thực Tài Khoản & Tư Cách Thành Viên
+                </h4>
+                <p><strong>Xác thực học đường (eKYC Sinh viên):</strong> Thành viên được khuyến khích xác minh Thẻ Sinh viên/Học sinh, Email trường (.edu.vn) hoặc CCCD để nhận Huy hiệu Uy tín & Mở khóa đặc quyền mượn đồ 0đ.</p>
+                <p><strong>Tính chính xác thông tin:</strong> Thành viên chịu trách nhiệm hoàn toàn về tính chuẩn xác của thông tin cá nhân. Mỗi cá nhân chỉ sở hữu 01 tài khoản duy nhất. Mọi hành vi tạo tài khoản giả mạo sẽ bị khóa vĩnh viễn.</p>
+            </div>
+
+            <!-- Section 3 -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <h4 class="text-xs font-bold text-brand-700 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-vault"></i> 3. Quy Trình Giao Dịch & Cơ Chế Ví Escrow (Giữ Cọc Trung Gian)
+                </h4>
+                <p><strong>Giữ cọc an toàn:</strong> Khi xác nhận hợp đồng thuê/mượn, tiền phí và Tiền cọc Escrow sẽ được tạm khóa bảo mật tại PassBorrow.</p>
+                <p><strong>Biên bản bàn giao:</strong> Hai bên chụp ảnh/quay video xác nhận trạng thái sản phẩm lúc giao nhận và tải lên hệ thống.</p>
+                <p><strong>Giải ngân & Hoàn cọc:</strong> Khi sản phẩm được trả đúng trạng thái, hệ thống Escrow tự động chuyển tiền phí cho chủ đồ và hoàn trả 100% Tiền cọc cho người thuê trong 24h.</p>
+            </div>
+
+            <!-- Section 4 -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <h4 class="text-xs font-bold text-brand-700 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i> 4. Quy Định Trả Đồ Trễ Hạn, Hư Hỏng & Mất Mát
+                </h4>
+                <p><strong>Trả đồ trễ hạn:</strong> Trễ &lt; 12h tính phí quá hạn 50% tiền thuê/ngày. Trễ &gt;= 24h không báo trước sẽ trừ phí thuê trực tiếp từ Tiền cọc Escrow.</p>
+                <p><strong>Đền bù hỏng hóc:</strong> Lỗi nhẹ đền bù 10-20% cọc. Hỏng nặng hoặc mất đồ, toàn bộ Tiền cọc Escrow được trích đền bù cho chủ sản phẩm theo giá trị thực tế.</p>
+                <p><strong>Vi phạm nghiêm trọng:</strong> Chiếm đoạt tài sản trễ quá 3 ngày không liên lạc sẽ bị đưa vào danh sách đen (Blacklist) và gửi hồ sơ sang Ban Giám hiệu Nhà trường & Cơ quan chức năng.</p>
+            </div>
+
+            <!-- Section 5 -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <h4 class="text-xs font-bold text-brand-700 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-ban"></i> 5. Danh Mục Hàng Hóa Cấm & Quy Chuẩn Bài Đăng
+                </h4>
+                <p>Nghiêm cấm đăng tải: Vũ khí, chất cấm, tài liệu vi phạm pháp luật, hàng nhái nguy hiểm, đồ vật không thuộc sở hữu hợp pháp.</p>
+                <p>Bài đăng phải dùng ảnh thật, mô tả trung thực tình trạng cũ/mới và chi tiết phụ kiện đi kèm.</p>
+            </div>
+
+            <!-- Section 6 -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                <h4 class="text-xs font-bold text-brand-700 uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-lock"></i> 6. Bảo Mật Thông Tin & Trọng Tài Escrow
+                </h4>
+                <p>Thông tin cá nhân được bảo mật 256-bit và chỉ chia sẻ giữa 2 bên khi hợp đồng giao dịch được tạo.</p>
+                <p>Đội ngũ Trọng tài PassBorrow trực tiếp tiếp nhận & phân xử mọi khiếu nại minh bạch dựa trên minh chứng bàn giao.</p>
+            </div>
+
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-6 py-3.5 border-t border-slate-200 flex justify-end bg-slate-50">
+            <button onclick="closeModal('modal-terms')" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs transition shadow-sm">
+                Tôi Đã Đọc & Đồng Ý
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT LOGIC -->
+<script>
+/**
+ * 2026 Updated Administrative Divisions Data (2-Level Structure: Province -> Ward/Commune)
+ * Reduced from 63 to 34 major administrative entities, matching recent reform resolutions.
+ */
+const ADMINISTRATIVE_DATA = [
+    {
+        province: "TP. Hồ Chí Minh",
+        wards: [
+            "Phường Thảo Điền", "Phường Bến Nghé", "Phường Bến Thành", "Phường Tân Định", 
+            "Phường Linh Trung (Khu ĐHQG)", "Phường Linh Chiểu", "Phường Đông Hòa", "Phường Phú Hữu"
+        ]
+    },
+    {
+        province: "TP. Hà Nội",
+        wards: [
+            "Phường Dịch Vọng Hậu", "Phường Bách Khoa", "Phường Kim Liên", "Phường Định Công", 
+            "Phường Mỹ Đình 1", "Phường Thượng Đình", "Phường Cống Vị", "Xã Hòa Lạc"
+        ]
+    },
+    {
+        province: "TP. Đà Nẵng",
+        wards: [
+            "Phường Hòa Khánh Bắc", "Phường Hải Châu I", "Phường Mỹ An", "Phường Khuê Trung", "Phường Phước Mỹ"
+        ]
+    },
+    {
+        province: "TP. Hải Phòng",
+        wards: [
+            "Phường Lê Lợi", "Phường Đằng Giang", "Phường Lách Tray", "Phường Quán Toan"
+        ]
+    },
+    {
+        province: "TP. Cần Thơ",
+        wards: [
+            "Phường Xuân Khánh", "Phường An Khánh", "Phường Cai Khè", "Phường Hưng Lợi"
+        ]
+    },
+    {
+        province: "Tỉnh Bình Dương",
+        wards: [
+            "Phường Phú Hòa", "Phường Chánh Nghĩa", "Phường Dĩ An", "Phường Đông Hòa"
+        ]
+    },
+    {
+        province: "Tỉnh Thừa Thiên Huế",
+        wards: [
+            "Phường Vĩnh Ninh", "Phường Phú Hội", "Phường Thủy Xuân", "Phường Hương Sơ"
+        ]
+    },
+    {
+        province: "Tỉnh Nghệ An",
+        wards: [
+            "Phường Trường Thi", "Phường Bến Thủy", "Phường Hưng Dũng", "Phường Vinh Tân"
+        ]
+    }
+];
+
+/**
+ * Mock Initial Listings Database
+ */
+let sampleListings = [
+    {
+        id: "ITEM-001",
+        title: "Máy tính bỏ túi Casio FX-580VN X",
+        category: "dung-cu",
+        type: "thue", // thue, muon, ban
+        price: 15000,
+        priceUnit: "/ ngày",
+        deposit: 350000,
+        originalPrice: 550000,
+        condition: "Mới 98%",
+        ownerName: "Nguyễn Thu Thảo",
+        ownerSchool: "ĐH Bách Khoa",
+        ownerRating: 4.9,
+        ownerAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
+        verified: true,
+        province: "TP. Hồ Chí Minh",
+        ward: "Phường Linh Trung (Khu ĐHQG)",
+        schoolCode: "BK",
+        image: "https://images.unsplash.com/photo-1594980596870-8aa52a78d8cd?w=500&h=400&fit=crop",
+        desc: "Máy tính màu xanh đậm, mới mua kỳ trước, bấm phím siêu nhạy. Rất thích hợp cho các bạn thuê ngắn hạn thi kỳ môn Toán/Giải tích/Vật lý.",
+        distanceKm: "0.8 km"
+    },
+    {
+        id: "ITEM-002",
+        title: "Bộ Giáo Trình Giải Tích 1, 2 & Đại Số Bách Khoa",
+        category: "sach",
+        type: "muon",
+        price: 0,
+        priceUnit: "Miễn phí",
+        deposit: 50000,
+        originalPrice: 220000,
+        condition: "Đã dùng (Có ghi chú highlight)",
+        ownerName: "Lê Hoàng Nam",
+        ownerSchool: "ĐH Bách Khoa",
+        ownerRating: 4.8,
+        ownerAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+        verified: true,
+        province: "TP. Hà Nội",
+        ward: "Phường Bách Khoa",
+        schoolCode: "BK",
+        image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&h=400&fit=crop",
+        desc: "Mình đã thi xong môn này nên cho các bạn khóa dưới mượn lại 0đ dùng suốt học kỳ. Chỉ cần giữ gìn cẩn thận không xé trang.",
+        distanceKm: "1.2 km"
+    },
+    {
+        id: "ITEM-003",
+        title: "Nồi cơm điện Supor 1.8L cho phòng trọ",
+        category: "gia-dung",
+        type: "ban",
+        price: 180000,
+        priceUnit: "Thanh lý",
+        deposit: 0,
+        originalPrice: 450000,
+        condition: "Mới 85%",
+        ownerName: "Trần Bảo Ngọc",
+        ownerSchool: "ĐH Kinh tế (UEH)",
+        ownerRating: 4.6,
+        ownerAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
+        verified: true,
+        province: "TP. Hồ Chí Minh",
+        ward: "Phường Bến Thành",
+        schoolCode: "UEH",
+        image: "https://images.unsplash.com/photo-1584992236310-6edddc08acff?w=500&h=400&fit=crop",
+        desc: "Nồi dùng tốt, nấu nhanh chín, không dính đáy. Ra trường về quê nên cần thanh lý gấp giá học sinh.",
+        distanceKm: "2.5 km"
+    },
+    {
+        id: "ITEM-004",
+        title: "Tai nghe chống ồn Sony WH-1000XM4",
+        category: "dien-tu",
+        type: "thue",
+        price: 45000,
+        priceUnit: "/ ngày",
+        deposit: 1500000,
+        originalPrice: 6500000,
+        condition: "Mới 99%",
+        ownerName: "Đặng Minh Trí",
+        ownerSchool: "ĐH Quốc Gia",
+        ownerRating: 4.9,
+        ownerAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+        verified: true,
+        province: "TP. Hồ Chí Minh",
+        ward: "Phường Thảo Điền",
+        schoolCode: "DHQG",
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&h=400&fit=crop",
+        desc: "Cho thuê tập trung học thi ôn thi cuối kỳ, chống ồn tuyệt đối. Đầy đủ túi đựng và dây cáp.",
+        distanceKm: "3.1 km"
+    },
+    {
+        id: "ITEM-005",
+        title: "Trang phục Lễ Tốt Nghiệp Cử Nhân / Kỹ Sư",
+        category: "thoi-trang",
+        type: "thue",
+        price: 50000,
+        priceUnit: "/ ngày",
+        deposit: 200000,
+        originalPrice: 800000,
+        condition: "Mới 95% đã giặt ủi",
+        ownerName: "Phạm Khánh Linh",
+        ownerSchool: "ĐH Kinh tế Quốc Dân",
+        ownerRating: 4.7,
+        ownerAvatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop",
+        verified: true,
+        province: "TP. Hà Nội",
+        ward: "Phường Dịch Vọng Hậu",
+        schoolCode: "NEU",
+        image: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=500&h=400&fit=crop",
+        desc: "Áo cử nhân kèm nón & dải ruy băng. Thích hợp cho các bạn chụp ảnh kỷ yếu mùa tốt nghiệp.",
+        distanceKm: "1.5 km"
+    }
+];
+
+/**
+ * Active Escrow Contracts Mock Data
+ */
+let sampleContracts = [
+    {
+        id: "HD-8842",
+        itemName: "Máy tính Casio FX-580VN X",
+        partner: "Nguyễn Thu Thảo",
+        dates: "12/08 - 15/08/2026",
+        lockedAmount: 350000,
+        status: "Đang giữ cọc",
+        statusColor: "bg-amber-100 text-amber-800 border-amber-200"
+    },
+    {
+        id: "HD-7210",
+        itemName: "Tai nghe Sony WH-1000XM4",
+        partner: "Đặng Minh Trí",
+        dates: "01/08 - 05/08/2026",
+        lockedAmount: 1500000,
+        status: "Đã hoàn thành & Trả cọc",
+        statusColor: "bg-emerald-100 text-emerald-800 border-emerald-200"
+    }
+];
+
+/**
+ * State Variables
+ */
+let userBalance = 500000;
+let userVerified = false;
+let currentCategoryFilter = "all";
+let selectedItemForModal = null;
+let activeChatPartner = "Nguyễn Thu Thảo";
+let savedItems = new Set();
+
+// Initialize UI on window load
+window.onload = function() {
+    populateLocationDropdowns();
+    renderListings();
+    renderContracts();
+    setupChatList();
+    updateBalanceDisplay();
+    updateSavedBadge();
+    updateAuthUI();
+};
+
+/**
+ * Populate Administrative Locations (Level 1: Province & Level 2: Ward)
+ */
+function populateLocationDropdowns() {
+    const filterProv = document.getElementById("filter-province");
+    const headProv = document.getElementById("header-province");
+    const postProv = document.getElementById("post-province");
+
+    ADMINISTRATIVE_DATA.forEach(item => {
+        const opt1 = new Option(item.province, item.province);
+        const opt2 = new Option(item.province, item.province);
+        const opt3 = new Option(item.province, item.province);
+        filterProv.add(opt1);
+        headProv.add(opt2);
+        postProv.add(opt3);
+    });
+}
+
+function onProvinceChange() {
+    const provName = document.getElementById("filter-province").value;
+    const wardSelect = document.getElementById("filter-ward");
+    wardSelect.innerHTML = '<option value="">Tất cả Xã/Phường</option>';
+
+    if (!provName) {
+        wardSelect.disabled = true;
+    } else {
+        wardSelect.disabled = false;
+        const target = ADMINISTRATIVE_DATA.find(x => x.province === provName);
+        if (target) {
+            target.wards.forEach(w => {
+                wardSelect.add(new Option(w, w));
+            });
+        }
+    }
+    renderListings();
+}
+
+function onPostProvinceChange() {
+    const provName = document.getElementById("post-province").value;
+    const wardSelect = document.getElementById("post-ward");
+    wardSelect.innerHTML = '<option value="">-- Chọn Xã / Phường --</option>';
+
+    if (!provName) {
+        wardSelect.disabled = true;
+    } else {
+        wardSelect.disabled = false;
+        const target = ADMINISTRATIVE_DATA.find(x => x.province === provName);
+        if (target) {
+            target.wards.forEach(w => {
+                wardSelect.add(new Option(w, w));
+            });
+        }
+    }
+}
+
+function onHeaderProvinceChange() {
+    const val = document.getElementById("header-province").value;
+    document.getElementById("filter-province").value = val;
+    onProvinceChange();
+}
+
+/**
+ * Filter & Search Functions
+ */
+function setCategoryFilter(cat) {
+    currentCategoryFilter = cat;
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+        const isActive = btn.dataset.cat === cat;
+        btn.classList.toggle('active', isActive);
+        btn.classList.toggle('bg-brand-600', isActive);
+        btn.classList.toggle('text-white', isActive);
+        btn.classList.toggle('shadow-sm', isActive);
+        btn.classList.toggle('bg-slate-100', !isActive);
+        btn.classList.toggle('text-slate-700', !isActive);
+    });
+    renderListings();
+}
+
+/**
+ * Jump into a category from the seasonal suggestion chips and scroll to results
+ */
+function setCategoryFilterFromChip(cat) {
+    setCategoryFilter(cat);
+    const grid = document.getElementById('listings-grid');
+    if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showToast('Đã lọc theo gợi ý mùa vụ!', 'info');
+}
+
+function handleSearch() {
+    renderListings();
+}
+
+function syncAndSearchMobile(val) {
+    document.getElementById("global-search").value = val;
+    renderListings();
+}
+
+function resetFilters() {
+    document.getElementById("global-search").value = "";
+    document.getElementById("filter-deal-type").value = "all";
+    document.getElementById("filter-province").value = "";
+    document.getElementById("filter-ward").value = "";
+    document.getElementById("filter-ward").disabled = true;
+    document.getElementById("filter-school").value = "";
+    currentCategoryFilter = "all";
+    renderListings();
+    showToast("Đã làm mới bộ lọc!", "info");
+}
+
+/**
+ * Render Listings Grid
+ */
+function renderListings() {
+    const grid = document.getElementById("listings-grid");
+    const searchText = document.getElementById("global-search").value.toLowerCase();
+    const dealType = document.getElementById("filter-deal-type").value;
+    const provFilter = document.getElementById("filter-province").value;
+    const wardFilter = document.getElementById("filter-ward").value;
+    const schoolFilter = document.getElementById("filter-school").value;
+
+    let filtered = sampleListings.filter(item => {
+        // Category check
+        if (currentCategoryFilter !== 'all' && item.category !== currentCategoryFilter) return false;
+        // Search text
+        if (searchText && !item.title.toLowerCase().includes(searchText) && !item.desc.toLowerCase().includes(searchText)) return false;
+        // Deal Type
+        if (dealType !== 'all' && item.type !== dealType) return false;
+        // Province & Ward
+        if (provFilter && item.province !== provFilter) return false;
+        if (wardFilter && item.ward !== wardFilter) return false;
+        // School
+        if (schoolFilter && item.schoolCode !== schoolFilter) return false;
+
+        return true;
+    });
+
+    document.getElementById("listing-count").innerText = filtered.length;
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `
+            <div class="col-span-full py-12 text-center bg-white rounded-2xl border border-slate-200">
+                <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-2"></i>
+                <div class="font-bold text-slate-700 text-sm">Chưa tìm thấy món đồ phù hợp</div>
+                <div class="text-xs text-slate-400 mt-1">Hãy thử mở rộng bán kính lọc hoặc đăng tin yêu cầu mới!</div>
+            </div>
+        `;
+        return;
+    }
+
+    grid.innerHTML = filtered.map(item => {
+        let badgeColor = "bg-brand-100 text-brand-800 border-brand-200";
+        let badgeLabel = "Cho Thuê";
+        if (item.type === 'muon') {
+            badgeColor = "bg-indigo-100 text-indigo-800 border-indigo-200";
+            badgeLabel = "Cho Mượn 0đ";
+        } else if (item.type === 'ban') {
+            badgeColor = "bg-amber-100 text-amber-800 border-amber-200";
+            badgeLabel = "Thanh Lý";
+        }
+
+        const savingsPct = (item.originalPrice && item.originalPrice > item.price) ? Math.round((1 - item.price / item.originalPrice) * 100) : 0;
+        const isSaved = savedItems.has(item.id);
+
+        return `
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
+                <!-- Thumbnail -->
+                <div class="relative aspect-4/3 overflow-hidden bg-slate-100 cursor-pointer" onclick="openProductModal('${item.id}')">
+                    <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    <span class="absolute top-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-md border ${badgeColor}">
+                        ${badgeLabel}
+                    </span>
+                    <button onclick="event.stopPropagation(); toggleSaveItem('${item.id}')" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-sm hover:scale-110 transition" title="Lưu tin">
+                        <i class="fa-${isSaved ? 'solid' : 'regular'} fa-heart text-[12px] ${isSaved ? 'text-rose-500' : 'text-slate-500'}"></i>
+                    </button>
+                    ${savingsPct > 0 ? `
+                        <span class="absolute bottom-2 left-2 text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-500 text-white shadow-sm">
+                            <i class="fa-solid fa-piggy-bank mr-1"></i>Tiết kiệm ${savingsPct}%
+                        </span>
+                    ` : ''}
+                    <span class="absolute bottom-2 right-2 text-[10px] bg-slate-900/70 text-white backdrop-blur-sm px-2 py-0.5 rounded">
+                        <i class="fa-solid fa-person-walking mr-1 text-emerald-400"></i>${item.distanceKm}
+                    </span>
+                </div>
+
+                <!-- Body -->
+                <div class="p-3.5 flex-1 flex flex-col justify-between space-y-2">
+                    <div>
+                        <h3 class="font-bold text-xs text-slate-800 line-clamp-2 hover:text-brand-600 cursor-pointer" onclick="openProductModal('${item.id}')">
+                            ${item.title}
+                        </h3>
+                        <div class="flex items-center gap-1 text-[11px] text-slate-500 mt-1">
+                            <i class="fa-solid fa-location-dot text-rose-500"></i>
+                            <span class="truncate">${item.ward}, ${item.province}</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-slate-400 block text-[10px]">Mức phí</span>
+                                <span class="font-extrabold text-sm text-brand-700">${item.price > 0 ? item.price.toLocaleString('vi-VN') + 'đ' : '0đ'}</span>
+                                <span class="text-[10px] text-slate-500">${item.priceUnit}</span>
+                            </div>
+                            ${item.deposit > 0 ? `
+                                <div class="text-right">
+                                    <span class="text-[9px] text-slate-400 block">Tiền cọc</span>
+                                    <span class="text-xs font-semibold text-slate-600">${item.deposit.toLocaleString('vi-VN')}đ</span>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <div class="flex items-center gap-1.5 min-w-0">
+                                <img src="${item.ownerAvatar}" class="w-5 h-5 rounded-full object-cover shrink-0">
+                                <div class="min-w-0">
+                                    <span class="text-[10px] font-medium text-slate-600 truncate block max-w-[90px]">${item.ownerName}</span>
+                                    <span class="text-[9px] text-amber-500 font-semibold"><i class="fa-solid fa-star"></i> ${item.ownerRating || '5.0'}</span>
+                                </div>
+                            </div>
+                            <button onclick="openProductModal('${item.id}')" class="px-2.5 py-1 bg-slate-100 hover:bg-brand-600 hover:text-white rounded-lg text-[10px] font-bold text-slate-700 transition">
+                                Chi tiết
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+/**
+ * Open Product Detail & Electronic Contract Modal
+ */
+function openProductModal(id) {
+    const item = sampleListings.find(x => x.id === id);
+    if (!item) return;
+    selectedItemForModal = item;
+
+    document.getElementById("modal-item-title").innerText = item.title;
+    document.getElementById("modal-item-image").src = item.image;
+    document.getElementById("modal-item-condition").innerText = `Tình trạng: ${item.condition}`;
+    document.getElementById("modal-item-price").innerText = `${item.price > 0 ? item.price.toLocaleString('vi-VN') + 'đ' : '0đ'} ${item.priceUnit}`;
+    document.getElementById("modal-item-deposit").innerText = `${item.deposit.toLocaleString('vi-VN')}đ`;
+    document.getElementById("modal-owner-name").innerText = item.ownerName;
+    document.getElementById("modal-owner-school").innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${item.ownerSchool}`;
+    document.getElementById("modal-owner-rating").innerText = item.ownerRating || '5.0';
+    document.getElementById("modal-owner-avatar").src = item.ownerAvatar;
+    document.getElementById("modal-item-location").innerText = `${item.ward}, ${item.province}`;
+    document.getElementById("modal-item-desc").innerText = item.desc;
+    document.getElementById("modal-item-badge").innerText = item.type === 'thue' ? 'Cho Thuê' : (item.type === 'muon' ? 'Cho Mượn 0đ' : 'Thanh Lý');
+
+    const savingsEl = document.getElementById("modal-item-savings");
+    const savingsPct = (item.originalPrice && item.originalPrice > item.price) ? Math.round((1 - item.price / item.originalPrice) * 100) : 0;
+    if (savingsPct > 0) {
+        savingsEl.classList.remove('hidden');
+        savingsEl.querySelector('span').innerText = `Tiết kiệm ${savingsPct}% so với giá mua mới (~${item.originalPrice.toLocaleString('vi-VN')}đ)`;
+    } else {
+        savingsEl.classList.add('hidden');
+    }
+    updateModalSaveButton();
+
+    // Default dates
+    const today = new Date();
+    const nextThreeDays = new Date();
+    nextThreeDays.setDate(today.getDate() + 3);
+
+    document.getElementById("contract-start-date").value = today.toISOString().split('T')[0];
+    document.getElementById("contract-end-date").value = nextThreeDays.toISOString().split('T')[0];
+
+    calculateRentalTotal();
+    openModal("modal-product");
+}
+
+function calculateRentalTotal() {
+    if (!selectedItemForModal) return;
+    const startStr = document.getElementById("contract-start-date").value;
+    const endStr = document.getElementById("contract-end-date").value;
+
+    if (!startStr || !endStr) return;
+    const start = new Date(startStr);
+    const end = new Date(endStr);
+    const diffTime = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
+
+    let rentalFee = selectedItemForModal.price * diffTime;
+    let total = rentalFee + selectedItemForModal.deposit;
+
+    document.getElementById("contract-total-summary").innerText = `${total.toLocaleString('vi-VN')} VNĐ (Gồm ${rentalFee.toLocaleString('vi-VN')}đ phí + ${selectedItemForModal.deposit.toLocaleString('vi-VN')}đ cọc)`;
+}
+
+function confirmEscrowCheckout() {
+    if (!selectedItemForModal) return;
+
+    if (!isUserLoggedIn()) {
+        openModal("modal-login-required");
+        showToast("Bạn cần đăng nhập tài khoản để mua/thuê sản phẩm!", "error");
+        return;
+    }
+
+    const startStr = document.getElementById("contract-start-date").value;
+    const endStr = document.getElementById("contract-end-date").value;
+    const start = new Date(startStr);
+    const end = new Date(endStr);
+    const days = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
+    const totalNeeded = (selectedItemForModal.price * days) + selectedItemForModal.deposit;
+
+    if (userBalance < totalNeeded) {
+        showToast(`Số dư ví Escrow không đủ! Cần thêm ${(totalNeeded - userBalance).toLocaleString('vi-VN')}đ. Nạp thêm ngay.`, "error");
+        return;
+    }
+
+    userBalance -= totalNeeded;
+    updateBalanceDisplay();
+
+    // Add new active contract
+    const newContract = {
+        id: "HD-" + Math.floor(1000 + Math.random() * 9000),
+        itemName: selectedItemForModal.title,
+        partner: selectedItemForModal.ownerName,
+        dates: `${startStr.split('-').reverse().slice(0,2).join('/')} - ${endStr.split('-').reverse().slice(0,2).join('/')}`,
+        lockedAmount: totalNeeded,
+        status: "Đã cọc - Chờ giao nhận đồ",
+        statusColor: "bg-blue-100 text-blue-800 border-blue-200"
+    };
+
+    sampleContracts.unshift(newContract);
+    renderContracts();
+    closeModal("modal-product");
+    showToast("Đã ký hợp đồng điện tử &amp; trích tiền cọc giữ an toàn tại Escrow!", "success");
+    showSection("escrow");
+}
+
+/**
+ * Render Contracts Table
+ */
+function renderContracts() {
+    const tbody = document.getElementById("contracts-table-body");
+    tbody.innerHTML = sampleContracts.map(c => `
+        <tr>
+            <td class="p-3 font-bold text-slate-800">${c.id}</td>
+            <td class="p-3 font-medium text-slate-700">${c.itemName}</td>
+            <td class="p-3 text-slate-600">${c.partner}</td>
+            <td class="p-3 text-slate-500">${c.dates}</td>
+            <td class="p-3 font-bold text-brand-700">${c.lockedAmount.toLocaleString('vi-VN')}đ</td>
+            <td class="p-3">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${c.statusColor}">${c.status}</span>
+            </td>
+            <td class="p-3 text-right space-x-1">
+                <button onclick="showToast('Ảnh chụp xác nhận tình trạng giao đồ đã lưu!', 'info')" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-medium">Chụp ảnh đồ</button>
+                <button onclick="showSection('chat')" class="px-2 py-1 bg-brand-50 text-brand-700 hover:bg-brand-100 rounded font-medium">Nhắn tin</button>
+            </td>
+        </tr>
+    `).join('');
+
+    let lockedSum = sampleContracts.reduce((acc, curr) => acc + curr.lockedAmount, 0);
+    document.getElementById("escrow-locked-balance").innerText = `${lockedSum.toLocaleString('vi-VN')} VNĐ`;
+}
+
+/**
+ * Wishlist / Saved Items
+ */
+function toggleSaveItem(id, fromModal) {
+    if (savedItems.has(id)) {
+        savedItems.delete(id);
+        showToast("Đã bỏ lưu tin đăng.", "info");
+    } else {
+        savedItems.add(id);
+        showToast("Đã lưu tin vào mục yêu thích!", "success");
+    }
+    updateSavedBadge();
+    renderListings();
+    if (fromModal) updateModalSaveButton();
+    if (!document.getElementById("view-saved").classList.contains("hidden")) renderSavedView();
+}
+
+function updateModalSaveButton() {
+    const btn = document.getElementById("modal-save-btn");
+    if (!btn || !selectedItemForModal) return;
+    const saved = savedItems.has(selectedItemForModal.id);
+    btn.querySelector('i').className = saved ? 'fa-solid fa-heart mr-1 text-rose-500' : 'fa-regular fa-heart mr-1';
+    btn.querySelector('span').innerText = saved ? 'Đã lưu' : 'Lưu tin';
+}
+
+function updateSavedBadge() {
+    const badge = document.getElementById("saved-count-badge");
+    if (!badge) return;
+    if (savedItems.size > 0) {
+        badge.textContent = savedItems.size;
+        badge.classList.remove("hidden");
+    } else {
+        badge.classList.add("hidden");
+    }
+}
+
+function renderSavedView() {
+    const wrap = document.getElementById("saved-items-grid");
+    const items = sampleListings.filter(i => savedItems.has(i.id));
+
+    if (items.length === 0) {
+        wrap.innerHTML = `
+            <div class="col-span-full py-16 text-center bg-white rounded-2xl border border-slate-200">
+                <i class="fa-regular fa-heart text-4xl text-slate-300 mb-2"></i>
+                <div class="font-bold text-slate-700 text-sm">Bạn chưa lưu tin nào</div>
+                <div class="text-xs text-slate-400 mt-1">Bấm biểu tượng trái tim trên món đồ bạn thích để lưu lại đây.</div>
+                <button onclick="showSection('home')" class="mt-4 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs transition">Khám phá đồ ngay</button>
+            </div>
+        `;
+        return;
+    }
+
+    wrap.innerHTML = items.map(item => `
+        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
+            <div class="relative aspect-4/3 overflow-hidden bg-slate-100 cursor-pointer" onclick="openProductModal('${item.id}')">
+                <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                <button onclick="event.stopPropagation(); toggleSaveItem('${item.id}')" class="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 backdrop-blur flex items-center justify-center shadow-sm hover:scale-110 transition">
+                    <i class="fa-solid fa-heart text-[12px] text-rose-500"></i>
+                </button>
+            </div>
+            <div class="p-3.5 space-y-2">
+                <h3 class="font-bold text-xs text-slate-800 line-clamp-2 cursor-pointer hover:text-brand-600" onclick="openProductModal('${item.id}')">${item.title}</h3>
+                <div class="flex items-center justify-between pt-1">
+                    <span class="font-extrabold text-sm text-brand-700">${item.price > 0 ? item.price.toLocaleString('vi-VN') + 'đ' : '0đ'} <span class="text-[10px] font-normal text-slate-400">${item.priceUnit}</span></span>
+                    <button onclick="openProductModal('${item.id}')" class="px-2.5 py-1 bg-slate-100 hover:bg-brand-600 hover:text-white rounded-lg text-[10px] font-bold text-slate-700 transition">Xem lại</button>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+/**
+ * Handle Post New Item
+ */
+function handleCreatePost(e) {
+    e.preventDefault();
+    const title = document.getElementById("post-title").value;
+    const cat = document.getElementById("post-category").value;
+    const price = parseInt(document.getElementById("post-price").value) || 0;
+    const deposit = parseInt(document.getElementById("post-deposit").value) || 0;
+    const prov = document.getElementById("post-province").value;
+    const ward = document.getElementById("post-ward").value;
+    const desc = document.getElementById("post-desc").value;
+    const customImg = document.getElementById("post-image-url").value;
+    const type = document.querySelector('input[name="post_type"]:checked').value;
+
+    const newItem = {
+        id: "ITEM-" + Date.now(),
+        title: title,
+        category: cat,
+        type: type,
+        price: price,
+        priceUnit: type === 'thue' ? '/ ngày' : (type === 'muon' ? 'Miễn phí' : 'Bán'),
+        deposit: deposit,
+        originalPrice: 0,
+        condition: "Mới 95%",
+        ownerName: "Bạn (Tôi)",
+        ownerSchool: "ĐH Bách Khoa",
+        ownerRating: 5.0,
+        ownerAvatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop",
+        verified: true,
+        province: prov,
+        ward: ward,
+        schoolCode: "BK",
+        image: customImg || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&h=400&fit=crop",
+        desc: desc,
+        distanceKm: "0.1 km"
+    };
+
+    sampleListings.unshift(newItem);
+    renderListings();
+    closeModal("modal-new-post");
+    document.getElementById("form-new-post").reset();
+    showToast("Đăng tin thành công! Món đồ của bạn đã hiển thị công khai trên PassBorrow.", "success");
+}
+
+/**
+ * Student Verification Form
+ */
+function handleVerifyStudent(e) {
+    e.preventDefault();
+    userVerified = true;
+    document.getElementById("header-verify-status").innerText = "Đã Xác Thực SV";
+    closeModal("modal-verify");
+    showToast("Chúc mừng! Tài khoản của bạn đã đạt Huy hiệu Xác Thực Sinh Viên.", "success");
+}
+
+/**
+ * Navigation View Switching
+ */
+function showSection(viewName) {
+    document.getElementById("view-home").classList.add("hidden");
+    document.getElementById("view-escrow").classList.add("hidden");
+    document.getElementById("view-chat").classList.add("hidden");
+    document.getElementById("view-saved").classList.add("hidden");
+
+    document.getElementById(`view-${viewName}`).classList.remove("hidden");
+    if (viewName === "saved") renderSavedView();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/**
+ * Escrow Top up / Withdraw Mock Actions
+ */
+function topUpBalance() {
+    userBalance += 200000;
+    updateBalanceDisplay();
+    showToast("Đã nạp 200.000 VNĐ vào Ví Escrow qua mã QR Chuyển khoản!", "success");
+}
+
+function withdrawBalance() {
+    if (userBalance <= 0) {
+        showToast("Số dư khả dụng bằng 0đ!", "error");
+        return;
+    }
+    const amount = userBalance;
+    userBalance = 0;
+    updateBalanceDisplay();
+    showToast(`Đã rút ${amount.toLocaleString('vi-VN')}đ về tài khoản Ngân hàng liên kết.`, "info");
+}
+
+function updateBalanceDisplay() {
+    document.getElementById("user-balance-display").innerText = `${userBalance.toLocaleString('vi-VN')}đ`;
+    document.getElementById("escrow-available-balance").innerText = `${userBalance.toLocaleString('vi-VN')} VNĐ`;
+}
+
+/**
+ * In-App Chat Functions
+ */
+function setupChatList() {
+    const list = document.getElementById("chat-thread-list");
+    list.innerHTML = `
+        <div class="p-3 flex items-center gap-3 bg-brand-50 border-l-4 border-brand-600 cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" class="w-9 h-9 rounded-full object-cover">
+            <div class="flex-1 overflow-hidden">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-xs text-slate-800">Nguyễn Thu Thảo</span>
+                    <span class="text-[9px] text-slate-400">10:42</span>
+                </div>
+                <div class="text-[11px] text-brand-700 truncate font-medium">Chốt mượn từ 12/08 đến 15/08 nhé!</div>
+            </div>
+        </div>
+        <div class="p-3 flex items-center gap-3 hover:bg-slate-100 cursor-pointer">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop" class="w-9 h-9 rounded-full object-cover">
+            <div class="flex-1 overflow-hidden">
+                <div class="flex items-center justify-between">
+                    <span class="font-bold text-xs text-slate-800">Lê Hoàng Nam</span>
+                    <span class="text-[9px] text-slate-400">Hôm qua</span>
+                </div>
+                <div class="text-[11px] text-slate-500 truncate">Bộ sách còn đẹp lắm bạn nhé...</div>
+            </div>
+        </div>
+    `;
+
+    document.getElementById("chat-messages-body").innerHTML = `
+        <div class="text-center text-[10px] text-slate-400 py-2">--- Lịch sử tin nhắn bảo mật PassBorrow ---</div>
+        <div class="flex items-end gap-2">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop" class="w-6 h-6 rounded-full object-cover">
+            <div class="bg-white border border-slate-200 rounded-2xl p-3 max-w-xs text-xs text-slate-700 shadow-sm">
+                Chào bạn, mình muốn thuê máy tính Casio trong 3 ngày thi môn Giải tích 1.
+            </div>
+        </div>
+        <div class="flex items-end gap-2 justify-end">
+            <div class="bg-brand-600 text-white rounded-2xl p-3 max-w-xs text-xs shadow-sm">
+                Chào bạn! Máy sẵn sàng nhé. Bạn chọn ngày rồi bấm nút "Lập Hợp Đồng Thuê" góc trên giúp mình để giữ cọc trung gian nhé.
+            </div>
+        </div>
+    `;
+}
+
+function sendChatMessage() {
+    const input = document.getElementById("chat-input-field");
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    const body = document.getElementById("chat-messages-body");
+    body.innerHTML += `
+        <div class="flex items-end gap-2 justify-end">
+            <div class="bg-brand-600 text-white rounded-2xl p-3 max-w-xs text-xs shadow-sm">
+                ${msg}
+            </div>
+        </div>
+    `;
+    input.value = "";
+    body.scrollTop = body.scrollHeight;
+}
+
+function startChatFromModal() {
+    if (!isUserLoggedIn()) {
+        openModal("modal-login-required");
+        showToast("Vui lòng đăng nhập tài khoản để nhắn tin và thuê đồ!", "error");
+        return;
+    }
+    closeModal("modal-product");
+    showSection("chat");
+}
+
+function openContractPreviewFromChat() {
+    if (selectedItemForModal) {
+        openProductModal(selectedItemForModal.id);
+    } else {
+        openProductModal("ITEM-001");
+    }
+}
+
+/**
+ * Footer Newsletter Signup (mock)
+ */
+function handleNewsletterSignup(e) {
+    e.preventDefault();
+    e.target.reset();
+    showToast("Đã đăng ký nhận thông báo mùa vụ qua email!", "success");
+}
+
+/**
+ * Back-to-top button visibility
+ */
+window.addEventListener("scroll", function() {
+    const btn = document.getElementById("back-to-top");
+    if (!btn) return;
+    btn.classList.toggle("hidden", window.scrollY < 500);
+});
+
+/**
+ * Modal Helpers & Notification Toast System
+ */
+function openModal(id) {
+    document.getElementById(id).classList.remove("hidden");
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.add("hidden");
+}
+
+function openNewListingModal() {
+    if (!isUserLoggedIn()) {
+        openModal("modal-login-required");
+        showToast("Vui lòng đăng nhập tài khoản để đăng tin sản phẩm!", "error");
+        return;
+    }
+    openModal("modal-new-post");
+}
+
+function openVerificationModal() {
+    openModal("modal-verify");
+}
+
+function openTermsModal() {
+    openModal("modal-terms");
+}
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+
+    let bgColor = "bg-slate-800 text-white";
+    let icon = "fa-circle-info";
+
+    if (type === 'success') {
+        bgColor = "bg-brand-700 text-white";
+        icon = "fa-circle-check";
+    } else if (type === 'error') {
+        bgColor = "bg-rose-600 text-white";
+        icon = "fa-triangle-exclamation";
+    }
+
+    toast.className = `pointer-events-auto p-3.5 rounded-xl shadow-xl ${bgColor} flex items-center gap-3 text-xs font-semibold transform transition duration-300 translate-y-2 opacity-0`;
+    toast.innerHTML = `<i class="fa-solid ${icon} text-base"></i> <span>${message}</span>`;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.remove("translate-y-2", "opacity-0");
+    }, 10);
+
+    setTimeout(() => {
+        toast.classList.add("opacity-0");
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
+/**
+ * Authentication & Account Settings System
+ */
+function isUserLoggedIn() {
+    return localStorage.getItem('passborrow_is_logged_in') === 'true';
+}
+
+function getUserName() {
+    return localStorage.getItem('passborrow_user_name') || 'Admin';
+}
+
+function updateAuthUI() {
+    const loggedIn = isUserLoggedIn();
+    const userName = getUserName();
+    const statusCard = document.getElementById("logo-user-status-card");
+    const loginBtn = document.getElementById("logo-login-btn");
+    const logoutBtn = document.getElementById("logo-logout-btn");
+
+    if (loggedIn) {
+        if (statusCard) {
+            statusCard.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-brand-600 text-white font-bold flex items-center justify-center text-sm shadow">
+                        ${userName.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="overflow-hidden">
+                        <div class="font-bold text-xs text-slate-800 truncate">${userName}</div>
+                        <div class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Đã đăng nhập
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        if (loginBtn) loginBtn.classList.add("hidden");
+        if (logoutBtn) logoutBtn.classList.remove("hidden");
+    } else {
+        if (statusCard) {
+            statusCard.innerHTML = `
+                <div class="flex items-center gap-2.5 text-slate-600">
+                    <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-sm shrink-0">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-xs text-slate-700">Chế độ Xem Sản Phẩm</div>
+                        <div class="text-[10px] text-amber-600 font-medium">Cần đăng nhập để mua/thuê</div>
+                    </div>
+                </div>
+            `;
+        }
+        if (loginBtn) loginBtn.classList.remove("hidden");
+        if (logoutBtn) logoutBtn.classList.add("hidden");
+    }
+}
+
+function toggleLogoMenu(e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById("logo-dropdown-menu");
+    const chevron = document.getElementById("logo-chevron");
+    if (!menu) return;
+    const isHidden = menu.classList.contains("hidden");
+    if (isHidden) {
+        menu.classList.remove("hidden");
+        if (chevron) chevron.classList.add("rotate-180");
+    } else {
+        menu.classList.add("hidden");
+        if (chevron) chevron.classList.remove("rotate-180");
+    }
+}
+
+// Close logo menu when clicking outside
+document.addEventListener("click", function(e) {
+    const trigger = document.getElementById("logo-trigger");
+    const menu = document.getElementById("logo-dropdown-menu");
+    if (menu && !menu.classList.contains("hidden")) {
+        if (trigger && !trigger.contains(e.target) && !menu.contains(e.target)) {
+            menu.classList.add("hidden");
+            const chevron = document.getElementById("logo-chevron");
+            if (chevron) chevron.classList.remove("rotate-180");
+        }
+    }
+});
+
+function handleLogout() {
+    localStorage.removeItem('passborrow_is_logged_in');
+    localStorage.removeItem('passborrow_user_name');
+    localStorage.removeItem('passborrow_user_phone');
+    localStorage.removeItem('passborrow_user_email');
+    localStorage.removeItem('passborrow_user_school');
+    localStorage.removeItem('passborrow_user_student_id');
+    localStorage.removeItem('passborrow_user_address');
+    toggleLogoMenu();
+    updateAuthUI();
+    showToast("Đã đăng xuất tài khoản! Hiện tại bạn đang ở chế độ xem sản phẩm.", "info");
+}
+
+function openSettingsModal() {
+    const userName = getUserName();
+    document.getElementById("settings-name").value = userName;
+    document.getElementById("settings-phone").value = localStorage.getItem('passborrow_user_phone') || "";
+    document.getElementById("settings-email").value = localStorage.getItem('passborrow_user_email') || "";
+    document.getElementById("settings-school").value = localStorage.getItem('passborrow_user_school') || "";
+    document.getElementById("settings-student-id").value = localStorage.getItem('passborrow_user_student_id') || "";
+    document.getElementById("settings-address").value = localStorage.getItem('passborrow_user_address') || "";
+    switchSettingsTab('profile');
+    openModal("modal-settings");
+}
+
+function switchSettingsTab(tab) {
+    const profForm = document.getElementById("form-settings-profile");
+    const passForm = document.getElementById("form-settings-password");
+    const profBtn = document.getElementById("set-tab-profile-btn");
+    const passBtn = document.getElementById("set-tab-password-btn");
+
+    if (tab === 'profile') {
+        profForm.classList.remove("hidden");
+        passForm.classList.add("hidden");
+        profBtn.className = "pb-2 text-brand-600 border-b-2 border-brand-600 font-bold";
+        passBtn.className = "pb-2 text-slate-500 hover:text-slate-700 font-semibold";
+    } else {
+        profForm.classList.add("hidden");
+        passForm.classList.remove("hidden");
+        passBtn.className = "pb-2 text-brand-600 border-b-2 border-brand-600 font-bold";
+        profBtn.className = "pb-2 text-slate-500 hover:text-slate-700 font-semibold";
+    }
+}
+
+function saveProfileSettings(e) {
+    e.preventDefault();
+    const newName = document.getElementById("settings-name").value.trim();
+    const phone = document.getElementById("settings-phone").value.trim();
+    const email = document.getElementById("settings-email").value.trim();
+    const school = document.getElementById("settings-school").value.trim();
+    const studentId = document.getElementById("settings-student-id").value.trim();
+    const address = document.getElementById("settings-address").value.trim();
+
+    if (newName) localStorage.setItem('passborrow_user_name', newName);
+    localStorage.setItem('passborrow_user_phone', phone);
+    localStorage.setItem('passborrow_user_email', email);
+    localStorage.setItem('passborrow_user_school', school);
+    localStorage.setItem('passborrow_user_student_id', studentId);
+    localStorage.setItem('passborrow_user_address', address);
+
+    // Sync back to registered users database
+    const currentPhone = localStorage.getItem('passborrow_user_phone');
+    const data = localStorage.getItem('passborrow_users');
+    if (data) {
+        try {
+            const users = JSON.parse(data);
+            const userIdx = users.findIndex(u => u.phone === currentPhone || u.fullName === newName);
+            if (userIdx !== -1) {
+                if (newName) users[userIdx].fullName = newName;
+                if (phone) users[userIdx].phone = phone;
+                if (email) users[userIdx].email = email;
+                localStorage.setItem('passborrow_users', JSON.stringify(users));
+            }
+        } catch (err) {}
+    }
+
+    updateAuthUI();
+    closeModal("modal-settings");
+    showToast("Đã cập nhật thông tin hồ sơ cá nhân thành công!", "success");
+}
+
+function savePasswordSettings(e) {
+    e.preventDefault();
+    const oldP = document.getElementById("settings-old-pass").value;
+    const newP = document.getElementById("settings-new-pass").value;
+    const confP = document.getElementById("settings-confirm-pass").value;
+
+    if (newP !== confP) {
+        showToast("Mật khẩu mới và mật khẩu xác nhận không trùng khớp!", "error");
+        return;
+    }
+    if (newP.length < 6) {
+        showToast("Mật khẩu mới phải từ 6 ký tự trở lên!", "error");
+        return;
+    }
+
+    closeModal("modal-settings");
+    document.getElementById("form-settings-password").reset();
+    showToast("Đổi mật khẩu tài khoản thành công!", "success");
+}
+</script>
+</body>
+</html>
