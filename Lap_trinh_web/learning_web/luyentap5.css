@@ -1,0 +1,94 @@
+.container{
+    width: 800px;
+    height: 800px;
+    background-color:beige;
+    border: 5px solid black;
+
+    display: flex;
+
+    /* 1. Thuộc tính flex-direction quy định hướng sắp xếp của các flex-item; */
+/*    
+    row: Các hạng mục được đặt cùng hướng với hướng của từ trong văn bản.
+    row-reverse: Các hạng mục được đặt ngược hướng với hướng của từ trong văn bản.
+    column: Các hạng mục được đặt từ trên xuống dưới.
+    column-reverse: Các hạng mục được đặt từ dưới lên trên. 
+*/    
+    
+    /* flex-direction: column-reverse; */
+
+    /* 2. Thuộc tính flex word-wrap quy định về việc cho các flex-item xuống hàng; */
+/* 
+    nowrap: Mỗi hạng mục được dồn vào một hàng duy nhất.
+    wrap: Các hạng mục quấn xung quanh để tạo thêm dòng.
+    wrap-reverse: Các hạng mục quấn xung quanh để tạo thêm dòng ngược lại. 
+*/
+    /* flex-wrap: wrap-reverse; */
+    
+    /* 3. Thuộc tính flex-flow quy định gộp 2 thuộc tính flex-direction và flex-wrap ; */
+
+    /* flex-flow: row wrap; */
+
+    /* 4. Thuộc tính justify-content quy định sắp xếp các flex-item theo trục chính(main-axis); */
+ /* 
+    flex-start: Các hạng mục sẽ được sắp xếp về phía bên trái của hộp chứa.
+    flex-end: Các hạng mục sẽ được sắp xếp về phía bên phải của hộp chứa.
+    center: Các hạng mục sẽ được sắp xếp ở giữa chính của hộp chứa.
+    space-between: Các hạng mục sẽ được trình bày với khoảng cách bằng nhau giữa chúng.
+    space-around: Các hạng mục sẽ được trình bày với khoảng cách bằng nhau xung quanh chúng. 
+    space-evenly: khoảng cách giữa các khoảng trống bằng nhau
+*/
+    
+    /* justify-content: space-evenly; */
+
+    /* 5. Thuộc tính align-items quy định việc sắp xếp các flex-item theo trục phụ(cross-axis) */
+/* 
+    flex-start: Các hạng mục sẽ được sắp xếp phía trên của hộp chứa.
+    flex-end: Các hạng mục sẽ được sắp xếp phía dưới cùng của hộp chứa.
+    center: Các hạng mục sẽ được sắp xếp ở giữa chính của hộp chứa.
+    baseline: Các hạng mục sẽ được hiển thị ở đường cơ bản của hộp chứa.
+    stretch: Các hạng mục sẽ được kéo dài để phù hợp với hộp chứa. 
+*/
+    /* align-items: center; */
+
+    /* 6. thuộc tính gap quy định khoảng trống giữa các flex-item */
+    /* gap:30px; */
+}
+.box{
+    width: 150px;
+    height: 150px;
+    padding: 20px;
+    color: black;
+    font-size: 20px;
+}
+.box-1{
+    background-color: aqua;
+    /*1. Thuộc tính order của flex-item quy định về việc sắp xếp vị trí của các flex-item và có giá trị là các số: 1, 2, 3,...; */
+    /* order: 3; */
+
+    /* 2. THuộc tính flex-grow cho phép giãn các flex-item lấp đầy khoảng trống khả dụng của flex-container có giá trị là các số: 1, 2, 3,.... */
+    /* flex-grow: 1; */
+
+    /* 3. Thuộc tính flex-basis quy định việc đặt kích thước cụ thể cho các flex-item có cac giá trị là kích thước; */
+    /* flex-basis: 200px; */
+
+    /* 4. Thuộc tính flex-shrink quy định việc co lại kích thước  */
+    flex-shrink: 3;
+}
+.box-2{
+    background-color: blue;
+    /* order: 2; */
+    /* flex-grow: 3; */
+    /* flex-basis: 200px; */
+    flex-shrink: 1;
+}
+.box-3{
+    background-color: greenyellow;
+    /* order: 1; */
+    /* flex-grow: 1; */
+    /* flex-basis: 200px; */
+    flex-shrink: 1;
+}
+
+/* Trong CSS FlexBox chúng ta quan tâm tới 2 thành phần cụ thể:
+1. Thuộc tính của Flex-container
+2. Thuộc tính của Flex-item */
