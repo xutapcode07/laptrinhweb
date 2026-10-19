@@ -32,6 +32,7 @@
                         'pulse-heart': 'pulseHeart 1.5s infinite ease-in-out',
                         'glow-pink': 'glowPink 2s infinite alternate',
                         'spin-slow': 'spin 12s linear infinite',
+                        'float-gentle': 'floatGentle 4s ease-in-out infinite',
                     },
                     keyframes: {
                         pulseHeart: {
@@ -41,6 +42,10 @@
                         glowPink: {
                             '0%': { boxShadow: '0 0 20px rgba(232, 62, 140, 0.4), inset 0 0 10px rgba(255,255,255,0.5)' },
                             '100%': { boxShadow: '0 0 45px rgba(232, 62, 140, 0.9), 0 0 25px rgba(255, 182, 193, 0.8), inset 0 0 20px rgba(255,255,255,0.8)' }
+                        },
+                        floatGentle: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' }
                         }
                     }
                 }
@@ -69,7 +74,7 @@
             z-index: 5;
         }
 
-        /* Glassmorphism Styles for Cards */
+        /* Glassmorphism Styles */
         .glass-card {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(14px);
@@ -78,46 +83,75 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
         }
 
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(255, 215, 0, 0.6);
+            box-shadow: 0 20px 50px rgba(216, 27, 96, 0.3);
+        }
+
         /* Floating Cards Container */
         #card-stream-container {
             position: fixed;
             inset: 0;
             overflow: hidden;
+            z-index: 30;
             pointer-events: none;
-            z-index: 10;
         }
 
-        /* Individual Floating Card Styling */
+        /* Floating Card */
         .floating-card {
             position: absolute;
-            pointer-events: auto;
-            width: min(320px, 85vw);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 240, 245, 0.88) 100%);
+            pointer-events: auto !important;
+            width: min(300px, 82vw);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 240, 245, 0.9) 100%);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1.5px solid rgba(255, 215, 0, 0.6); /* Gold metallic border accent */
+            border: 1.5px solid rgba(255, 215, 0, 0.6);
             border-radius: 20px;
-            padding: 18px 20px;
+            padding: 16px 18px;
             box-shadow: 0 10px 30px rgba(216, 27, 96, 0.25), 0 0 15px rgba(255, 215, 0, 0.2);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
-            will-change: transform;
+            z-index: 35;
         }
 
-        .floating-card:hover, .floating-card.active-touch {
-            transform: scale(1.1) !important;
-            z-index: 100 !important;
+        .floating-card:hover {
+            transform: scale(1.06);
             border-color: #ffd700;
-            box-shadow: 0 20px 45px rgba(232, 62, 140, 0.5), 0 0 30px rgba(255, 215, 0, 0.7);
+            box-shadow: 0 18px 40px rgba(232, 62, 140, 0.5), 0 0 25px rgba(255, 215, 0, 0.6);
         }
 
-        /* Custom Scrollbar for Modal or Extra View */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
         }
         ::-webkit-scrollbar-thumb {
             background: rgba(232, 62, 140, 0.5);
             border-radius: 10px;
+        }
+
+        /* Navigation active state glow */
+        .nav-btn.active {
+            background: linear-gradient(135deg, #e83e8c 0%, #d81b60 100%);
+            color: #ffffff;
+            box-shadow: 0 0 18px rgba(232, 62, 140, 0.8);
+            border-color: #ffd700;
+        }
+
+        /* Magic Crystal Ball Glow */
+        .crystal-ball {
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ff80bf 30%, #a64dff 70%, #3a0066 100%);
+            box-shadow: 0 0 50px rgba(232, 62, 140, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.8);
+        }
+
+        .fix-letter-text {
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap !important; /* Giữ nguyên khoảng trắng và xuống dòng */
+            letter-spacing: 0.5px;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -137,80 +171,245 @@
         </button>
     </header>
 
-    <!-- Floating Cards Stream Layer -->
-    <div id="card-stream-container"></div>
-
-    <!-- MAIN INTERACTIVE CONTAINER -->
-    <main class="relative z-30 container mx-auto px-4 my-auto flex flex-col items-center justify-center min-h-screen text-center">
-
-        <!-- INTRO SCREEN: Heart Box Trigger -->
-        <div id="intro-screen" class="transition-all duration-700 transform">
-            <div onclick="startExperience()" class="cursor-pointer group flex flex-col items-center">
-                
-                <!-- Pulsing Heart Icon Container -->
-                <div class="relative mb-6">
-                    <div class="w-36 h-36 md:w-44 md:h-44 glass-card rounded-full flex items-center justify-center animate-glow-pink transition-transform duration-500 group-hover:scale-110">
-                        <i class="fas fa-heart text-6xl md:text-7xl text-gradient bg-clip-text bg-gradient-to-r from-pink-400 via-red-400 to-rose-300 animate-pulse-heart"></i>
-                    </div>
-                    <div class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs px-3 py-1 rounded-full shadow-lg font-bold animate-bounce">
-                        20/10 💕
-                    </div>
+    <!-- INTRO SCREEN: Heart Gate -->
+    <div id="intro-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center text-center px-4 transition-all duration-700 bg-gradient-to-br from-purple-950 via-pink-950 to-rose-900">
+        <div onclick="startExperience()" class="cursor-pointer group flex flex-col items-center max-w-lg">
+            
+            <div class="relative mb-6">
+                <div class="w-36 h-36 md:w-44 md:h-44 glass-card rounded-full flex items-center justify-center animate-glow-pink transition-transform duration-500 group-hover:scale-110">
+                    <i class="fas fa-heart text-6xl md:text-7xl text-pink-400 animate-pulse-heart"></i>
                 </div>
-
-                <h1 class="font-romantic text-4xl md:text-6xl text-pink-200 font-bold mb-3 drop-shadow-lg">
-                    Dành Riêng Cho Người Thương
-                </h1>
-                
-                <p class="font-cursive text-2xl md:text-3xl text-pink-100/90 mb-8 max-w-md">
-                    "Đang ở ngay trước màn hình lúc này..."
-                </p>
-
-                <div class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-2xl hover:from-pink-600 hover:to-rose-600 transition-all transform group-hover:scale-105 border border-pink-300/40">
-                    <i class="fas fa-envelope-open-heart text-xl"></i>
-                    <span>Chạm nhẹ để mở quà ❤️</span>
+                <div class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs px-3.5 py-1 rounded-full shadow-lg font-bold animate-bounce border border-white/40">
+                    20/10 💕
                 </div>
-
-                <p class="text-xs text-pink-200/70 italic mt-4">
-                    ✨ Chạm vào màn hình để cảm nhận tình yêu ngọt ngào ✨
-                </p>
             </div>
+
+            <h1 class="font-romantic text-4xl md:text-6xl text-pink-200 font-bold mb-3 drop-shadow-lg">
+                Dành Riêng Cho Người Thương
+            </h1>
+            
+            <p class="font-cursive text-2xl md:text-3xl text-pink-100/90 mb-8">
+                "Đang ở ngay trước màn hình lúc này..."
+            </p>
+
+            <div class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-2xl hover:from-pink-600 hover:to-rose-600 transition-all transform group-hover:scale-105 border border-pink-300/40">
+                <i class="fas fa-envelope-open-text text-xl animate-bounce"></i>
+                <span>Mở Món Quà Yêu Thương ❤️</span>
+            </div>
+
+            <p class="text-xs text-pink-200/70 italic mt-5">
+                ✨ Chạm vào màn hình để bắt đầu hành trình ngọt ngào ✨
+            </p>
         </div>
-
-        <!-- MAIN INTERACTIVE CONTROLS (Appears after opening) -->
-        <div id="active-controls" class="hidden opacity-0 transition-opacity duration-1000 fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-black/40 backdrop-blur-md p-2.5 px-5 rounded-full border border-white/20 shadow-2xl">
-            <button onclick="spawnCustomCard()" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full font-medium text-xs md:text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg active:scale-95">
-                <i class="fas fa-plus-circle"></i>
-                <span>Thả thêm thiệp</span>
-            </button>
-
-            <button id="pause-btn" onclick="togglePauseStream()" class="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all text-xs md:text-sm flex items-center justify-center w-9 h-9">
-                <i id="pause-icon" class="fas fa-pause"></i>
-            </button>
-
-            <button onclick="addPersonalizedWish()" class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full font-medium text-xs md:text-sm transition-all flex items-center gap-2 border border-white/30">
-                <i class="fas fa-pen-heart text-pink-300"></i>
-                <span>Gửi lời chúc riêng</span>
-            </button>
-        </div>
-
-    </main>
-
-    <!-- Toast Notification Overlay -->
-    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-black/85 text-white px-6 py-3 rounded-full text-sm font-medium shadow-2xl opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 border border-pink-500/30">
-        <i id="toast-icon" class="fas fa-heart text-pink-400"></i>
-        <span id="toast-message">Đã sao chép lời chúc gửi người thương!</span>
     </div>
 
-    <!-- Hidden HTML5 Audio Element for Background Music -->
+    <!-- MAIN APP CONTAINER -->
+    <div id="main-app" class="hidden opacity-0 transition-opacity duration-700 fixed inset-0 flex flex-col">
+
+        <!-- Floating Cards Stream Container -->
+        <div id="card-stream-container"></div>
+
+        <!-- NAVIGATION TAB BAR -->
+        <nav class="fixed top-4 left-1/2 -translate-x-1/2 z-40 bg-black/50 backdrop-blur-md p-1.5 rounded-full border border-white/20 shadow-2xl flex items-center gap-1 md:gap-2 max-w-[95vw]">
+            <button id="nav-stream" onclick="switchTab('stream')" class="nav-btn active px-3.5 md:px-5 py-2 rounded-full font-medium text-xs md:text-sm transition-all flex items-center gap-1.5 border border-transparent">
+                <i class="fas fa-paper-plane text-pink-300"></i>
+                <span>Thiệp Trôi</span>
+            </button>
+
+            <button id="nav-crystal" onclick="switchTab('crystal')" class="nav-btn px-3.5 md:px-5 py-2 rounded-full font-medium text-xs md:text-sm text-pink-100 hover:text-white transition-all flex items-center gap-1.5 border border-transparent">
+                <i class="fas fa-magic text-yellow-300"></i>
+                <span>Quả Cầu Yêu Thương</span>
+            </button>
+
+            <button id="nav-garden" onclick="switchTab('garden')" class="nav-btn px-3.5 md:px-5 py-2 rounded-full font-medium text-xs md:text-sm text-pink-100 hover:text-white transition-all flex items-center gap-1.5 border border-transparent">
+                <i class="fas fa-seedling text-green-300"></i>
+                <span>Vườn Ước Nguyện</span>
+            </button>
+
+            <button id="nav-letter" onclick="switchTab('letter')" class="nav-btn px-3.5 md:px-5 py-2 rounded-full font-medium text-xs md:text-sm text-pink-100 hover:text-white transition-all flex items-center gap-1.5 border border-transparent">
+                <i class="fas fa-envelope-open-text text-rose-300"></i>
+                <span>Thư Tay</span>
+            </button>
+        </nav>
+
+        <!-- PAGE CONTENT SECTIONS -->
+        <main class="relative z-20 flex-1 flex items-center justify-center p-4 pt-20 pb-24 overflow-hidden pointer-events-none">
+            
+            <!-- SECTION 1: FLOATING STREAM CONTROLS -->
+            <section id="section-stream" class="tab-section w-full h-full flex flex-col items-center justify-end pointer-events-auto">
+                <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 bg-black/50 backdrop-blur-md p-2.5 px-5 rounded-full border border-white/20 shadow-2xl">
+                    <button onclick="spawnCustomCard()" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full font-medium text-xs md:text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg active:scale-95">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Thả thêm thiệp</span>
+                    </button>
+
+                    <button id="pause-btn" onclick="togglePauseStream()" class="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all text-xs md:text-sm flex items-center justify-center w-9 h-9">
+                        <i id="pause-icon" class="fas fa-pause"></i>
+                    </button>
+
+                    <button onclick="addPersonalizedWish()" class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full font-medium text-xs md:text-sm transition-all flex items-center gap-2 border border-white/30">
+                        <i class="fas fa-heart text-pink-300"></i>
+                        <span>Viết chúc riêng</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION 2: MAGIC CRYSTAL BALL -->
+            <section id="section-crystal" class="tab-section hidden w-full max-w-lg flex flex-col items-center text-center pointer-events-auto">
+                <div class="glass-card p-6 md:p-8 rounded-3xl w-full flex flex-col items-center border border-pink-300/40">
+                    <h2 class="font-romantic text-3xl md:text-4xl text-pink-200 font-bold mb-2">
+                        Quả Cầu Dự Đoán Yêu Thương 🔮
+                    </h2>
+                    <p class="text-xs md:text-sm text-pink-100/80 mb-6">
+                        Chạm vào quả cầu ma thuật để giải mã thông điệp may mắn dành riêng cho người thương hôm nay!
+                    </p>
+
+                    <div onclick="revealCrystalFortune()" class="crystal-ball w-44 h-44 md:w-52 md:h-52 rounded-full cursor-pointer flex items-center justify-center transition-all duration-500 transform hover:scale-105 my-4 relative group">
+                        <i class="fas fa-sparkles text-4xl text-white/80 animate-pulse group-hover:scale-125 transition-transform"></i>
+                        <span class="absolute text-[11px] font-semibold text-pink-200 bottom-4 bg-black/40 px-3 py-1 rounded-full border border-white/20">
+                            Chạm để dự đoán ✨
+                        </span>
+                    </div>
+
+                    <div id="crystal-result" class="mt-4 p-4 rounded-2xl bg-white/10 border border-white/20 min-h-[90px] w-full flex items-center justify-center text-center">
+                        <p class="font-cursive text-xl md:text-2xl text-pink-100 italic">
+                            "Mọi điều ngọt ngào nhất đang chờ đón người thương..."
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: GARDEN -->
+            <section id="section-garden" class="tab-section hidden w-full max-w-lg flex flex-col items-center text-center pointer-events-auto">
+                <div class="glass-card p-6 md:p-8 rounded-3xl w-full flex flex-col items-center border border-pink-300/40">
+                    <h2 class="font-romantic text-3xl md:text-4xl text-pink-200 font-bold mb-2">
+                        Khu Vườn Nguyện Ước 🌸
+                    </h2>
+                    <p class="text-xs md:text-sm text-pink-100/80 mb-4">
+                        Gieo ước nguyện của người thương để bông hoa kỳ diệu nở rực rỡ nhé!
+                    </p>
+
+                    <div class="relative w-48 h-56 flex flex-col items-center justify-end my-2">
+                        <div id="flower-head" class="flower-head transform scale-0 text-6xl md:text-7xl text-pink-400 absolute top-2 z-10 filter drop-shadow-lg">
+                            🌹
+                        </div>
+                        <div id="flower-stem" class="flower-stem w-3 bg-gradient-to-t from-green-700 to-green-400 rounded-full h-0 mb-12"></div>
+                        <div class="w-28 h-16 bg-gradient-to-b from-amber-700 to-amber-900 rounded-b-3xl border-t-4 border-amber-600 shadow-2xl flex items-center justify-center relative z-20">
+                            <span class="text-xs text-amber-200 font-bold">LOVE 20/10</span>
+                        </div>
+                    </div>
+
+                    <div class="w-full mt-3 flex flex-col gap-2">
+                        <input id="garden-wish-input" type="text" placeholder="Nhập điều ước của người thương vào đây..." class="w-full px-4 py-2.5 rounded-xl bg-white/20 border border-white/30 text-white placeholder-pink-200/60 text-sm focus:outline-none focus:border-pink-400">
+                        <button onclick="plantWish()" class="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-98">
+                            <i class="fas fa-shower text-blue-300"></i>
+                            <span>Tưới Nước & Gieo Điều Ước</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: MUSIC BOX & HEARTFELT LETTER -->
+            <section id="section-letter" class="tab-section hidden w-full max-w-xl flex flex-col items-center text-center pointer-events-auto">
+                <div class="glass-card p-6 md:p-8 rounded-3xl w-full flex flex-col items-center border border-pink-300/40 relative">
+                    
+                    <div class="flex items-center justify-between w-full mb-4 pb-2 border-b border-white/20">
+                        <div class="flex items-center gap-2 text-pink-300 font-bold text-sm">
+                            <i class="fas fa-music text-pink-400 animate-spin-slow"></i>
+                            <span>Hộp Nhạc Kỷ Niệm</span>
+                        </div>
+                        <span class="text-xs bg-pink-500/30 text-pink-200 px-3 py-1 rounded-full border border-pink-400/30">
+                            20/10/2026 ❤️
+                        </span>
+                    </div>
+
+                    <!-- LÁ THƯ CÓ THỂ BẤM ĐỂ MỞ -->
+                    <div id="envelope-wrapper" onclick="openLetterEnvelope()" class="w-full cursor-pointer group transition-all duration-300 transform hover:scale-105">
+                        
+                        <!-- Bì thư ban đầu -->
+                        <div id="closed-envelope" class="bg-gradient-to-r from-pink-500 to-rose-600 p-8 rounded-2xl shadow-2xl flex flex-col items-center justify-center border-2 border-pink-300/50 min-h-[220px]">
+                            <i class="fas fa-envelope-open-text text-6xl text-amber-200 mb-3 animate-bounce"></i>
+                            <h3 class="font-romantic text-3xl text-white font-bold">Chạm vào đây để mở thư ❤️</h3>
+                            <p class="text-xs text-pink-100/80 mt-2">Bức thư tình gửi riêng cho người thương</p>
+                        </div>
+
+                        <!-- Nội dung lá thư sau khi mở -->
+                        <div id="opened-letter" class="hidden bg-white/95 text-gray-800 p-6 rounded-2xl w-full text-left shadow-inner border border-pink-200/50 min-h-[220px]">
+                            <h3 class="font-romantic text-3xl text-pink-600 font-bold mb-3 border-b border-pink-100 pb-1">
+                                Gửi Người Thương Thân Yêu,
+                            </h3>
+                            <p id="typewriter-text" class="font-sans text-base md:text-lg text-gray-700 fix-letter-text leading-relaxed min-h-[120px]">
+                                <!-- Text typed via JS -->
+                            </p>
+                            <div class="text-right mt-4 font-romantic text-2xl text-pink-600 font-bold">
+                                Forever Love 💕
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button id="replay-letter-btn" onclick="restartTypewriter()" class="hidden mt-4 px-5 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full text-xs font-semibold flex items-center gap-2 border border-white/30 transition-all">
+                        <i class="fas fa-redo text-pink-300"></i>
+                        <span>Đọc lại bức thư</span>
+                    </button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ZOOMED MODAL CARD -->
+    <div id="card-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md hidden opacity-0 transition-all duration-300 flex items-center justify-center p-4">
+        <div class="glass-card-light rounded-3xl max-w-md w-full p-6 md:p-8 text-gray-800 relative transform scale-90 transition-all duration-300 border-2 border-amber-300 shadow-2xl">
+            
+            <button onclick="closeModalCard()" class="absolute top-4 right-4 w-9 h-9 bg-pink-100 hover:bg-pink-200 text-pink-600 rounded-full flex items-center justify-center transition-colors">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <div class="flex items-center gap-2 text-pink-600 font-bold text-sm mb-3">
+                <i class="fas fa-heart text-red-500 animate-pulse"></i>
+                <span>Lời Chúc Dành Cho Người Thương</span>
+            </div>
+
+            <div class="py-4 my-2 border-y border-pink-200/60">
+                <p id="modal-wish-text" class="font-sans text-lg md:text-xl text-gray-800 fix-letter-text leading-relaxed text-center font-bold">
+                    "Lời chúc..."
+                </p>
+            </div>
+
+            <div class="mt-6 flex flex-col gap-3">
+                <button id="speech-btn" onclick="speakCurrentWish()" class="w-full py-3 bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 text-white rounded-2xl font-bold text-sm hover:opacity-95 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-98">
+                    <i id="speech-icon" class="fas fa-volume-up text-yellow-300 text-lg"></i>
+                    <span id="speech-text">🔊 Bấm vào đây để nghe đọc</span>
+                </button>
+
+                <div class="flex items-center justify-between gap-3 pt-2">
+                    <button id="modal-like-btn" onclick="likeModalCard(this)" class="flex-1 py-2.5 bg-pink-100 hover:bg-pink-200 text-pink-700 rounded-xl font-semibold text-xs transition-colors flex items-center justify-center gap-2">
+                        <i class="far fa-heart text-red-500 text-base"></i>
+                        <span>Thả tim</span>
+                    </button>
+                    <button id="modal-copy-btn" onclick="copyModalWish()" class="flex-1 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-md">
+                        <i class="far fa-copy text-base"></i>
+                        <span>Sao chép</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-black/85 text-white px-6 py-3 rounded-full text-sm font-medium shadow-2xl opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 border border-pink-500/30">
+        <i id="toast-icon" class="fas fa-heart text-pink-400"></i>
+        <span id="toast-message">Thông báo</span>
+    </div>
+
+    <!-- Background Music Audio -->
     <audio id="bg-music" loop preload="auto">
         <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=sweet-romantic-piano-112272.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- JAVASCRIPT CORE LOGIC -->
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        /* ===================================================
-           1. WISHES DATABASE: DEDICATED TO "PERSON IN FRONT OF SCREEN"
-        =================================================== */
         const wishesForBeloved = [
             "Chúc người thương trước màn hình luôn mỉm cười rạng rỡ như những đóa hoa mùa xuân rực rỡ nhất! 🌸",
             "Gửi đến người thương đang đọc dòng này: Bạn chính là điều tuyệt vời và ngọt ngào nhất thế giới này! ✨",
@@ -221,43 +420,92 @@
             "Gửi ngàn nụ hôn và cái ôm ấm áp nhất tới người thương đang đọc tấm thiệp nhỏ xinh này! 💋",
             "Chúc người thương có một ngày 20/10 ngập tràn quà tặng, hoa thơm và những điều kỳ diệu bất ngờ! 🎁",
             "Dù ngày hôm nay của bạn thế nào, hãy luôn nhớ rằng bạn luôn được yêu thương và trân trọng thật nhiều! 💖",
-            "Mong mọi điều may mắn nhất trên đời này sẽ luôn mỉm cười với người thương trước màn hình! 🍀",
-            "Gửi một chút ngọt ngào, một chút bình yên và vô vàn tình yêu đến người thương dịu dàng trước màn hình. ✨",
-            "Hãy luôn xinh đẹp, hạnh phúc và là chính mình nhé - Người thương tuyệt vời trước màn hình! 🌺"
+            "Mong mọi điều may mắn nhất trên đời này sẽ luôn mỉm cười với người thương trước màn hình! 🍀"
         ];
+
+        const crystalFortunes = [
+            "🔮 Hôm nay người thương sẽ nhận được một niềm vui ngọt ngào bất ngờ!",
+            "🔮 Nụ cười của người thương hôm nay sẽ làm tan chảy trái tim ai đó!",
+            "🔮 Mọi điều ước nguyện trong lòng người thương đều đang trên đường thành hiện thực!",
+            "🔮 Ngày hôm nay ngập tràn năng lượng yêu thương và bình yên cho người thương!",
+            "🔮 Người thương chính là ngôi sao may mắn và tỏa sáng nhất hôm nay!"
+        ];
+
+        const letterFullText = "Cảm ơn người thương đã luôn xuất hiện dịu dàng và mang đến cho thế giới này vô vàn điều ấm áp. Nhân ngày Phụ nữ Việt Nam 20/10, mong người thương luôn được yêu thương, trân trọng, luôn giữ trên môi nụ cười rạng rỡ và hạnh phúc trọn vẹn nhất mỗi ngày! ❤️";
 
         let streamInterval = null;
         let isStreamPaused = false;
         let activeCardsCount = 0;
-        const MAX_SIMULTANEOUS_CARDS = 10;
+        const MAX_SIMULTANEOUS_CARDS = 8;
+        let currentActiveWishText = "";
+        let isSpeechSpeaking = false;
+        let isLetterOpened = false;
 
-        /* ===================================================
-           2. EXPERIENCE INITIALIZATION
-        =================================================== */
         function startExperience() {
-            // Play romantic piano music
             const audio = document.getElementById('bg-music');
-            audio.play().then(() => {
-                document.getElementById('music-icon').classList.add('animate-spin-slow');
-            }).catch(() => console.log("Autoplay context requiring interaction."));
+            audio.play().catch(() => {});
 
-            // Heart/Firework Confetti Burst
             triggerHeartConfetti();
 
-            // Hide Intro Screen with fade
             const introScreen = document.getElementById('intro-screen');
             introScreen.classList.add('opacity-0', 'scale-90');
 
             setTimeout(() => {
                 introScreen.classList.add('hidden');
-                document.getElementById('active-controls').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('active-controls').classList.remove('opacity-0');
-                }, 100);
+                const mainApp = document.getElementById('main-app');
+                mainApp.classList.remove('hidden');
+                setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
 
-                // Start spawn sequence of cards
                 startCardStream();
             }, 600);
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`nav-${tabName}`).classList.add('active');
+
+            document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
+            
+            const activeSection = document.getElementById(`section-${tabName}`);
+            activeSection.classList.remove('hidden');
+
+            const streamContainer = document.getElementById('card-stream-container');
+            if (tabName === 'stream') {
+                streamContainer.style.display = 'block';
+                isStreamPaused = false;
+            } else {
+                streamContainer.style.display = 'none';
+                isStreamPaused = true;
+            }
+        }
+
+        function openLetterEnvelope() {
+            if (isLetterOpened) return;
+            isLetterOpened = true;
+
+            document.getElementById('closed-envelope').classList.add('hidden');
+            document.getElementById('opened-letter').classList.remove('hidden');
+            document.getElementById('replay-letter-btn').classList.remove('hidden');
+
+            triggerHeartConfetti();
+            restartTypewriter();
+        }
+
+        let typewriterTimer = null;
+
+        function restartTypewriter() {
+            clearTimeout(typewriterTimer);
+            document.getElementById('typewriter-text').innerText = "";
+            let charIndex = 0;
+            
+            function typeStep() {
+                if (charIndex <= letterFullText.length) {
+                    document.getElementById('typewriter-text').innerText = letterFullText.substring(0, charIndex);
+                    charIndex++;
+                    typewriterTimer = setTimeout(typeStep, 35);
+                }
+            }
+            typeStep();
         }
 
         function toggleAudio() {
@@ -270,25 +518,20 @@
             } else {
                 audio.pause();
                 icon.className = "fas fa-volume-mute text-gray-400";
-                showToast("Đã tắt nhạc", "fa-volume-mute");
+                showToast("Đã tắt nhạc nền", "fa-volume-mute");
             }
         }
 
-        /* ===================================================
-           3. FLOATING CARDS GENERATOR & STREAM SYSTEM
-        =================================================== */
         function startCardStream() {
-            // Spawn initial cluster
             for (let i = 0; i < 3; i++) {
-                setTimeout(() => spawnFloatingCard(), i * 800);
+                setTimeout(() => spawnFloatingCard(), i * 700);
             }
 
-            // Continuous stream
             streamInterval = setInterval(() => {
                 if (!isStreamPaused && activeCardsCount < MAX_SIMULTANEOUS_CARDS) {
                     spawnFloatingCard();
                 }
-            }, 2500);
+            }, 2600);
         }
 
         function spawnFloatingCard(customWishText = null) {
@@ -296,14 +539,12 @@
             const card = document.createElement('div');
             card.className = 'floating-card';
 
-            // Pick a random wish or custom
             const wishText = customWishText || wishesForBeloved[Math.floor(Math.random() * wishesForBeloved.length)];
 
-            // Random initial X position (10% to 75% of screen width)
-            const randomX = Math.random() * 65 + 10;
-            const startY = window.innerHeight + 100;
-            const floatDuration = Math.random() * 8 + 12; // 12s - 20s float time
-            const rotateAngle = (Math.random() - 0.5) * 16; // -8deg to +8deg wobble
+            const randomX = Math.random() * 60 + 15;
+            const startY = window.innerHeight + 50;
+            const floatDuration = Math.random() * 6 + 12; 
+            const rotateAngle = (Math.random() - 0.5) * 12;
 
             card.style.left = `${randomX}vw`;
             card.style.top = `${startY}px`;
@@ -311,58 +552,43 @@
             card.innerHTML = `
                 <div class="flex items-center justify-between mb-2 pb-1 border-b border-pink-200/60">
                     <span class="text-xs font-bold text-pink-600 flex items-center gap-1.5">
-                        <i class="fas fa-heart text-red-500 animate-pulse"></i> Gửi Người Thương
+                        <i class="fas fa-heart text-red-500"></i> Gửi Người Thương
                     </span>
-                    <span class="text-[10px] bg-pink-100 text-pink-600 font-semibold px-2 py-0.5 rounded-full">20/10 ✨</span>
+                    <span class="text-[10px] bg-pink-100 text-pink-600 font-semibold px-2 py-0.5 rounded-full">Chạm để xem ✨</span>
                 </div>
-                <p class="font-cursive text-lg text-gray-800 font-semibold leading-relaxed my-2">
+                <p class="font-sans text-sm text-gray-800 fix-letter-text font-semibold leading-relaxed my-2 line-clamp-3">
                     "${wishText}"
                 </p>
-                <div class="mt-3 pt-2 border-t border-pink-100 flex items-center justify-between text-xs">
-                    <button onclick="likeCard(event, this)" class="text-gray-500 hover:text-red-500 transition-colors flex items-center gap-1.5 py-1 px-2 rounded-lg hover:bg-pink-50">
-                        <i class="far fa-heart text-sm"></i>
-                        <span class="like-count font-medium">100</span>
-                    </button>
-                    <button onclick="copyCardWish(event, '${escapeHtml(wishText)}')" class="text-pink-600 hover:text-pink-800 font-medium flex items-center gap-1 bg-pink-50 hover:bg-pink-100 py-1 px-2.5 rounded-lg transition-colors">
-                        <i class="far fa-copy"></i>
-                        <span>Sao chép</span>
-                    </button>
+                <div class="mt-2 pt-1.5 border-t border-pink-100/60 flex items-center justify-between text-xs text-pink-500 font-medium">
+                    <span><i class="fas fa-search-plus"></i> Phóng to</span>
+                    <span class="text-xs">🔊 Nghe đọc</span>
                 </div>
             `;
+
+            card.addEventListener('pointerdown', (e) => {
+                e.stopPropagation();
+                openModalCard(wishText);
+            });
 
             container.appendChild(card);
             activeCardsCount++;
 
-            // Animation variables
             let currentY = startY;
-            let currentXOffset = 0;
-            let speed = (window.innerHeight + 250) / (floatDuration * 60); // px per frame
+            let speed = (window.innerHeight + 300) / (floatDuration * 60);
             let isHovered = false;
             let animationFrameId = null;
 
-            // Hover & Touch event handling (Stop Floating & Glow)
             card.addEventListener('mouseenter', () => { isHovered = true; });
             card.addEventListener('mouseleave', () => { isHovered = false; });
-            card.addEventListener('touchstart', () => { 
-                card.classList.add('active-touch');
-                isHovered = true; 
-            }, {passive: true});
-            card.addEventListener('touchend', () => { 
-                card.classList.remove('active-touch');
-                isHovered = false; 
-            });
 
-            // Smooth Motion Loop
             function animate() {
                 if (!isHovered && !isStreamPaused) {
                     currentY -= speed;
-                    currentXOffset = Math.sin(currentY * 0.01) * 15; // Gentle horizontal sway
-                    
+                    let currentXOffset = Math.sin(currentY * 0.008) * 15;
                     card.style.transform = `translate3d(${currentXOffset}px, 0, 0) rotate(${rotateAngle}deg)`;
                     card.style.top = `${currentY}px`;
                 }
 
-                // Remove card if floated above viewport
                 if (currentY < -250) {
                     card.remove();
                     activeCardsCount--;
@@ -375,9 +601,101 @@
             animate();
         }
 
+        function openModalCard(wishText) {
+            currentActiveWishText = wishText;
+            document.getElementById('modal-wish-text').innerText = `"${wishText}"`;
+
+            stopSpeech();
+            
+            const modal = document.getElementById('card-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('.glass-card-light').classList.remove('scale-90');
+                modal.querySelector('.glass-card-light').classList.add('scale-100');
+            }, 20);
+
+            isStreamPaused = true;
+        }
+
+        function closeModalCard() {
+            stopSpeech();
+            const modal = document.getElementById('card-modal');
+            modal.querySelector('.glass-card-light').classList.remove('scale-100');
+            modal.querySelector('.glass-card-light').classList.add('scale-90');
+            modal.classList.add('opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                if (document.getElementById('nav-stream').classList.contains('active')) {
+                    isStreamPaused = false;
+                }
+            }, 300);
+        }
+
+        document.getElementById('card-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'card-modal') {
+                closeModalCard();
+            }
+        });
+
+        function speakCurrentWish() {
+            if ('speechSynthesis' in window) {
+                if (isSpeechSpeaking) {
+                    stopSpeech();
+                    return;
+                }
+
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(currentActiveWishText);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 0.88;
+
+                const voices = window.speechSynthesis.getVoices();
+                const viVoice = voices.find(v => v.lang.includes('vi') || v.lang.includes('VN'));
+                if (viVoice) utterance.voice = viVoice;
+
+                utterance.onstart = () => {
+                    isSpeechSpeaking = true;
+                    document.getElementById('speech-text').innerText = "🔊 Đang đọc lời chúc...";
+                };
+
+                utterance.onend = () => resetSpeechUI();
+                utterance.onerror = () => resetSpeechUI();
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                showToast("Trình duyệt không hỗ trợ đọc giọng nói", "fa-exclamation-circle");
+            }
+        }
+
+        function stopSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            resetSpeechUI();
+        }
+
+        function resetSpeechUI() {
+            isSpeechSpeaking = false;
+            const btnText = document.getElementById('speech-text');
+            if (btnText) btnText.innerText = "🔊 Bấm vào đây để nghe đọc";
+        }
+
+        function likeModalCard(btn) {
+            triggerHeartConfetti();
+            btn.innerHTML = `<i class="fas fa-heart text-red-500 animate-bounce"></i> <span>Đã thả tim! ❤️</span>`;
+            showToast("Đã gửi ngàn trái tim! 💕", "fa-heart");
+        }
+
+        function copyModalWish() {
+            navigator.clipboard.writeText(currentActiveWishText + "\n\n🌸 Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10! 🌸");
+            showToast("Đã sao chép lời chúc! 💌", "fa-clipboard-check");
+        }
+
         function spawnCustomCard() {
             spawnFloatingCard();
-            triggerSparkleBurst();
             showToast("Đã thả thêm thiệp lơ lửng! ✨", "fa-heart");
         }
 
@@ -394,7 +712,7 @@
         }
 
         function addPersonalizedWish() {
-            const customText = prompt("Nhập lời chúc chân thành của bạn dành cho người thương trước màn hình:");
+            const customText = prompt("Nhập lời chúc chân thành của bạn dành cho người thương:");
             if (customText && customText.trim() !== "") {
                 spawnFloatingCard(customText.trim());
                 triggerHeartConfetti();
@@ -402,46 +720,41 @@
             }
         }
 
-        function likeCard(event, btn) {
-            event.stopPropagation();
-            const icon = btn.querySelector('i');
-            const countSpan = btn.querySelector('.like-count');
-            let count = parseInt(countSpan.innerText);
+        function revealCrystalFortune() {
+            const resultBox = document.getElementById('crystal-result');
+            resultBox.innerHTML = `<i class="fas fa-spinner fa-spin text-2xl text-pink-300"></i>`;
+            
+            setTimeout(() => {
+                const randomFortune = crystalFortunes[Math.floor(Math.random() * crystalFortunes.length)];
+                resultBox.innerHTML = `
+                    <p class="font-cursive text-2xl md:text-3xl text-pink-100 font-bold">
+                        "${randomFortune}"
+                    </p>
+                `;
+                triggerHeartConfetti();
+            }, 800);
+        }
 
-            if (icon.classList.contains('far')) {
-                icon.className = 'fas fa-heart text-red-500 animate-bounce';
-                countSpan.innerText = count + 1;
-                countSpan.classList.add('text-red-500', 'font-bold');
-                
-                // Spawn mini hearts around card
-                createMiniBurstHearts(event.clientX, event.clientY);
-            } else {
-                icon.className = 'far fa-heart text-gray-500';
-                countSpan.innerText = count - 1;
-                countSpan.classList.remove('text-red-500', 'font-bold');
+        function plantWish() {
+            const input = document.getElementById('garden-wish-input');
+            if (!input.value.trim()) {
+                showToast("Hãy nhập một điều ước nhỏ nhé!", "fa-comment-dots");
+                return;
             }
+
+            const stem = document.getElementById('flower-stem');
+            const head = document.getElementById('flower-head');
+
+            stem.style.height = '110px';
+            setTimeout(() => {
+                head.style.transform = 'scale(1)';
+                triggerHeartConfetti();
+                showToast("Điều ước đã nở hoa rực rỡ! 🌹", "fa-seedling");
+                input.value = "";
+            }, 1200);
         }
 
-        function copyCardWish(event, text) {
-            event.stopPropagation();
-            const tempInput = document.createElement('textarea');
-            tempInput.value = text + "\n\n🌸 Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10! 🌸";
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-
-            showToast("Đã sao chép lời chúc gửi người thương! 💌", "fa-clipboard-check");
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-        }
-
-        /* ===================================================
-           4. VISUAL EFFECTS & CANVAS ROSES/SPARKLES
-        =================================================== */
-        // Canvas 1: Falling Rose Petals
+        /* Canvas Petals & Sparkles */
         const petalCanvas = document.getElementById('petal-canvas');
         const pCtx = petalCanvas.getContext('2d');
         let width = petalCanvas.width = window.innerWidth;
@@ -485,7 +798,7 @@
                 pCtx.restore();
             }
         }
-        const petals = Array.from({ length: 35 }, () => new Petal());
+        const petals = Array.from({ length: 32 }, () => new Petal());
 
         function animatePetals() {
             pCtx.clearRect(0, 0, width, height);
@@ -494,71 +807,10 @@
         }
         animatePetals();
 
-        // Canvas 2: Sparkle Particles Cursor & Interaction
-        const sparkleCanvas = document.getElementById('sparkle-canvas');
-        const sCtx = sparkleCanvas.getContext('2d');
-        sparkleCanvas.width = window.innerWidth;
-        sparkleCanvas.height = window.innerHeight;
-
-        let particles = [];
-        class Particle {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.size = Math.random() * 4 + 1;
-                this.speedX = Math.random() * 2 - 1;
-                this.speedY = Math.random() * 2 - 1;
-                this.color = `hsl(${Math.random() * 50 + 320}, 100%, 75%)`;
-                this.life = 1;
-                this.decay = Math.random() * 0.03 + 0.015;
-            }
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.life -= this.decay;
-            }
-            draw() {
-                sCtx.save();
-                sCtx.globalAlpha = Math.max(0, this.life);
-                sCtx.fillStyle = this.color;
-                sCtx.beginPath();
-                sCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                sCtx.fill();
-                sCtx.restore();
-            }
-        }
-
-        window.addEventListener('mousemove', (e) => {
-            for (let i = 0; i < 2; i++) particles.push(new Particle(e.clientX, e.clientY));
-        });
-
-        function animateSparkles() {
-            sCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
-            particles.forEach((p, idx) => {
-                p.update();
-                p.draw();
-                if (p.life <= 0) particles.splice(idx, 1);
-            });
-            requestAnimationFrame(animateSparkles);
-        }
-        animateSparkles();
-
-        function triggerSparkleBurst() {
-            const cx = window.innerWidth / 2;
-            const cy = window.innerHeight / 2;
-            for (let i = 0; i < 30; i++) particles.push(new Particle(cx, cy));
-        }
-
-        function createMiniBurstHearts(x, y) {
-            for (let i = 0; i < 12; i++) {
-                particles.push(new Particle(x, y));
-            }
-        }
-
         function triggerHeartConfetti() {
             if (typeof confetti === 'function') {
                 confetti({
-                    particleCount: 70,
+                    particleCount: 65,
                     spread: 80,
                     origin: { y: 0.6 },
                     colors: ['#FF69B4', '#FF1493', '#FFD700', '#D81B60']
@@ -577,7 +829,7 @@
             setTimeout(() => {
                 toast.classList.remove('opacity-100');
                 toast.classList.add('opacity-0');
-            }, 3000);
+            }, 2800);
         }
     </script>
 </body>
