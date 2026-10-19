@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Người Thương Trước Màn Hình - 20/10 ❤️</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        roseGold: '#B76E79',
+                        deepPink: '#E83E8C',
+                        softPink: '#FFF0F5',
+                        romanticRed: '#D81B60',
+                    },
+                    fontFamily: {
+                        cursive: ['Dancing Script', 'cursive'],
+                        romantic: ['Great Vibes', 'cursive'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-heart': 'pulseHeart 1.5s infinite ease-in-out',
+                        'glow-pink': 'glowPink 2s infinite alternate',
+                        'spin-slow': 'spin 12s linear infinite',
+                    },
+                    keyframes: {
+                        pulseHeart: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.12)' },
+                        },
+                        glowPink: {
+                            '0%': { boxShadow: '0 0 20px rgba(232, 62, 140, 0.4), inset 0 0 10px rgba(255,255,255,0.5)' },
+                            '100%': { boxShadow: '0 0 45px rgba(232, 62, 140, 0.9), 0 0 25px rgba(255, 182, 193, 0.8), inset 0 0 20px rgba(255,255,255,0.8)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #1f0528 0%, #4a154b 35%, #8c1d40 70%, #ff758c 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Fullscreen Canvas Layers */
+        #petal-canvas, #sparkle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Glassmorphism Styles for Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Floating Cards Container */
+        #card-stream-container {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Individual Floating Card Styling */
+        .floating-card {
+            position: absolute;
+            pointer-events: auto;
+            width: min(320px, 85vw);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 240, 245, 0.88) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255, 215, 0, 0.6); /* Gold metallic border accent */
+            border-radius: 20px;
+            padding: 18px 20px;
+            box-shadow: 0 10px 30px rgba(216, 27, 96, 0.25), 0 0 15px rgba(255, 215, 0, 0.2);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+            cursor: pointer;
+            will-change: transform;
+        }
+
+        .floating-card:hover, .floating-card.active-touch {
+            transform: scale(1.1) !important;
+            z-index: 100 !important;
+            border-color: #ffd700;
+            box-shadow: 0 20px 45px rgba(232, 62, 140, 0.5), 0 0 30px rgba(255, 215, 0, 0.7);
+        }
+
+        /* Custom Scrollbar for Modal or Extra View */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(232, 62, 140, 0.5);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="relative text-white min-h-screen flex flex-col justify-between">
+
+    <!-- Interactive Canvas Layers -->
+    <canvas id="petal-canvas"></canvas>
+    <canvas id="sparkle-canvas"></canvas>
+
+    <!-- Header & Ambient Sound Controls -->
+    <header class="fixed top-4 right-4 z-50 flex items-center gap-3">
+        <button id="music-btn" onclick="toggleAudio()" class="glass-card text-white p-3.5 rounded-full hover:bg-white/30 transition-all transform hover:scale-110 flex items-center justify-center shadow-2xl group relative">
+            <i id="music-icon" class="fas fa-music text-pink-300 text-lg"></i>
+            <span class="absolute right-14 bg-black/80 text-white text-xs px-2.5 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                Nhạc nền lãng mạn
+            </span>
+        </button>
+    </header>
+
+    <!-- Floating Cards Stream Layer -->
+    <div id="card-stream-container"></div>
+
+    <!-- MAIN INTERACTIVE CONTAINER -->
+    <main class="relative z-30 container mx-auto px-4 my-auto flex flex-col items-center justify-center min-h-screen text-center">
+
+        <!-- INTRO SCREEN: Heart Box Trigger -->
+        <div id="intro-screen" class="transition-all duration-700 transform">
+            <div onclick="startExperience()" class="cursor-pointer group flex flex-col items-center">
+                
+                <!-- Pulsing Heart Icon Container -->
+                <div class="relative mb-6">
+                    <div class="w-36 h-36 md:w-44 md:h-44 glass-card rounded-full flex items-center justify-center animate-glow-pink transition-transform duration-500 group-hover:scale-110">
+                        <i class="fas fa-heart text-6xl md:text-7xl text-gradient bg-clip-text bg-gradient-to-r from-pink-400 via-red-400 to-rose-300 animate-pulse-heart"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs px-3 py-1 rounded-full shadow-lg font-bold animate-bounce">
+                        20/10 💕
+                    </div>
+                </div>
+
+                <h1 class="font-romantic text-4xl md:text-6xl text-pink-200 font-bold mb-3 drop-shadow-lg">
+                    Dành Riêng Cho Người Thương
+                </h1>
+                
+                <p class="font-cursive text-2xl md:text-3xl text-pink-100/90 mb-8 max-w-md">
+                    "Đang ở ngay trước màn hình lúc này..."
+                </p>
+
+                <div class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-2xl hover:from-pink-600 hover:to-rose-600 transition-all transform group-hover:scale-105 border border-pink-300/40">
+                    <i class="fas fa-envelope-open-heart text-xl"></i>
+                    <span>Chạm nhẹ để mở quà ❤️</span>
+                </div>
+
+                <p class="text-xs text-pink-200/70 italic mt-4">
+                    ✨ Chạm vào màn hình để cảm nhận tình yêu ngọt ngào ✨
+                </p>
+            </div>
+        </div>
+
+        <!-- MAIN INTERACTIVE CONTROLS (Appears after opening) -->
+        <div id="active-controls" class="hidden opacity-0 transition-opacity duration-1000 fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 bg-black/40 backdrop-blur-md p-2.5 px-5 rounded-full border border-white/20 shadow-2xl">
+            <button onclick="spawnCustomCard()" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full font-medium text-xs md:text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg active:scale-95">
+                <i class="fas fa-plus-circle"></i>
+                <span>Thả thêm thiệp</span>
+            </button>
+
+            <button id="pause-btn" onclick="togglePauseStream()" class="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all text-xs md:text-sm flex items-center justify-center w-9 h-9">
+                <i id="pause-icon" class="fas fa-pause"></i>
+            </button>
+
+            <button onclick="addPersonalizedWish()" class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full font-medium text-xs md:text-sm transition-all flex items-center gap-2 border border-white/30">
+                <i class="fas fa-pen-heart text-pink-300"></i>
+                <span>Gửi lời chúc riêng</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-black/85 text-white px-6 py-3 rounded-full text-sm font-medium shadow-2xl opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 border border-pink-500/30">
+        <i id="toast-icon" class="fas fa-heart text-pink-400"></i>
+        <span id="toast-message">Đã sao chép lời chúc gửi người thương!</span>
+    </div>
+
+    <!-- Hidden HTML5 Audio Element for Background Music -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=sweet-romantic-piano-112272.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- JAVASCRIPT CORE LOGIC -->
+    <script>
+        /* ===================================================
+           1. WISHES DATABASE: DEDICATED TO "PERSON IN FRONT OF SCREEN"
+        =================================================== */
+        const wishesForBeloved = [
+            "Chúc người thương trước màn hình luôn mỉm cười rạng rỡ như những đóa hoa mùa xuân rực rỡ nhất! 🌸",
+            "Gửi đến người thương đang đọc dòng này: Bạn chính là điều tuyệt vời và ngọt ngào nhất thế giới này! ✨",
+            "Mong người thương trước màn hình luôn bình an, hạnh phúc và nhận được thật nhiều tình yêu mỗi ngày. ❤️",
+            "Chúc người thương luôn tự tin, tỏa sáng và gặt hái được tất cả những ước mơ trong trái tim mình! 🌟",
+            "Cảm ơn người thương trước màn hình đã xuất hiện và làm cho thế giới này trở nên ấm áp hơn bao giờ hết! 💕",
+            "20/10 thật ngọt ngào nhen! Mong nụ cười luôn đọng trên môi người thương dịu dàng trước màn hình. 🥰",
+            "Gửi ngàn nụ hôn và cái ôm ấm áp nhất tới người thương đang đọc tấm thiệp nhỏ xinh này! 💋",
+            "Chúc người thương có một ngày 20/10 ngập tràn quà tặng, hoa thơm và những điều kỳ diệu bất ngờ! 🎁",
+            "Dù ngày hôm nay của bạn thế nào, hãy luôn nhớ rằng bạn luôn được yêu thương và trân trọng thật nhiều! 💖",
+            "Mong mọi điều may mắn nhất trên đời này sẽ luôn mỉm cười với người thương trước màn hình! 🍀",
+            "Gửi một chút ngọt ngào, một chút bình yên và vô vàn tình yêu đến người thương dịu dàng trước màn hình. ✨",
+            "Hãy luôn xinh đẹp, hạnh phúc và là chính mình nhé - Người thương tuyệt vời trước màn hình! 🌺"
+        ];
+
+        let streamInterval = null;
+        let isStreamPaused = false;
+        let activeCardsCount = 0;
+        const MAX_SIMULTANEOUS_CARDS = 10;
+
+        /* ===================================================
+           2. EXPERIENCE INITIALIZATION
+        =================================================== */
+        function startExperience() {
+            // Play romantic piano music
+            const audio = document.getElementById('bg-music');
+            audio.play().then(() => {
+                document.getElementById('music-icon').classList.add('animate-spin-slow');
+            }).catch(() => console.log("Autoplay context requiring interaction."));
+
+            // Heart/Firework Confetti Burst
+            triggerHeartConfetti();
+
+            // Hide Intro Screen with fade
+            const introScreen = document.getElementById('intro-screen');
+            introScreen.classList.add('opacity-0', 'scale-90');
+
+            setTimeout(() => {
+                introScreen.classList.add('hidden');
+                document.getElementById('active-controls').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('active-controls').classList.remove('opacity-0');
+                }, 100);
+
+                // Start spawn sequence of cards
+                startCardStream();
+            }, 600);
+        }
+
+        function toggleAudio() {
+            const audio = document.getElementById('bg-music');
+            const icon = document.getElementById('music-icon');
+            if (audio.paused) {
+                audio.play();
+                icon.className = "fas fa-music text-pink-300 animate-spin-slow";
+                showToast("Đã bật nhạc nền lãng mạn 🎵", "fa-music");
+            } else {
+                audio.pause();
+                icon.className = "fas fa-volume-mute text-gray-400";
+                showToast("Đã tắt nhạc", "fa-volume-mute");
+            }
+        }
+
+        /* ===================================================
+           3. FLOATING CARDS GENERATOR & STREAM SYSTEM
+        =================================================== */
+        function startCardStream() {
+            // Spawn initial cluster
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => spawnFloatingCard(), i * 800);
+            }
+
+            // Continuous stream
+            streamInterval = setInterval(() => {
+                if (!isStreamPaused && activeCardsCount < MAX_SIMULTANEOUS_CARDS) {
+                    spawnFloatingCard();
+                }
+            }, 2500);
+        }
+
+        function spawnFloatingCard(customWishText = null) {
+            const container = document.getElementById('card-stream-container');
+            const card = document.createElement('div');
+            card.className = 'floating-card';
+
+            // Pick a random wish or custom
+            const wishText = customWishText || wishesForBeloved[Math.floor(Math.random() * wishesForBeloved.length)];
+
+            // Random initial X position (10% to 75% of screen width)
+            const randomX = Math.random() * 65 + 10;
+            const startY = window.innerHeight + 100;
+            const floatDuration = Math.random() * 8 + 12; // 12s - 20s float time
+            const rotateAngle = (Math.random() - 0.5) * 16; // -8deg to +8deg wobble
+
+            card.style.left = `${randomX}vw`;
+            card.style.top = `${startY}px`;
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-2 pb-1 border-b border-pink-200/60">
+                    <span class="text-xs font-bold text-pink-600 flex items-center gap-1.5">
+                        <i class="fas fa-heart text-red-500 animate-pulse"></i> Gửi Người Thương
+                    </span>
+                    <span class="text-[10px] bg-pink-100 text-pink-600 font-semibold px-2 py-0.5 rounded-full">20/10 ✨</span>
+                </div>
+                <p class="font-cursive text-lg text-gray-800 font-semibold leading-relaxed my-2">
+                    "${wishText}"
+                </p>
+                <div class="mt-3 pt-2 border-t border-pink-100 flex items-center justify-between text-xs">
+                    <button onclick="likeCard(event, this)" class="text-gray-500 hover:text-red-500 transition-colors flex items-center gap-1.5 py-1 px-2 rounded-lg hover:bg-pink-50">
+                        <i class="far fa-heart text-sm"></i>
+                        <span class="like-count font-medium">100</span>
+                    </button>
+                    <button onclick="copyCardWish(event, '${escapeHtml(wishText)}')" class="text-pink-600 hover:text-pink-800 font-medium flex items-center gap-1 bg-pink-50 hover:bg-pink-100 py-1 px-2.5 rounded-lg transition-colors">
+                        <i class="far fa-copy"></i>
+                        <span>Sao chép</span>
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(card);
+            activeCardsCount++;
+
+            // Animation variables
+            let currentY = startY;
+            let currentXOffset = 0;
+            let speed = (window.innerHeight + 250) / (floatDuration * 60); // px per frame
+            let isHovered = false;
+            let animationFrameId = null;
+
+            // Hover & Touch event handling (Stop Floating & Glow)
+            card.addEventListener('mouseenter', () => { isHovered = true; });
+            card.addEventListener('mouseleave', () => { isHovered = false; });
+            card.addEventListener('touchstart', () => { 
+                card.classList.add('active-touch');
+                isHovered = true; 
+            }, {passive: true});
+            card.addEventListener('touchend', () => { 
+                card.classList.remove('active-touch');
+                isHovered = false; 
+            });
+
+            // Smooth Motion Loop
+            function animate() {
+                if (!isHovered && !isStreamPaused) {
+                    currentY -= speed;
+                    currentXOffset = Math.sin(currentY * 0.01) * 15; // Gentle horizontal sway
+                    
+                    card.style.transform = `translate3d(${currentXOffset}px, 0, 0) rotate(${rotateAngle}deg)`;
+                    card.style.top = `${currentY}px`;
+                }
+
+                // Remove card if floated above viewport
+                if (currentY < -250) {
+                    card.remove();
+                    activeCardsCount--;
+                    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                } else {
+                    animationFrameId = requestAnimationFrame(animate);
+                }
+            }
+
+            animate();
+        }
+
+        function spawnCustomCard() {
+            spawnFloatingCard();
+            triggerSparkleBurst();
+            showToast("Đã thả thêm thiệp lơ lửng! ✨", "fa-heart");
+        }
+
+        function togglePauseStream() {
+            isStreamPaused = !isStreamPaused;
+            const icon = document.getElementById('pause-icon');
+            if (isStreamPaused) {
+                icon.className = "fas fa-play";
+                showToast("Đã tạm dừng thiệp trôi", "fa-pause");
+            } else {
+                icon.className = "fas fa-pause";
+                showToast("Tiếp tục luồng thiệp bay 🌸", "fa-play");
+            }
+        }
+
+        function addPersonalizedWish() {
+            const customText = prompt("Nhập lời chúc chân thành của bạn dành cho người thương trước màn hình:");
+            if (customText && customText.trim() !== "") {
+                spawnFloatingCard(customText.trim());
+                triggerHeartConfetti();
+                showToast("Đã tạo thiệp chúc riêng của bạn! ❤️", "fa-check");
+            }
+        }
+
+        function likeCard(event, btn) {
+            event.stopPropagation();
+            const icon = btn.querySelector('i');
+            const countSpan = btn.querySelector('.like-count');
+            let count = parseInt(countSpan.innerText);
+
+            if (icon.classList.contains('far')) {
+                icon.className = 'fas fa-heart text-red-500 animate-bounce';
+                countSpan.innerText = count + 1;
+                countSpan.classList.add('text-red-500', 'font-bold');
+                
+                // Spawn mini hearts around card
+                createMiniBurstHearts(event.clientX, event.clientY);
+            } else {
+                icon.className = 'far fa-heart text-gray-500';
+                countSpan.innerText = count - 1;
+                countSpan.classList.remove('text-red-500', 'font-bold');
+            }
+        }
+
+        function copyCardWish(event, text) {
+            event.stopPropagation();
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text + "\n\n🌸 Chúc Mừng Ngày Phụ Nữ Việt Nam 20/10! 🌸";
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            showToast("Đã sao chép lời chúc gửi người thương! 💌", "fa-clipboard-check");
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        }
+
+        /* ===================================================
+           4. VISUAL EFFECTS & CANVAS ROSES/SPARKLES
+        =================================================== */
+        // Canvas 1: Falling Rose Petals
+        const petalCanvas = document.getElementById('petal-canvas');
+        const pCtx = petalCanvas.getContext('2d');
+        let width = petalCanvas.width = window.innerWidth;
+        let height = petalCanvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = petalCanvas.width = window.innerWidth;
+            height = petalCanvas.height = window.innerHeight;
+        });
+
+        class Petal {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * -height;
+                this.size = Math.random() * 10 + 8;
+                this.speedY = Math.random() * 1.2 + 0.6;
+                this.speedX = Math.random() * 0.8 - 0.4;
+                this.angle = Math.random() * Math.PI * 2;
+                this.spin = Math.random() * 0.02 - 0.01;
+                this.color = ['#FFB6C1', '#FF69B4', '#FF1493', '#E83E8C'][Math.floor(Math.random() * 4)];
+                this.opacity = Math.random() * 0.6 + 0.4;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += Math.sin(this.y * 0.008) + this.speedX;
+                this.angle += this.spin;
+                if (this.y > height + 20) this.reset();
+            }
+            draw() {
+                pCtx.save();
+                pCtx.translate(this.x, this.y);
+                pCtx.rotate(this.angle);
+                pCtx.globalAlpha = this.opacity;
+                pCtx.fillStyle = this.color;
+                pCtx.beginPath();
+                pCtx.moveTo(0, 0);
+                pCtx.bezierCurveTo(-this.size, -this.size, -this.size, this.size, 0, this.size * 1.4);
+                pCtx.bezierCurveTo(this.size, this.size, this.size, -this.size, 0, 0);
+                pCtx.fill();
+                pCtx.restore();
+            }
+        }
+        const petals = Array.from({ length: 35 }, () => new Petal());
+
+        function animatePetals() {
+            pCtx.clearRect(0, 0, width, height);
+            petals.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animatePetals);
+        }
+        animatePetals();
+
+        // Canvas 2: Sparkle Particles Cursor & Interaction
+        const sparkleCanvas = document.getElementById('sparkle-canvas');
+        const sCtx = sparkleCanvas.getContext('2d');
+        sparkleCanvas.width = window.innerWidth;
+        sparkleCanvas.height = window.innerHeight;
+
+        let particles = [];
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 4 + 1;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.color = `hsl(${Math.random() * 50 + 320}, 100%, 75%)`;
+                this.life = 1;
+                this.decay = Math.random() * 0.03 + 0.015;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life -= this.decay;
+            }
+            draw() {
+                sCtx.save();
+                sCtx.globalAlpha = Math.max(0, this.life);
+                sCtx.fillStyle = this.color;
+                sCtx.beginPath();
+                sCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                sCtx.fill();
+                sCtx.restore();
+            }
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            for (let i = 0; i < 2; i++) particles.push(new Particle(e.clientX, e.clientY));
+        });
+
+        function animateSparkles() {
+            sCtx.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
+            particles.forEach((p, idx) => {
+                p.update();
+                p.draw();
+                if (p.life <= 0) particles.splice(idx, 1);
+            });
+            requestAnimationFrame(animateSparkles);
+        }
+        animateSparkles();
+
+        function triggerSparkleBurst() {
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight / 2;
+            for (let i = 0; i < 30; i++) particles.push(new Particle(cx, cy));
+        }
+
+        function createMiniBurstHearts(x, y) {
+            for (let i = 0; i < 12; i++) {
+                particles.push(new Particle(x, y));
+            }
+        }
+
+        function triggerHeartConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 70,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#FF69B4', '#FF1493', '#FFD700', '#D81B60']
+                });
+            }
+        }
+
+        function showToast(message, iconClass = "fa-heart") {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            document.getElementById('toast-icon').className = `fas ${iconClass} text-pink-400`;
+
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

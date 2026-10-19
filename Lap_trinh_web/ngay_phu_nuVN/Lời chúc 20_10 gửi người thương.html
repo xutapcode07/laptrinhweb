@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>20/10 – Gửi người thương</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;600&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#fff4ea;--rose:#ff6f91;--gold:#f7cf7a;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:linear-gradient(180deg,#2a1030 0%,#6b1f4a 62%,#ff8a7a 130%) fixed #2a1030;color:var(--ink);font-family:'Be Vietnam Pro',system-ui,sans-serif;overflow:hidden;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse at 50% 100%,#3b1650,#0d0718 75%);opacity:0;transition:opacity 3s;z-index:0}
+body.night::before{opacity:1}
+canvas{position:fixed;inset:0;width:100%;height:100%;z-index:1}
+.stage{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 22px;text-align:center;transition:opacity .8s}
+.hide{display:none!important}.out{opacity:0}
+.date{font-family:'Dancing Script',cursive;font-size:clamp(70px,22vw,140px);line-height:1;margin:0;color:var(--gold);text-shadow:0 0 50px rgba(255,111,145,.7)}
+h1{font-family:'Dancing Script',cursive;font-size:clamp(26px,7vw,42px);margin:6px 0 10px;font-weight:600}
+h2{font-weight:300;font-size:clamp(17px,4.5vw,22px);margin:0}
+.wish{max-width:540px;min-height:150px;font-size:clamp(17px,4.6vw,21px);line-height:1.75;font-weight:300;padding:24px;transition:opacity .6s}
+.dots{display:flex;gap:8px;margin-top:10px}.dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,244,234,.3);transition:.4s}.dots i.on{background:var(--gold);transform:scale(1.4)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+button{font:inherit;color:var(--ink);background:rgba(255,244,234,.12);border:1px solid rgba(255,244,234,.35);border-radius:999px;padding:11px 18px;cursor:pointer;transition:transform .15s,background .15s}
+button:hover{background:rgba(255,111,145,.35)}button:active{transform:scale(.94)}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.primary{background:var(--rose);border-color:var(--rose);font-weight:600}
+input{font:inherit;width:min(320px,82vw);padding:12px 16px;margin:5px 0;border-radius:14px;border:1px solid rgba(255,244,234,.4);background:rgba(255,244,234,.1);color:var(--ink);text-align:center}
+input::placeholder{color:rgba(255,244,234,.55)}
+.hint{font-size:13px;opacity:.75;margin:12px 0 0}
+/* hộp quà */
+.gift{position:relative;width:150px;height:150px;margin:26px 0 8px;border:0;background:none;padding:0;animation:wob 2.2s ease-in-out infinite}
+.gift:hover{background:none}
+@keyframes wob{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg) translateY(-6px)}}
+.gift .b{position:absolute;bottom:0;left:8px;right:8px;height:98px;border-radius:8px;background:linear-gradient(135deg,#ff6f91,#c93a6a)}
+.gift .b::after,.gift .l::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:22px;margin-left:-11px;background:var(--gold)}
+.gift .l{position:absolute;top:22px;left:0;right:0;height:38px;border-radius:8px;background:linear-gradient(135deg,#ff86a4,#d84677);transition:transform 1s cubic-bezier(.3,1.6,.5,1),opacity 1s}
+.gift .l::before{content:"🎀";position:absolute;top:-34px;left:50%;margin-left:-22px;font-size:44px;z-index:1}
+.gift.open{animation:none}.gift.open .l{transform:translateY(-170px) rotate(-22deg);opacity:0}
+.gift.open .b{animation:flash 1s forwards}
+@keyframes flash{50%{box-shadow:0 0 120px 70px rgba(247,207,122,.9)}}
+.toast{position:fixed;left:0;right:0;bottom:calc(24px + env(safe-area-inset-bottom,0px));text-align:center;z-index:3;font-family:'Dancing Script',cursive;font-size:26px;color:var(--gold);pointer-events:none;transition:opacity .6s;opacity:0}
+@media (prefers-reduced-motion:reduce){.gift{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="cv" aria-hidden="true"></canvas>
+
+<section class="stage" id="s0">
+  <h1>Có một món quà dành cho bạn</h1>
+  <input id="to" placeholder="Tên người thương (vd: Linh)" maxlength="24" aria-label="Tên người nhận">
+  <input id="from" placeholder="Tên của bạn (không bắt buộc)" maxlength="24" aria-label="Tên người gửi">
+  <button class="gift" id="gift" aria-label="Mở quà"><span class="b"></span><span class="l"></span></button>
+  <p class="hint">Chạm vào hộp quà để mở · nhớ bật loa nhé</p>
+</section>
+
+<section class="stage hide out" id="s1">
+  <p class="date">20/10</p>
+  <h1>Chúc mừng ngày Phụ nữ Việt Nam</h1>
+  <h2 id="t1"></h2>
+</section>
+
+<section class="stage hide out" id="s2">
+  <div class="wish" id="wish" aria-live="polite"></div>
+  <div class="dots" id="dots"></div>
+  <div class="bar"><button id="vo">🔊 Giọng đọc: bật</button><button id="skip">Bỏ qua ›</button></div>
+</section>
+
+<section class="stage hide out" id="s3" style="justify-content:flex-start;padding-top:max(36px,6vh)">
+  <h1 style="margin-bottom:4px">Bầu trời ước nguyện</h1>
+  <h2 id="t3"></h2>
+  <div style="flex:1"></div>
+  <input id="mine" placeholder="Viết một điều ước gửi tặng…" maxlength="40" aria-label="Điều ước">
+  <div class="bar" style="margin-bottom:6px">
+    <button class="primary" id="lan">🏮 Thả đèn ước</button>
+    <button id="hug">🤗 Gửi một cái ôm</button>
+    <button id="mu">🎵 Nhạc: bật</button>
+    <button id="re">↻ Xem lại</button>
+  </div>
+  <p class="hint">Chạm vào bất kỳ đâu để hoa nở</p>
+</section>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var cv=$('cv'),cx=cv.getContext('2d'),W,H,dpr=Math.min(devicePixelRatio||1,2);
+function size(){W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0)}
+size();addEventListener('resize',size);
+var name='người thương',from='',tok=0,stage=0,voiceOn=true,on=true;
+var still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function rnd(a){return a[Math.random()*a.length|0]}
+function later(f,ms,my){setTimeout(function(){if(my===tok)f()},ms)}
+
+var wishes=[
+'Gửi {n}, người khiến những ngày bình thường trở nên đáng nhớ. Chúc {n} luôn rạng rỡ và bình yên.',
+'Cảm ơn {n} đã dịu dàng và mạnh mẽ theo cách riêng. Hôm nay, hãy để mọi người chăm sóc {n} nhé.',
+'Chúc {n} mỗi sáng thức dậy đều thấy lòng nhẹ, mỗi tối đi ngủ đều thấy mình được trân trọng.',
+'Mong mọi ước mơ của {n} đều nở hoa, và những ngày mệt mỏi luôn có một bờ vai để tựa vào.',
+'Lời yêu thương này không chỉ dành cho hôm nay. Cảm ơn {n} đã là {n} của mình.'
+];
+
+/* ---------- Âm thanh ---------- */
+var ac,master,step=0;
+var mel=[72,76,79,76,77,81,79,76,74,77,81,77,76,79,83,79,72,76,79,84,83,81,79,76,77,76,74,72,67,71,74,0];
+var bass=[48,48,53,53,50,50,55,55];
+function fq(m){return 440*Math.pow(2,(m-69)/12)}
+function tone(m,v,d,type){
+  if(!ac||!m)return;var t=ac.currentTime;
+  [1,2].forEach(function(mul,i){
+    var o=ac.createOscillator(),g=ac.createGain();
+    o.type=i?'triangle':(type||'sine');o.frequency.value=fq(m)*mul;
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v/(i?3:1),t+.01);
+    g.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(g);g.connect(master);o.start(t);o.stop(t+d+.05);
+  });
+}
+function chime(){if(on)tone(84+rnd([0,2,4,7]),.05,1.2)}
+function boom(){
+  if(!ac||!on)return;var t=ac.currentTime,o=ac.createOscillator(),g=ac.createGain();
+  o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(35,t+.4);
+  g.gain.setValueAtTime(.35,t);g.gain.exponentialRampToValueAtTime(.001,t+.45);
+  o.connect(g);g.connect(master);o.start(t);o.stop(t+.5);
+  tone(88+rnd([0,3,7]),.07,1.4);
+}
+function startAudio(){
+  try{
+    ac=new (window.AudioContext||window.webkitAudioContext)();
+    master=ac.createGain();master.gain.value=.3;
+    var dl=ac.createDelay(),fb=ac.createGain();dl.delayTime.value=.32;fb.gain.value=.38;
+    master.connect(ac.destination);master.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(ac.destination);
+    setInterval(function(){
+      if(!on)return;
+      tone(mel[step%mel.length],.2,1.6);
+      if(step%4===0)tone(bass[(step/4)%bass.length|0],.25,2.4);
+      step++;
+    },430);
+  }catch(e){}
+}
+function speak(txt){
+  if(!voiceOn||!('speechSynthesis' in window))return;
+  speechSynthesis.cancel();
+  var u=new SpeechSynthesisUtterance(txt);u.lang='vi-VN';u.rate=.9;u.pitch=1.1;
+  var v=speechSynthesis.getVoices().filter(function(x){return /^vi/i.test(x.lang)})[0];if(v)u.voice=v;
+  if(master)master.gain.value=.12;
+  u.onend=function(){if(master)master.gain.value=.3};
+  speechSynthesis.speak(u);
+}
+
+/* ---------- Hình ảnh ---------- */
+var cols=['#ff6f91','#ffb3c6','#ffd1a6','#ff9a8b','#f7cf7a','#fff0f3'];
+var fcols=['#ff6f91','#ffb347','#7fd1ff','#c78bff','#f7cf7a','#ff8fb1'];
+var petals=[],flowers=[],parts=[],lanterns=[],stars=[];
+function newPetal(init){return{x:Math.random()*W,y:init?Math.random()*H:-20,r:4+Math.random()*7,s:.6+Math.random()*1.2,ph:Math.random()*6,a:Math.random()*6,c:rnd(cols)}}
+function morePetals(n){if(!still)for(var i=0;i<n;i++)petals.push(newPetal(true))}
+morePetals(26);
+for(var i=0;i<80;i++)stars.push({x:Math.random(),y:Math.random()*.8,r:.6+Math.random()*1.4,p:Math.random()*6});
+function fw(x,y){
+  boom();var c=rnd(fcols);
+  for(var i=0;i<46;i++){var a=Math.random()*6.283,sp=1+Math.random()*4.5;
+    parts.push({k:0,x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,l:1,d:.011+Math.random()*.01,c:Math.random()<.25?'#fff4ea':c})}
+}
+function confetti(n){for(var i=0;i<n;i++)parts.push({k:1,x:Math.random()*W,y:-10-Math.random()*H*.4,vx:(Math.random()-.5)*1.5,vy:2+Math.random()*3,r:Math.random()*6,vr:(Math.random()-.5)*.3,w:6+Math.random()*6,c:rnd(fcols),l:1})}
+function hearts(x,y,n){for(var i=0;i<n;i++)parts.push({k:2,x:x,y:y,vx:(Math.random()-.5)*2.6,vy:-1.2-Math.random()*2.2,l:1,z:10+Math.random()*14})}
+function bloom(x,y){flowers.push({x:x,y:y,t:0,c:rnd(cols),r:16+Math.random()*14,n:5+(Math.random()*3|0)})}
+function lantern(x,txt){lanterns.push({x:x,y:H+40,vy:.5+Math.random()*.4,ph:Math.random()*6,t:txt||'',s:.8+Math.random()*.4})}
+function flower(f){
+  var sp=Math.min(1,f.t/40),bp=Math.max(0,Math.min(1,(f.t-32)/34)),sw=Math.sin(f.t/50)*3*bp,top=H-(H-f.y)*sp;
+  cx.strokeStyle='#7fd18b';cx.lineWidth=3;cx.beginPath();cx.moveTo(f.x,H);cx.quadraticCurveTo(f.x+sw*3,(H+top)/2,f.x+sw,top);cx.stroke();
+  if(bp<=0)return;
+  cx.save();cx.translate(f.x+sw,top);cx.rotate(f.t/400);cx.scale(bp,bp);cx.fillStyle=f.c;
+  for(var i=0;i<f.n;i++){cx.rotate(6.283/f.n);cx.beginPath();cx.ellipse(0,-f.r*.75,f.r*.5,f.r*.8,0,0,7);cx.fill()}
+  cx.fillStyle='#f7cf7a';cx.beginPath();cx.arc(0,0,f.r*.35,0,7);cx.fill();cx.restore();
+}
+function drawLantern(l){
+  var w=34*l.s,h=44*l.s,x=l.x+Math.sin(l.ph)*14;
+  var g=cx.createRadialGradient(x,l.y,4,x,l.y,w*2.4);g.addColorStop(0,'rgba(255,190,90,.55)');g.addColorStop(1,'rgba(255,190,90,0)');
+  cx.fillStyle=g;cx.fillRect(x-w*3,l.y-w*3,w*6,w*6);
+  cx.fillStyle='#ff9a3c';cx.beginPath();cx.moveTo(x-w/2,l.y-h/2);cx.lineTo(x+w/2,l.y-h/2);cx.lineTo(x+w*.36,l.y+h/2);cx.lineTo(x-w*.36,l.y+h/2);cx.closePath();cx.fill();
+  cx.fillStyle='#ffd27a';cx.fillRect(x-w*.2,l.y-h/2,w*.4,h);
+  if(l.t){cx.font='13px "Be Vietnam Pro",sans-serif';cx.fillStyle='#fff4ea';cx.textAlign='center';cx.fillText(l.t,x,l.y+h/2+18)}
+}
+function loop(){
+  cx.clearRect(0,0,W,H);
+  if(stage>=3){stars.forEach(function(s){s.p+=.03;cx.globalAlpha=.4+.6*Math.abs(Math.sin(s.p));cx.fillStyle='#fff4ea';cx.beginPath();cx.arc(s.x*W,s.y*H,s.r,0,7);cx.fill()});cx.globalAlpha=1}
+  petals.forEach(function(p,i){
+    p.y+=p.s;p.ph+=.02;p.x+=Math.sin(p.ph)*.8;p.a+=.03;if(p.y>H+20)petals[i]=newPetal();
+    cx.save();cx.translate(p.x,p.y);cx.rotate(p.a);cx.globalAlpha=.85;cx.fillStyle=p.c;cx.beginPath();cx.ellipse(0,0,p.r,p.r*.55,0,0,7);cx.fill();cx.restore();
+  });
+  cx.globalAlpha=1;
+  flowers.forEach(function(f){f.t++;flower(f)});if(flowers.length>40)flowers.shift();
+  lanterns=lanterns.filter(function(l){return l.y>-90});
+  lanterns.forEach(function(l){l.y-=l.vy;l.ph+=.015;drawLantern(l)});
+  parts=parts.filter(function(p){return p.k===1?p.y<H+30:p.l>0});
+  cx.textAlign='center';
+  parts.forEach(function(p){
+    if(p.k===0){p.vx*=.985;p.vy+=.045;p.x+=p.vx;p.y+=p.vy;p.l-=p.d;cx.globalAlpha=Math.max(0,p.l);cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,2.3,0,7);cx.fill()}
+    else if(p.k===1){p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;cx.globalAlpha=1;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);cx.fillStyle=p.c;cx.fillRect(-p.w/2,-p.w/4,p.w,p.w/2);cx.restore()}
+    else{p.x+=p.vx;p.y+=p.vy;p.l-=.008;cx.globalAlpha=Math.max(0,p.l);cx.font=p.z+'px sans-serif';cx.fillText('❤️',p.x,p.y)}
+  });
+  cx.globalAlpha=1;requestAnimationFrame(loop);
+}
+loop();
+
+/* ---------- Chuyển cảnh ---------- */
+function showS(id){
+  ['s0','s1','s2','s3'].forEach(function(s){if(s!==id){$(s).classList.add('out');setTimeout(function(){if($(s).classList.contains('out'))$(s).classList.add('hide')},800)}});
+  var e=$(id);e.classList.remove('hide');setTimeout(function(){e.classList.remove('out')},30);
+}
+function toast(t){var e=$('toast');e.textContent=t;e.style.opacity=1;setTimeout(function(){e.style.opacity=0},3000)}
+
+function s1(){
+  var my=++tok;stage=1;showS('s1');$('t1').textContent='Gửi đến '+name+' 🌸';
+  morePetals(30);
+  if(!still){confetti(120);for(var i=0;i<9;i++)(function(i){later(function(){fw(W*(.15+Math.random()*.7),H*(.15+Math.random()*.35))},400+i*520,my)})(i)}
+  later(s2,6000,my);
+}
+function s2(){
+  var my=++tok;stage=2;showS('s2');
+  $('dots').innerHTML=wishes.map(function(){return'<i></i>'}).join('');
+  run(0,my);
+}
+function run(i,my){
+  if(my!==tok)return;
+  if(i>=wishes.length){s3();return}
+  var txt=wishes[i].replace(/\{n\}/g,name),el=$('wish'),k=0;
+  el.classList.remove('out');el.textContent='';
+  [].forEach.call($('dots').children,function(d,j){d.className=j===i?'on':''});
+  speak(txt);chime();
+  var iv=setInterval(function(){
+    if(my!==tok){clearInterval(iv);return}
+    el.textContent=txt.slice(0,++k);
+    if(k%10===0)chime();
+    if(k>=txt.length){
+      clearInterval(iv);
+      later(function(){el.classList.add('out');later(function(){run(i+1,my)},700,my)},2600,my);
+    }
+  },68);
+}
+function s3(){
+  var my=++tok;stage=3;if('speechSynthesis' in window)speechSynthesis.cancel();
+  document.body.classList.add('night');showS('s3');
+  $('t3').textContent='Mỗi chiếc đèn là một điều ước dành cho '+name;
+  for(var i=0;i<5;i++)(function(i){later(function(){lantern(W*(.12+i*.19),i===2?'Yêu thương':'')},i*500,my)})(i);
+  for(var j=0;j<7;j++)(function(j){later(function(){bloom(W*(j+.5)/7,H*(.78+Math.random()*.12))},900+j*220,my)})(j);
+  later(function(){toast('Chạm vào màn hình, thả đèn, hoặc gửi một cái ôm')},1500,my);
+  speak('Chúc '+name+' luôn hạnh phúc. Yêu thương.');
+}
+
+/* ---------- Điều khiển ---------- */
+$('gift').onclick=function(){
+  if(this.classList.contains('open'))return;
+  name=$('to').value.trim()||'người thương';from=$('from').value.trim();
+  this.classList.add('open');startAudio();
+  if(ac&&ac.state==='suspended')ac.resume();
+  setTimeout(function(){boom();s1()},1000);
+};
+$('skip').onclick=function(){s3()};
+$('vo').onclick=function(){voiceOn=!voiceOn;this.textContent='🔊 Giọng đọc: '+(voiceOn?'bật':'tắt');if(!voiceOn&&'speechSynthesis' in window)speechSynthesis.cancel()};
+$('mu').onclick=function(){on=!on;this.textContent='🎵 Nhạc: '+(on?'bật':'tắt')};
+$('re').onclick=function(){document.body.classList.remove('night');flowers=[];lanterns=[];s1()};
+$('lan').onclick=function(){
+  var v=$('mine').value.trim();lantern(W*(.15+Math.random()*.7),v.length>26?v.slice(0,25)+'…':v);
+  chime();$('mine').value='';toast('Đèn ước đã bay lên 🏮');
+};
+$('hug').onclick=function(){
+  hearts(W/2,H*.6,26);boom();[60,64,67,72].forEach(function(m,i){setTimeout(function(){tone(m,.12,2)},i*120)});
+  toast('Một cái ôm thật chặt gửi '+name+(from?' · từ '+from:'')+' 🤗');
+};
+document.addEventListener('pointerdown',function(e){
+  if(stage!==3||e.target.closest('button,input'))return;
+  bloom(e.clientX,Math.max(e.clientY,H*.3));hearts(e.clientX,e.clientY,5);chime();
+});
+if('speechSynthesis' in window)speechSynthesis.getVoices();
+})();
+</script>
+</body>
+</html>
