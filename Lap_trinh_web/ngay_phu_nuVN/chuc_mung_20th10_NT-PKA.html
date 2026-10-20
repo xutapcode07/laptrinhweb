@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gửi Các Bạn Nữ Đội Sinh Viên Nghệ Tĩnh Phenikaa - 20/10 ❤️</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        roseGold: '#B76E79',
+                        deepPink: '#E83E8C',
+                        softPink: '#FFF0F5',
+                        romanticRed: '#D81B60',
+                    },
+                    fontFamily: {
+                        cursive: ['Dancing Script', 'cursive'],
+                        romantic: ['Great Vibes', 'cursive'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-heart': 'pulseHeart 1.5s infinite ease-in-out',
+                        'glow-pink': 'glowPink 2s infinite alternate',
+                        'spin-slow': 'spin 12s linear infinite',
+                        'float-gentle': 'floatGentle 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        pulseHeart: {
+                            '0%, 100%': { transform: 'scale(1)' },
+                            '50%': { transform: 'scale(1.12)' },
+                        },
+                        glowPink: {
+                            '0%': { boxShadow: '0 0 20px rgba(232, 62, 140, 0.4), inset 0 0 10px rgba(255,255,255,0.5)' },
+                            '100%': { boxShadow: '0 0 45px rgba(232, 62, 140, 0.9), 0 0 25px rgba(255, 182, 193, 0.8), inset 0 0 20px rgba(255,255,255,0.8)' }
+                        },
+                        floatGentle: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-12px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #1f0528 0%, #4a154b 35%, #8c1d40 70%, #ff758c 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        /* Fullscreen Canvas Layers */
+        #petal-canvas, #sparkle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1.5px solid rgba(255, 215, 0, 0.6);
+            box-shadow: 0 20px 50px rgba(216, 27, 96, 0.3);
+        }
+
+        /* Floating Cards Container */
+        #card-stream-container {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            z-index: 30;
+            pointer-events: none;
+        }
+
+        /* Floating Card */
+        .floating-card {
+            position: absolute;
+            pointer-events: auto !important;
+            width: min(300px, 82vw);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(255, 240, 245, 0.9) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255, 215, 0, 0.6);
+            border-radius: 20px;
+            padding: 16px 18px;
+            box-shadow: 0 10px 30px rgba(216, 27, 96, 0.25), 0 0 15px rgba(255, 215, 0, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            z-index: 35;
+        }
+
+        .floating-card:hover {
+            transform: scale(1.06);
+            border-color: #ffd700;
+            box-shadow: 0 18px 40px rgba(232, 62, 140, 0.5), 0 0 25px rgba(255, 215, 0, 0.6);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(232, 62, 140, 0.5);
+            border-radius: 10px;
+        }
+
+        /* Navigation active state glow */
+        .nav-btn.active {
+            background: linear-gradient(135deg, #e83e8c 0%, #d81b60 100%);
+            color: #ffffff;
+            box-shadow: 0 0 18px rgba(232, 62, 140, 0.8);
+            border-color: #ffd700;
+        }
+
+        /* Magic Crystal Ball Glow */
+        .crystal-ball {
+            background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ff80bf 30%, #a64dff 70%, #3a0066 100%);
+            box-shadow: 0 0 50px rgba(232, 62, 140, 0.8), inset 0 0 30px rgba(255, 255, 255, 0.8);
+        }
+
+        /* Riêng cho thư tay */
+        .fix-letter-text {
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap !important;
+            letter-spacing: 0.5px;
+            line-height: 1.6;
+        }
+
+        /* Riêng cho thiệp trôi (tránh bị lệch dòng, dính chữ) */
+        .fix-card-text {
+            word-break: normal;
+            overflow-wrap: break-word;
+            white-space: normal;
+            text-align: left;
+        }
+    </style>
+</head>
+<body class="relative text-white min-h-screen flex flex-col justify-between">
+
+    <!-- Interactive Canvas Layers -->
+    <canvas id="petal-canvas"></canvas>
+    <canvas id="sparkle-canvas"></canvas>
+
+    <!-- Header & Ambient Sound Controls -->
+    <header class="fixed top-4 right-4 z-50 flex items-center gap-3">
+        <button id="music-btn" onclick="toggleAudio()" class="glass-card text-white p-3.5 rounded-full hover:bg-white/30 transition-all transform hover:scale-110 flex items-center justify-center shadow-2xl group relative">
+            <i id="music-icon" class="fas fa-music text-pink-300 text-lg"></i>
+            <span class="absolute right-14 bg-black/80 text-white text-xs px-2.5 py-1 rounded-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">
+                Nhạc nền lãng mạn
+            </span>
+        </button>
+    </header>
+
+    <!-- INTRO SCREEN: Heart Gate -->
+    <div id="intro-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center text-center px-4 transition-all duration-700 bg-gradient-to-br from-purple-950 via-pink-950 to-rose-900">
+        <div onclick="startExperience()" class="cursor-pointer group flex flex-col items-center max-w-lg">
+            
+            <div class="relative mb-6">
+                <div class="w-36 h-36 md:w-44 md:h-44 glass-card rounded-full flex items-center justify-center animate-glow-pink transition-transform duration-500 group-hover:scale-110">
+                    <i class="fas fa-heart text-6xl md:text-7xl text-pink-400 animate-pulse-heart"></i>
+                </div>
+                <div class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs px-3.5 py-1 rounded-full shadow-lg font-bold animate-bounce border border-white/40">
+                    20/10 💕
+                </div>
+            </div>
+
+            <h1 class="font-romantic text-4xl md:text-6xl text-pink-200 font-bold mb-3 drop-shadow-lg">
+                Dành Riêng Cho Các Bạn Nữ<br class="md:hidden"> Đội Sinh Viên Nghệ Tĩnh Phenikaa
+            </h1>
+            
+            <p class="font-cursive text-2xl md:text-3xl text-pink-100/90 mb-8">
+                "Những cô gái xứ Nghệ giữa lòng Hà Nội..."
+            </p>
+
+            <div class="inline-flex items-center gap-3 bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold text-lg shadow-2xl hover:from-pink-600 hover:to-rose-600 transition-all transform group-hover:scale-105 border border-pink-300/40">
+                <i class="fas fa-envelope-open-text text-xl animate-bounce"></i>
+                <span>Mở Món Quà 20/10 ❤️</span>
+            </div>
+
+            <p class="text-xs text-pink-200/70 italic mt-5">
+                ✨ Chạm vào màn hình để nhận lời chúc từ cả đội ✨
+            </p>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="main-app" class="hidden opacity-0 transition-opacity duration-700 fixed inset-0 flex flex-col">
+
+        <!-- Floating Cards Stream Container -->
+        <div id="card-stream-container"></div>
+
+        <!-- NAVIGATION TAB BAR -->
+        <nav class="fixed top-4 left-1/2 -translate-x-1/2 z-40 bg-black/50 backdrop-blur-md p-1.5 rounded-full border border-white/20 shadow-2xl flex items-center gap-1 md:gap-2 max-w-[95vw]">
+            <button id="nav-stream" onclick="switchTab('stream')" class="nav-btn active px-3.5 md:px-5 py-2 rounded-full font-medium text-xs md:text-sm transition-all flex items-center gap-1.5 border border-transparent">
+                <i class="fas fa-paper-plane text-pink-300"></i>
+                <span>Thiệp Trôi</span>
+            </button>
+
+            <button id="nav-crystal" onclick="switchTab('crystal')" class="nav-btn px-3.5 md:px-5 py-2 rounded-full font-medium text-xs md:text-sm text-pink-100 hover:text-white transition-all flex items-center gap-1.5 border border-transparent">
+                <i class="fas fa-magic text-yellow-300"></i>
+                <span>Quả Cầu Yêu Thương</span>
+            </button>
+
+            <button id="nav-garden" onclick="switchTab('garden')" class="nav-btn px-3.5 md:px-5 py-2 rounded-full font-medium text-xs md:text-sm text-pink-100 hover:text-white transition-all flex items-center gap-1.5 border border-transparent">
+                <i class="fas fa-seedling text-green-300"></i>
+                <span>Vườn Ước Nguyện</span>
+            </button>
+
+            <button id="nav-letter" onclick="switchTab('letter')" class="nav-btn px-3.5 md:px-5 py-2 rounded-full font-medium text-xs md:text-sm text-pink-100 hover:text-white transition-all flex items-center gap-1.5 border border-transparent">
+                <i class="fas fa-envelope-open-text text-rose-300"></i>
+                <span>Thư Tay</span>
+            </button>
+        </nav>
+
+        <!-- PAGE CONTENT SECTIONS -->
+        <main class="relative z-20 flex-1 flex items-center justify-center p-4 pt-20 pb-24 overflow-hidden pointer-events-none">
+            
+            <!-- SECTION 1: FLOATING STREAM CONTROLS -->
+            <section id="section-stream" class="tab-section w-full h-full flex flex-col items-center justify-end pointer-events-auto">
+                <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 bg-black/50 backdrop-blur-md p-2.5 px-5 rounded-full border border-white/20 shadow-2xl">
+                    <button onclick="spawnCustomCard()" class="px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full font-medium text-xs md:text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-lg active:scale-95">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Thả thêm thiệp</span>
+                    </button>
+
+                    <button id="pause-btn" onclick="togglePauseStream()" class="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-all text-xs md:text-sm flex items-center justify-center w-9 h-9">
+                        <i id="pause-icon" class="fas fa-pause"></i>
+                    </button>
+
+                    <button onclick="addPersonalizedWish()" class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full font-medium text-xs md:text-sm transition-all flex items-center gap-2 border border-white/30">
+                        <i class="fas fa-heart text-pink-300"></i>
+                        <span>Viết chúc riêng</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION 2: MAGIC CRYSTAL BALL -->
+            <section id="section-crystal" class="tab-section hidden w-full max-w-lg flex flex-col items-center text-center pointer-events-auto">
+                <div class="glass-card p-6 md:p-8 rounded-3xl w-full flex flex-col items-center border border-pink-300/40">
+                    <h2 class="font-romantic text-3xl md:text-4xl text-pink-200 font-bold mb-2">
+                        Quả Cầu May Mắn Của Các Cô Gái Xứ Nghệ 🔮
+                    </h2>
+                    <p class="text-xs md:text-sm text-pink-100/80 mb-6">
+                        Chạm vào quả cầu ma thuật để xem thông điệp may mắn dành riêng cho các bạn nữ trong đội hôm nay!
+                    </p>
+
+                    <div onclick="revealCrystalFortune()" class="crystal-ball w-44 h-44 md:w-52 md:h-52 rounded-full cursor-pointer flex items-center justify-center transition-all duration-500 transform hover:scale-105 my-4 relative group">
+                        <i class="fas fa-sparkles text-4xl text-white/80 animate-pulse group-hover:scale-125 transition-transform"></i>
+                        <span class="absolute text-[11px] font-semibold text-pink-200 bottom-4 bg-black/40 px-3 py-1 rounded-full border border-white/20">
+                            Chạm để dự đoán ✨
+                        </span>
+                    </div>
+
+                    <div id="crystal-result" class="mt-4 p-4 rounded-2xl bg-white/10 border border-white/20 min-h-[90px] w-full flex items-center justify-center text-center">
+                        <p class="font-cursive text-xl md:text-2xl text-pink-100 italic">
+                            "Mọi điều ngọt ngào nhất đang chờ đón các cô gái Nghệ Tĩnh..."
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: GARDEN -->
+            <section id="section-garden" class="tab-section hidden w-full max-w-lg flex flex-col items-center text-center pointer-events-auto">
+                <div class="glass-card p-6 md:p-8 rounded-3xl w-full flex flex-col items-center border border-pink-300/40">
+                    <h2 class="font-romantic text-3xl md:text-4xl text-pink-200 font-bold mb-2">
+                        Khu Vườn Nguyện Ước 🌸
+                    </h2>
+                    <p class="text-xs md:text-sm text-pink-100/80 mb-4">
+                        Gieo điều ước của các bạn nữ trong đội để bông hoa kỳ diệu nở rực rỡ nhé!
+                    </p>
+
+                    <div class="relative w-48 h-56 flex flex-col items-center justify-end my-2">
+                        <div id="flower-head" class="flower-head transform scale-0 text-6xl md:text-7xl text-pink-400 absolute top-2 z-10 filter drop-shadow-lg">
+                            🌹
+                        </div>
+                        <div id="flower-stem" class="flower-stem w-3 bg-gradient-to-t from-green-700 to-green-400 rounded-full h-0 mb-12"></div>
+                        <div class="w-28 h-16 bg-gradient-to-b from-amber-700 to-amber-900 rounded-b-3xl border-t-4 border-amber-600 shadow-2xl flex items-center justify-center relative z-20">
+                            <span class="text-xs text-amber-200 font-bold">LOVE 20/10</span>
+                        </div>
+                    </div>
+
+                    <div class="w-full mt-3 flex flex-col gap-2">
+                        <input id="garden-wish-input" type="text" placeholder="Nhập điều ước của các bạn vào đây..." class="w-full px-4 py-2.5 rounded-xl bg-white/20 border border-white/30 text-white placeholder-pink-200/60 text-sm focus:outline-none focus:border-pink-400">
+                        <button onclick="plantWish()" class="w-full py-3 bg-gradient-to-r from-pink-500 to-rose-600 text-white rounded-xl font-bold text-sm hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-98">
+                            <i class="fas fa-shower text-blue-300"></i>
+                            <span>Tưới Nước & Gieo Điều Ước</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: MUSIC BOX & HEARTFELT LETTER -->
+            <section id="section-letter" class="tab-section hidden w-full max-w-xl flex flex-col items-center text-center pointer-events-auto">
+                <div class="glass-card p-6 md:p-8 rounded-3xl w-full flex flex-col items-center border border-pink-300/40 relative">
+                    
+                    <div class="flex items-center justify-between w-full mb-4 pb-2 border-b border-white/20">
+                        <div class="flex items-center gap-2 text-pink-300 font-bold text-sm">
+                            <i class="fas fa-music text-pink-400 animate-spin-slow"></i>
+                            <span>Hộp Nhạc Kỷ Niệm</span>
+                        </div>
+                        <span class="text-xs bg-pink-500/30 text-pink-200 px-3 py-1 rounded-full border border-pink-400/30">
+                            20/10/2026 ❤️
+                        </span>
+                    </div>
+
+                    <!-- LÁ THƯ CÓ THỂ BẤM ĐỂ MỞ -->
+                    <div id="envelope-wrapper" onclick="openLetterEnvelope()" class="w-full cursor-pointer group transition-all duration-300 transform hover:scale-105">
+                        
+                        <!-- Bì thư ban đầu -->
+                        <div id="closed-envelope" class="bg-gradient-to-r from-pink-500 to-rose-600 p-8 rounded-2xl shadow-2xl flex flex-col items-center justify-center border-2 border-pink-300/50 min-h-[220px]">
+                            <i class="fas fa-envelope-open-text text-6xl text-amber-200 mb-3 animate-bounce"></i>
+                            <h3 class="font-romantic text-3xl text-white font-bold">Chạm vào đây để mở thư ❤️</h3>
+                            <p class="text-xs text-pink-100/80 mt-2">Bức thư nhỏ gửi các bạn nữ trong đội</p>
+                        </div>
+
+                        <!-- Nội dung lá thư sau khi mở -->
+                        <div id="opened-letter" class="hidden bg-white/95 text-gray-800 p-6 rounded-2xl w-full text-left shadow-inner border border-pink-200/50 min-h-[220px]">
+                            <h3 class="font-romantic text-3xl text-pink-600 font-bold mb-3 border-b border-pink-100 pb-1">
+                                Gửi Các Bạn Nữ Đội Sinh Viên Nghệ Tĩnh Phenikaa,
+                            </h3>
+                            <p id="typewriter-text" class="font-sans text-base md:text-lg text-gray-700 fix-letter-text leading-relaxed min-h-[120px]">
+                                <!-- Text typed via JS -->
+                            </p>
+                            <div class="text-right mt-4 font-romantic text-2xl text-pink-600 font-bold">
+                                Đội Sinh Viên Nghệ Tĩnh Phenikaa 💕
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button id="replay-letter-btn" onclick="restartTypewriter()" class="hidden mt-4 px-5 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full text-xs font-semibold flex items-center gap-2 border border-white/30 transition-all">
+                        <i class="fas fa-redo text-pink-300"></i>
+                        <span>Đọc lại bức thư</span>
+                    </button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ZOOMED MODAL CARD -->
+    <div id="card-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md hidden opacity-0 transition-all duration-300 flex items-center justify-center p-4">
+        <div class="glass-card-light rounded-3xl max-w-md w-full p-6 md:p-8 text-gray-800 relative transform scale-90 transition-all duration-300 border-2 border-amber-300 shadow-2xl">
+            
+            <button onclick="closeModalCard()" class="absolute top-4 right-4 w-9 h-9 bg-pink-100 hover:bg-pink-200 text-pink-600 rounded-full flex items-center justify-center transition-colors">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <div class="flex items-center gap-2 text-pink-600 font-bold text-sm mb-3">
+                <i class="fas fa-heart text-red-500 animate-pulse"></i>
+                <span>Lời Chúc Dành Cho Các Bạn Nữ Nghệ Tĩnh</span>
+            </div>
+
+            <div class="py-4 my-2 border-y border-pink-200/60">
+                <p id="modal-wish-text" class="font-sans text-lg md:text-xl text-gray-800 fix-card-text leading-relaxed text-center font-bold">
+                    "Lời chúc..."
+                </p>
+            </div>
+
+            <div class="mt-6 flex flex-col gap-3">
+                <button id="speech-btn" onclick="speakCurrentWish()" class="w-full py-3 bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 text-white rounded-2xl font-bold text-sm hover:opacity-95 transition-all flex items-center justify-center gap-2 shadow-lg active:scale-98">
+                    <i id="speech-icon" class="fas fa-volume-up text-yellow-300 text-lg"></i>
+                    <span id="speech-text">🔊 Bấm vào đây để nghe đọc</span>
+                </button>
+
+                <div class="flex items-center justify-between gap-3 pt-2">
+                    <button id="modal-like-btn" onclick="likeModalCard(this)" class="flex-1 py-2.5 bg-pink-100 hover:bg-pink-200 text-pink-700 rounded-xl font-semibold text-xs transition-colors flex items-center justify-center gap-2">
+                        <i class="far fa-heart text-red-500 text-base"></i>
+                        <span>Thả tim</span>
+                    </button>
+                    <button id="modal-copy-btn" onclick="copyModalWish()" class="flex-1 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-semibold text-xs transition-colors flex items-center justify-center gap-2 shadow-md">
+                        <i class="far fa-copy text-base"></i>
+                        <span>Sao chép</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-black/85 text-white px-6 py-3 rounded-full text-sm font-medium shadow-2xl opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2 border border-pink-500/30">
+        <i id="toast-icon" class="fas fa-heart text-pink-400"></i>
+        <span id="toast-message">Thông báo</span>
+    </div>
+
+    <!-- Background Music Audio: Mashup Thiên Lý Ơi x Nơi Này Có Anh -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="./chờ chút x nơi này có anh.mp3" type="audio/mpeg">
+    </audio>
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const wishesForBeloved = [
+            "Chúc các bạn nữ đội sinh viên Nghệ Tĩnh Phenikaa luôn rạng rỡ như những đóa hoa mùa xuân, xinh đẹp và tỏa sáng ở bất cứ nơi đâu! 🌸",
+            "Xa quê học tập nhưng các bạn không bao giờ cô đơn, vì luôn có cả đội Nghệ Tĩnh ở bên cạnh yêu thương và sẻ chia! 💕",
+            "Chúc các cô gái xứ Nghệ luôn mạnh mẽ, kiên cường và giàu nghị lực như chính mảnh đất quê hương đã nuôi dưỡng các bạn! 💪",
+            "20/10 vui vẻ nhé các bạn nữ Phenikaa! Mong mỗi ngày của các bạn đều ngập tràn tiếng cười và những kỷ niệm đẹp bên bạn bè! 🥰",
+            "Chúc các bạn học tập thật tốt, điểm cao rực rỡ, thành công trên con đường chinh phục ước mơ của tuổi sinh viên! 🌟",
+            "Cảm ơn các bạn nữ đã luôn góp phần làm nên một đội Nghệ Tĩnh đoàn kết, ấm áp và đầy năng lượng tích cực! ❤️",
+            "Mong các bạn luôn khỏe mạnh, bình an, nhận được thật nhiều yêu thương và luôn nhớ rằng mình quan trọng với cả đội biết bao! 💖",
+            "Chúc các cô gái Nghệ Tĩnh có một ngày 20/10 ngập tràn hoa thơm, quà xinh và những điều bất ngờ ngọt ngào! 🎁",
+            "Dù bài vở có bộn bề hay deadline có dồn dập, hãy luôn tự tin rằng các bạn giỏi giang hơn mình nghĩ rất nhiều! ✨",
+            "Mong mọi may mắn sẽ luôn mỉm cười với các bạn nữ đội sinh viên Nghệ Tĩnh Phenikaa, hôm nay và cả những ngày về sau! 🍀"
+        ];
+
+        const crystalFortunes = [
+            "🔮 Hôm nay các bạn nữ Nghệ Tĩnh sẽ nhận được một niềm vui ngọt ngào bất ngờ!",
+            "🔮 Nụ cười của các bạn hôm nay sẽ làm sáng bừng cả giảng đường Phenikaa!",
+            "🔮 Mọi điều ước trong lòng các cô gái xứ Nghệ đều đang trên đường thành hiện thực!",
+            "🔮 Ngày hôm nay ngập tràn năng lượng yêu thương và bình yên dành cho các bạn!",
+            "🔮 Các bạn nữ chính là những ngôi sao tỏa sáng nhất của đội Nghệ Tĩnh hôm nay!"
+        ];
+
+        const letterFullText = "Xa nhà, xa quê hương xứ Nghệ để lên Hà Nội học tập, các bạn nữ đã luôn mạnh mẽ, chăm chỉ và là phần dịu dàng, ấm áp không thể thiếu của đội sinh viên Nghệ Tĩnh Phenikaa. Nhân ngày Phụ nữ Việt Nam 20/10, cả đội xin chúc các bạn luôn xinh đẹp, khỏe mạnh, học tập thật tốt, luôn giữ nụ cười rạng rỡ và gặt hái thật nhiều hạnh phúc trên con đường phía trước! ❤️";
+
+        let streamInterval = null;
+        let isStreamPaused = false;
+        let activeCardsCount = 0;
+        const MAX_SIMULTANEOUS_CARDS = 8;
+        let currentActiveWishText = "";
+        let isSpeechSpeaking = false;
+        let isLetterOpened = false;
+
+        function startExperience() {
+            const audio = document.getElementById('bg-music');
+            audio.play().catch(() => {});
+
+            triggerHeartConfetti();
+
+            const introScreen = document.getElementById('intro-screen');
+            introScreen.classList.add('opacity-0', 'scale-90');
+
+            setTimeout(() => {
+                introScreen.classList.add('hidden');
+                const mainApp = document.getElementById('main-app');
+                mainApp.classList.remove('hidden');
+                setTimeout(() => mainApp.classList.remove('opacity-0'), 50);
+
+                startCardStream();
+            }, 600);
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`nav-${tabName}`).classList.add('active');
+
+            document.querySelectorAll('.tab-section').forEach(sec => sec.classList.add('hidden'));
+            
+            const activeSection = document.getElementById(`section-${tabName}`);
+            activeSection.classList.remove('hidden');
+
+            const streamContainer = document.getElementById('card-stream-container');
+            if (tabName === 'stream') {
+                streamContainer.style.display = 'block';
+                isStreamPaused = false;
+            } else {
+                streamContainer.style.display = 'none';
+                isStreamPaused = true;
+            }
+        }
+
+        function openLetterEnvelope() {
+            if (isLetterOpened) return;
+            isLetterOpened = true;
+
+            document.getElementById('closed-envelope').classList.add('hidden');
+            document.getElementById('opened-letter').classList.remove('hidden');
+            document.getElementById('replay-letter-btn').classList.remove('hidden');
+
+            triggerHeartConfetti();
+            restartTypewriter();
+        }
+
+        let typewriterTimer = null;
+
+        function restartTypewriter() {
+            clearTimeout(typewriterTimer);
+            document.getElementById('typewriter-text').innerText = "";
+            let charIndex = 0;
+            
+            function typeStep() {
+                if (charIndex <= letterFullText.length) {
+                    document.getElementById('typewriter-text').innerText = letterFullText.substring(0, charIndex);
+                    charIndex++;
+                    typewriterTimer = setTimeout(typeStep, 35);
+                }
+            }
+            typeStep();
+        }
+
+        function toggleAudio() {
+            const audio = document.getElementById('bg-music');
+            const icon = document.getElementById('music-icon');
+            if (audio.paused) {
+                audio.play();
+                icon.className = "fas fa-music text-pink-300 animate-spin-slow";
+                showToast("Đã bật nhạc nền lãng mạn 🎵", "fa-music");
+            } else {
+                audio.pause();
+                icon.className = "fas fa-volume-mute text-gray-400";
+                showToast("Đã tắt nhạc nền", "fa-volume-mute");
+            }
+        }
+
+        function startCardStream() {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => spawnFloatingCard(), i * 700);
+            }
+
+            streamInterval = setInterval(() => {
+                if (!isStreamPaused && activeCardsCount < MAX_SIMULTANEOUS_CARDS) {
+                    spawnFloatingCard();
+                }
+            }, 2600);
+        }
+
+        function spawnFloatingCard(customWishText = null) {
+            const container = document.getElementById('card-stream-container');
+            const card = document.createElement('div');
+            card.className = 'floating-card';
+
+            const wishText = customWishText || wishesForBeloved[Math.floor(Math.random() * wishesForBeloved.length)];
+
+            const randomX = Math.random() * 60 + 15;
+            const startY = window.innerHeight + 50;
+            const floatDuration = Math.random() * 6 + 12; 
+            const rotateAngle = (Math.random() - 0.5) * 12;
+
+            card.style.left = `${randomX}vw`;
+            card.style.top = `${startY}px`;
+
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-2 pb-1 border-b border-pink-200/60">
+                    <span class="text-xs font-bold text-pink-600 flex items-center gap-1.5">
+                        <i class="fas fa-heart text-red-500"></i> Gửi Các Bạn Nữ
+                    </span>
+                    <span class="text-[10px] bg-pink-100 text-pink-600 font-semibold px-2 py-0.5 rounded-full">Chạm để xem ✨</span>
+                </div>
+                <p class="font-sans text-sm text-gray-800 fix-card-text font-semibold leading-relaxed my-2 line-clamp-3">
+                    "${wishText}"
+                </p>
+                <div class="mt-2 pt-1.5 border-t border-pink-100/60 flex items-center justify-between text-xs text-pink-500 font-medium">
+                    <span><i class="fas fa-search-plus"></i> Phóng to</span>
+                    <span class="text-xs">🔊 Nghe đọc</span>
+                </div>
+            `;
+
+            card.addEventListener('pointerdown', (e) => {
+                e.stopPropagation();
+                openModalCard(wishText);
+            });
+
+            container.appendChild(card);
+            activeCardsCount++;
+
+            let currentY = startY;
+            let speed = (window.innerHeight + 300) / (floatDuration * 60);
+            let isHovered = false;
+            let animationFrameId = null;
+
+            card.addEventListener('mouseenter', () => { isHovered = true; });
+            card.addEventListener('mouseleave', () => { isHovered = false; });
+
+            function animate() {
+                if (!isHovered && !isStreamPaused) {
+                    currentY -= speed;
+                    let currentXOffset = Math.sin(currentY * 0.008) * 15;
+                    card.style.transform = `translate3d(${currentXOffset}px, 0, 0) rotate(${rotateAngle}deg)`;
+                    card.style.top = `${currentY}px`;
+                }
+
+                if (currentY < -250) {
+                    card.remove();
+                    activeCardsCount--;
+                    if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                } else {
+                    animationFrameId = requestAnimationFrame(animate);
+                }
+            }
+
+            animate();
+        }
+
+        function openModalCard(wishText) {
+            currentActiveWishText = wishText;
+            document.getElementById('modal-wish-text').innerText = `"${wishText}"`;
+
+            stopSpeech();
+            
+            const modal = document.getElementById('card-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modal.querySelector('.glass-card-light').classList.remove('scale-90');
+                modal.querySelector('.glass-card-light').classList.add('scale-100');
+            }, 20);
+
+            isStreamPaused = true;
+        }
+
+        function closeModalCard() {
+            stopSpeech();
+            const modal = document.getElementById('card-modal');
+            modal.querySelector('.glass-card-light').classList.remove('scale-100');
+            modal.querySelector('.glass-card-light').classList.add('scale-90');
+            modal.classList.add('opacity-0');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                if (document.getElementById('nav-stream').classList.contains('active')) {
+                    isStreamPaused = false;
+                }
+            }, 300);
+        }
+
+        document.getElementById('card-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'card-modal') {
+                closeModalCard();
+            }
+        });
+
+        function speakCurrentWish() {
+            if ('speechSynthesis' in window) {
+                if (isSpeechSpeaking) {
+                    stopSpeech();
+                    return;
+                }
+
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(currentActiveWishText);
+                utterance.lang = 'vi-VN';
+                utterance.rate = 0.88;
+
+                const voices = window.speechSynthesis.getVoices();
+                const viVoice = voices.find(v => v.lang.includes('vi') || v.lang.includes('VN'));
+                if (viVoice) utterance.voice = viVoice;
+
+                utterance.onstart = () => {
+                    isSpeechSpeaking = true;
+                    document.getElementById('speech-text').innerText = "🔊 Đang đọc lời chúc...";
+                };
+
+                utterance.onend = () => resetSpeechUI();
+                utterance.onerror = () => resetSpeechUI();
+
+                window.speechSynthesis.speak(utterance);
+            } else {
+                showToast("Trình duyệt không hỗ trợ đọc giọng nói", "fa-exclamation-circle");
+            }
+        }
+
+        function stopSpeech() {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            resetSpeechUI();
+        }
+
+        function resetSpeechUI() {
+            isSpeechSpeaking = false;
+            const btnText = document.getElementById('speech-text');
+            if (btnText) btnText.innerText = "🔊 Bấm vào đây để nghe đọc";
+        }
+
+        function likeModalCard(btn) {
+            triggerHeartConfetti();
+            btn.innerHTML = `<i class="fas fa-heart text-red-500 animate-bounce"></i> <span>Đã thả tim! ❤️</span>`;
+            showToast("Đã gửi ngàn trái tim! 💕", "fa-heart");
+        }
+
+        function copyModalWish() {
+            navigator.clipboard.writeText(currentActiveWishText + "\n\n🌸 Đội Sinh Viên Nghệ Tĩnh Phenikaa chúc mừng Ngày Phụ Nữ Việt Nam 20/10! 🌸");
+            showToast("Đã sao chép lời chúc! 💌", "fa-clipboard-check");
+        }
+
+        function spawnCustomCard() {
+            spawnFloatingCard();
+            showToast("Đã thả thêm thiệp lơ lửng! ✨", "fa-heart");
+        }
+
+        function togglePauseStream() {
+            isStreamPaused = !isStreamPaused;
+            const icon = document.getElementById('pause-icon');
+            if (isStreamPaused) {
+                icon.className = "fas fa-play";
+                showToast("Đã tạm dừng thiệp trôi", "fa-pause");
+            } else {
+                icon.className = "fas fa-pause";
+                showToast("Tiếp tục luồng thiệp bay 🌸", "fa-play");
+            }
+        }
+
+        function addPersonalizedWish() {
+            const customText = prompt("Nhập lời chúc chân thành của bạn dành cho các bạn nữ trong đội:");
+            if (customText && customText.trim() !== "") {
+                spawnFloatingCard(customText.trim());
+                triggerHeartConfetti();
+                showToast("Đã tạo thiệp chúc riêng của bạn! ❤️", "fa-check");
+            }
+        }
+
+        function revealCrystalFortune() {
+            const resultBox = document.getElementById('crystal-result');
+            resultBox.innerHTML = `<i class="fas fa-spinner fa-spin text-2xl text-pink-300"></i>`;
+            
+            setTimeout(() => {
+                const randomFortune = crystalFortunes[Math.floor(Math.random() * crystalFortunes.length)];
+                resultBox.innerHTML = `
+                    <p class="font-cursive text-2xl md:text-3xl text-pink-100 font-bold">
+                        "${randomFortune}"
+                    </p>
+                `;
+                triggerHeartConfetti();
+            }, 800);
+        }
+
+        function plantWish() {
+            const input = document.getElementById('garden-wish-input');
+            if (!input.value.trim()) {
+                showToast("Hãy nhập một điều ước nhỏ nhé!", "fa-comment-dots");
+                return;
+            }
+
+            const stem = document.getElementById('flower-stem');
+            const head = document.getElementById('flower-head');
+
+            stem.style.height = '110px';
+            setTimeout(() => {
+                head.style.transform = 'scale(1)';
+                triggerHeartConfetti();
+                showToast("Điều ước đã nở hoa rực rỡ! 🌹", "fa-seedling");
+                input.value = "";
+            }, 1200);
+        }
+
+        /* Canvas Petals & Sparkles */
+        const petalCanvas = document.getElementById('petal-canvas');
+        const pCtx = petalCanvas.getContext('2d');
+        let width = petalCanvas.width = window.innerWidth;
+        let height = petalCanvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = petalCanvas.width = window.innerWidth;
+            height = petalCanvas.height = window.innerHeight;
+        });
+
+        class Petal {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * -height;
+                this.size = Math.random() * 10 + 8;
+                this.speedY = Math.random() * 1.2 + 0.6;
+                this.speedX = Math.random() * 0.8 - 0.4;
+                this.angle = Math.random() * Math.PI * 2;
+                this.spin = Math.random() * 0.02 - 0.01;
+                this.color = ['#FFB6C1', '#FF69B4', '#FF1493', '#E83E8C'][Math.floor(Math.random() * 4)];
+                this.opacity = Math.random() * 0.6 + 0.4;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += Math.sin(this.y * 0.008) + this.speedX;
+                this.angle += this.spin;
+                if (this.y > height + 20) this.reset();
+            }
+            draw() {
+                pCtx.save();
+                pCtx.translate(this.x, this.y);
+                pCtx.rotate(this.angle);
+                pCtx.globalAlpha = this.opacity;
+                pCtx.fillStyle = this.color;
+                pCtx.beginPath();
+                pCtx.moveTo(0, 0);
+                pCtx.bezierCurveTo(-this.size, -this.size, -this.size, this.size, 0, this.size * 1.4);
+                pCtx.bezierCurveTo(this.size, this.size, this.size, -this.size, 0, 0);
+                pCtx.fill();
+                pCtx.restore();
+            }
+        }
+        const petals = Array.from({ length: 32 }, () => new Petal());
+
+        function animatePetals() {
+            pCtx.clearRect(0, 0, width, height);
+            petals.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animatePetals);
+        }
+        animatePetals();
+
+        function triggerHeartConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 65,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#FF69B4', '#FF1493', '#FFD700', '#D81B60']
+                });
+            }
+        }
+
+        function showToast(message, iconClass = "fa-heart") {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = message;
+            document.getElementById('toast-icon').className = `fas ${iconClass} text-pink-400`;
+
+            toast.classList.remove('opacity-0');
+            toast.classList.add('opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100');
+                toast.classList.add('opacity-0');
+            }, 2800);
+        }
+    </script>
+</body>
+</html>
